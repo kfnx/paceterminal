@@ -4,23 +4,17 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  RiArrowLeftRightLine,
   RiArrowRightSLine,
-  RiBankCardLine,
-  RiBillLine,
-  RiExchangeLine,
   RiHeadphoneLine,
-  RiHistoryLine,
-  RiLayoutGridLine,
-  RiSettings2Line,
+  RiSkipLeftLine,
+  RiSkipRightLine,
 } from '@remixicon/react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import { cn } from '@/utils/cn';
 import * as Avatar from '@/components/ui/avatar';
+import * as Button from '@/components/ui/compact-button';
 import * as Divider from '@/components/ui/divider';
-import { CompanySwitch } from '@/components/company-switch';
-import { UserButton } from '@/components/user-button';
 
 import IconCmd from '~/icons/icon-cmd.svg';
 
@@ -121,6 +115,7 @@ function useCollapsedState({
   defaultCollapsed?: boolean;
 }): {
   collapsed: boolean;
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   sidebarRef: React.RefObject<HTMLDivElement>;
 } {
   const [collapsed, setCollapsed] = React.useState(defaultCollapsed);
@@ -174,16 +169,34 @@ function useCollapsedState({
     };
   }, [collapsed]);
 
-  return { collapsed, sidebarRef };
+  return { collapsed, setCollapsed, sidebarRef };
 }
 
-export function SidebarHeader({ collapsed }: { collapsed?: boolean }) {
+export function SidebarHeader({
+  collapsed,
+  setCollapsed,
+}: {
+  collapsed?: boolean;
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
-    <div className={'p-5'}>
-      <h1 className='text-2xl font-bold text-text-strong-950'>
-        PACETERMINAL.COM
-      </h1>
-      <p className='text-paragraph-sm text-text-sub-600'>Hong Pingpah Alaium</p>
+    <div className={'flex justify-between p-5'}>
+      <div className='flex flex-col items-start'>
+        <h1 className='text-2xl font-bold text-text-strong-950'>
+          {collapsed ? 'PACE' : 'PACETERMINAL'}
+        </h1>
+        {!collapsed && (
+          <p className='text-paragraph-sm text-text-sub-600'>
+            Hong Pingpah Alaium
+          </p>
+        )}
+      </div>
+      <Button.Root className='mt-5'>
+        <Button.Icon
+          as={collapsed ? RiSkipRightLine : RiSkipLeftLine}
+          onClick={() => setCollapsed((prev) => !prev)}
+        />
+      </Button.Root>
     </div>
   );
 }
@@ -438,7 +451,9 @@ export default function Sidebar({
 }: {
   defaultCollapsed?: boolean;
 }) {
-  const { collapsed, sidebarRef } = useCollapsedState({ defaultCollapsed });
+  const { collapsed, setCollapsed, sidebarRef } = useCollapsedState({
+    defaultCollapsed,
+  });
 
   return (
     <>
@@ -447,7 +462,7 @@ export default function Sidebar({
           'transition-all-default fixed left-0 top-0 z-40 hidden h-full overflow-hidden border-r border-stroke-soft-200 bg-bg-white-0 duration-300 lg:block',
           {
             'w-20': collapsed,
-            'w-[272px]': !collapsed,
+            'w-[224px]': !collapsed,
             '[&_[data-hide-collapsed]]:hidden': !collapsed
               ? false
               : defaultCollapsed,
@@ -456,9 +471,9 @@ export default function Sidebar({
       >
         <div
           ref={sidebarRef}
-          className='flex h-full w-[272px] min-w-[272px] flex-col overflow-auto'
+          className='flex h-full w-[224px] min-w-[224px] flex-col overflow-auto'
         >
-          <SidebarHeader collapsed={collapsed} />
+          <SidebarHeader collapsed={collapsed} setCollapsed={setCollapsed} />
 
           <SidebarDivider collapsed={collapsed} />
 
@@ -478,7 +493,7 @@ export default function Sidebar({
       {/* a necessary placeholder because of sidebar is fixed */}
       <div
         className={cn('shrink-0', {
-          'w-[272px]': !collapsed,
+          'w-[224px]': !collapsed,
           'w-20': collapsed,
         })}
       />
