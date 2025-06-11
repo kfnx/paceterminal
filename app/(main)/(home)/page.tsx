@@ -1,8 +1,7 @@
 'use client';
 
-import { usePathname, useSearchParams } from 'next/navigation';
-
 import * as Avatar from '@/components/ui/avatar';
+import DexScreenerFrame from '@/components/dexscreener-frame';
 import Header from '@/components/header';
 import { LanguageSelect } from '@/components/language-select';
 import { WalletButton } from '@/components/wallet';
@@ -21,12 +20,7 @@ import WidgetTotalBalance from '@/components/widgets/widget-total-balance';
 import WidgetTotalExpenses from '@/components/widgets/widget-total-expenses';
 import WidgetTransactionsTable from '@/components/widgets/widget-transactions-table';
 
-const defaultToken = '4nor6joBE27cv6GQ7nnrAcSL7yQ6H8sKhbM7ctJDmhrN';
-
 export default function PageHome() {
-  const searchParams = useSearchParams();
-  const token = searchParams.get('token') || defaultToken;
-
   return (
     <>
       <Header
@@ -44,11 +38,7 @@ export default function PageHome() {
 
       <div className='flex flex-col gap-6 overflow-hidden px-4 pb-6 lg:px-8 lg:pt-1'>
         <div className='mx-auto grid w-full max-w-md grid-cols-1 items-start gap-6 lg:max-w-3xl lg:grid-cols-2 lg:justify-center min-[1300px]:max-w-4xl min-[1400px]:max-w-full min-[1400px]:grid-cols-3'>
-          <iframe
-            className='min-h-[800px] w-full [grid-column:1/-1]'
-            src={`https://dexscreener.com/solana/${token}?embed=1&loadChartSettings=0&chartLeftToolbar=0&chartTheme=dark&chartStyle=0&chartType=usd&interval=15`}
-            // src='https://dexscreener.com/solana/4nor6joBE27cv6GQ7nnrAcSL7yQ6H8sKhbM7ctJDmhrN?embed=1&loadChartSettings=0&chartLeftToolbar=0&chartTheme=dark&theme=light&chartStyle=0&chartType=usd&interval=15'
-          ></iframe>
+          <DexScreenerFrame />
           <WidgetMyCards className='lg:row-span-2' />
           <WidgetBudgetOverview className='[grid-column:1/-1] min-[1300px]:col-span-2' />
           <WidgetSpendingSummary />

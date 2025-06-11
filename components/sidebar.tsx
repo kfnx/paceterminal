@@ -31,76 +31,56 @@ type CuratedTokens = {
   disabled?: boolean;
 };
 
-const tokens = {
+export const tokens = {
+  LAUNCHCOIN: 'Ey59PH7Z4BFU4HjyKnyMdWt5GGN76KazTAwQihoUXRnk',
   BUDDY: '4nor6joBE27cv6GQ7nnrAcSL7yQ6H8sKhbM7ctJDmhrN',
   GLMPS: 'AuHTkQ1H9ouMsTMoYqU9QCCsSsGnRXkt9PoBu3ykWKtK',
-  HYPE: 'HYPE',
-  AI16Z: 'AI16Z',
-  GIGA: 'GIGA',
-  PCULE: 'PCULE',
+  PCULE: 'J27UYHX5oeaG1YbUGQc8BmJySXDjNWChdGB2Pi2TMDAq',
+  DUPE: 'fRfKGCriduzDwSudCwpL7ySCEiboNuryhZDVJtr1a1C',
+  KLED: '1zJX5gRnjLgmTpq5sVwkq69mNDQkCemqoasyjaPW6jm',
+  MOBY: 'Cy1GS2FqefgaMbi45UunrUzin1rfEmTUYnomddzBpump',
+  WONDER: 'GEKjZKJZgQTCbi9evTW2GmhyamH3sq6Lid9dQMWqEcCY',
+  BUIDL: '3HfLqhtF5hR5dyBXh6BMtRaTm9qzStvEGuMa8Gx6pump',
+  AIXBC: 'Hefh4Yv3cUGstf7wvEFPuKY7zAEhPxAvgZaoQnytW8md',
+  SLSH: '2enpSQzqEaouvWJNpPSbVxmWFqA15j2n18vYeFpFKxfp',
+  DTR: 'FkqvTmDNgxgcdS7fPbZoQhPVuaYJPwSsP8mm4p7oNgf6',
+  OCTO: '4CoTCzobYt38zVbSieZxcmz2CCs8kmZJ6wnbj8HWocto',
+  FITCOIN: 'Cr2mM4szbt8286XMn7iTpY5A8S17LbGAu1UyodkyEwn4',
+  TCM: '28PgAVUab53W26qgu3TfffsxHF2rAFf1zvJJzE3Kdaos',
 };
 
-export const curatedTokens: CuratedTokens[] = [
-  {
+const placeholders = [
+  'synergy',
+  'apex',
+  'aurora',
+  'catalyst',
+  'horizon',
+  'orandis',
+  'phoenix',
+  'pulse',
+  'solaris',
+];
+
+// const images = {
+//   LAUNCHCOIN:
+//     'https://ipfs.io/ipfs/bafkreibeqt7fvgn2ubl4tha6sljnici2eus42dauxgtrdvfjf6m3vkdkoi',
+// };
+
+export const curatedTokens: CuratedTokens[] = Object.entries(tokens).map(
+  ([label, token]) => ({
     icon: (
       <Avatar.Root size='24' color='blue'>
-        <Avatar.Image src='/images/placeholder/aurora.svg' alt='buddy' />
-      </Avatar.Root>
-    ),
-    label: 'BUDDY',
-    href: '?token=4nor6joBE27cv6GQ7nnrAcSL7yQ6H8sKhbM7ctJDmhrN',
-  },
-  {
-    icon: (
-      <Avatar.Root size='24' color='blue'>
+        {/* <Avatar.Image src={images[label as keyof typeof images]} alt={label} /> */}
         <Avatar.Image
-          src={`https://dd.dexscreener.com/ds-data/tokens/solana/${tokens.GLMPS}.png`}
-          alt='buddy'
+          src={`/images/placeholder/${placeholders[Math.floor(Math.random() * placeholders.length)]}.svg`}
+          alt={label}
         />
       </Avatar.Root>
     ),
-    label: 'GLMPS',
-    href: '?token=AuHTkQ1H9ouMsTMoYqU9QCCsSsGnRXkt9PoBu3ykWKtK',
-  },
-  {
-    icon: (
-      <Avatar.Root size='24' color='blue'>
-        <Avatar.Image src='/images/placeholder/catalyst.svg' alt='buddy' />
-      </Avatar.Root>
-    ),
-    label: 'HYPE',
-    href: '/send-money',
-  },
-  {
-    icon: (
-      <Avatar.Root size='24' color='blue'>
-        <Avatar.Image src='/images/placeholder/horizon.svg' alt='buddy' />
-      </Avatar.Root>
-    ),
-    label: 'AI16Z',
-    href: '/transactions',
-  },
-  {
-    icon: (
-      <Avatar.Root size='24' color='blue'>
-        <Avatar.Image src='/images/placeholder/orandis.svg' alt='buddy' />
-      </Avatar.Root>
-    ),
-    label: 'GIGA',
-    href: '#',
-    disabled: true,
-  },
-  {
-    icon: (
-      <Avatar.Root size='24' color='blue'>
-        <Avatar.Image src='/images/placeholder/phoenix.svg' alt='buddy' />
-      </Avatar.Root>
-    ),
-    label: 'PCULE',
-    href: '#',
-    disabled: true,
-  },
-];
+    label,
+    href: `?token=${token}`,
+  }),
+);
 
 export const favoriteLinks = [
   {
