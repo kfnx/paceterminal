@@ -5,22 +5,29 @@ import { useState } from 'react';
 import { cnExt } from '@/utils/cn';
 import * as SegmentedControl from '@/components/ui/segmented-control';
 
-export default function TokenTabs({
+export function NavigationTabs({
   className,
-  ...rest
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [selectedTab, setSelectedTab] = useState('chart');
+
+  const handleValueChange = (value: string) => {
+    setSelectedTab(value);
+    document.getElementById(value)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
 
   return (
     <SegmentedControl.Root
       value={selectedTab}
-      onValueChange={(v) => setSelectedTab(v)}
+      onValueChange={handleValueChange}
       // className='lg:w-80'
       className={cnExt(className)}
     >
       <SegmentedControl.List>
         <SegmentedControl.Trigger value='chart'>Chart</SegmentedControl.Trigger>
-        <SegmentedControl.Trigger value='metric'>
+        <SegmentedControl.Trigger value='metrics'>
           Metrics
         </SegmentedControl.Trigger>
         <SegmentedControl.Trigger value='team'>Team</SegmentedControl.Trigger>

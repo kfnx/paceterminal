@@ -9,72 +9,39 @@ import {
   RiSkipLeftLine,
   RiSkipRightLine,
 } from '@remixicon/react';
+import { useQueryState } from 'nuqs';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import { cn } from '@/utils/cn';
+import { TOKENS } from '@/lib/tokens';
+import { cn, cnExt } from '@/utils/cn';
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/compact-button';
 import * as Divider from '@/components/ui/divider';
 
+import { LoadingSpinner } from './ui/loading-spinner';
 import IconCmd from '~/icons/icon-cmd.svg';
 
 type CuratedTokens = {
+  address: string;
   icon: React.ReactNode;
   label: string;
   href: string;
   disabled?: boolean;
 };
 
-export const tokens = {
-  LAUNCHCOIN: 'Ey59PH7Z4BFU4HjyKnyMdWt5GGN76KazTAwQihoUXRnk',
-  BUDDY: '4nor6joBE27cv6GQ7nnrAcSL7yQ6H8sKhbM7ctJDmhrN',
-  GLMPS: 'AuHTkQ1H9ouMsTMoYqU9QCCsSsGnRXkt9PoBu3ykWKtK',
-  PCULE: 'J27UYHX5oeaG1YbUGQc8BmJySXDjNWChdGB2Pi2TMDAq',
-  DUPE: 'fRfKGCriduzDwSudCwpL7ySCEiboNuryhZDVJtr1a1C',
-  KLED: '1zJX5gRnjLgmTpq5sVwkq69mNDQkCemqoasyjaPW6jm',
-  MOBY: 'Cy1GS2FqefgaMbi45UunrUzin1rfEmTUYnomddzBpump',
-  WONDER: 'GEKjZKJZgQTCbi9evTW2GmhyamH3sq6Lid9dQMWqEcCY',
-  BUIDL: '3HfLqhtF5hR5dyBXh6BMtRaTm9qzStvEGuMa8Gx6pump',
-  AIXBC: 'Hefh4Yv3cUGstf7wvEFPuKY7zAEhPxAvgZaoQnytW8md',
-  SLSH: '2enpSQzqEaouvWJNpPSbVxmWFqA15j2n18vYeFpFKxfp',
-  DTR: 'FkqvTmDNgxgcdS7fPbZoQhPVuaYJPwSsP8mm4p7oNgf6',
-  OCTO: '4CoTCzobYt38zVbSieZxcmz2CCs8kmZJ6wnbj8HWocto',
-  FITCOIN: 'Cr2mM4szbt8286XMn7iTpY5A8S17LbGAu1UyodkyEwn4',
-  TCM: '28PgAVUab53W26qgu3TfffsxHF2rAFf1zvJJzE3Kdaos',
-};
-
-const placeholders = [
-  'synergy',
-  'apex',
-  'aurora',
-  'catalyst',
-  'horizon',
-  'orandis',
-  'phoenix',
-  'pulse',
-  'solaris',
-];
-
-// const images = {
-//   LAUNCHCOIN:
-//     'https://ipfs.io/ipfs/bafkreibeqt7fvgn2ubl4tha6sljnici2eus42dauxgtrdvfjf6m3vkdkoi',
-// };
-
-export const curatedTokens: CuratedTokens[] = Object.entries(tokens).map(
-  ([label, token]) => ({
-    icon: (
-      <Avatar.Root size='24' color='blue'>
-        {/* <Avatar.Image src={images[label as keyof typeof images]} alt={label} /> */}
-        <Avatar.Image
-          src={`/images/placeholder/${placeholders[Math.floor(Math.random() * placeholders.length)]}.svg`}
-          alt={label}
-        />
-      </Avatar.Root>
-    ),
-    label,
-    href: `?token=${token}`,
-  }),
-);
+export const curatedTokens: CuratedTokens[] = TOKENS.map((token) => ({
+  address: token.address,
+  icon: (
+    <Avatar.Root size='24' color='blue'>
+      <Avatar.Image
+        src={`/images/placeholder/${token.icon}.svg`}
+        alt={token.name}
+      />
+    </Avatar.Root>
+  ),
+  label: token.name,
+  href: `?token=${token.address}`,
+}));
 
 export const favoriteLinks = [
   {
@@ -180,7 +147,12 @@ export function SidebarHeader({
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
-    <div className={'flex justify-between p-5'}>
+    <div
+      className={cnExt('flex p-5', {
+        'flex-col': collapsed,
+        'flex-row justify-between': !collapsed,
+      })}
+    >
       <div className='flex flex-col items-start'>
         <h1 className='text-2xl font-bold text-text-strong-950'>
           {collapsed ? 'PACE' : 'PACETERMINAL'}
@@ -201,9 +173,68 @@ export function SidebarHeader({
   );
 }
 
-function CuratedTokens({ collapsed }: { collapsed: boolean }) {
-  const pathname = usePathname();
+function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
+  const [token] = useQueryState('token');
 
+  return (
+    <div className='space-y-1'>
+      {curatedTokens.map(
+        ({ icon: Icon, label, href, disabled, address }, i) => {
+          const selected = token === address;
+          return (
+            <Link
+              key={i}
+              href={href}
+              aria-current={selected}
+              aria-disabled={disabled}
+              className={cn(
+                'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
+                'transition-default',
+                'aria-[current=page]:bg-bg-weak-50',
+                'aria-disabled:pointer-events-none aria-disabled:opacity-50',
+                {
+                  'w-9 px-2': collapsed,
+                  'w-full px-3': !collapsed,
+                },
+              )}
+            >
+              <div
+                className={cn(
+                  'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
+                  {
+                    '-left-[22px]': collapsed,
+                    '-left-5': !collapsed,
+                    'scale-100': selected,
+                    'scale-0': !selected,
+                  },
+                )}
+              />
+              {Icon}
+              {/* <Icon
+              className={cn(
+              'transition-default size-5 shrink-0 text-text-sub-600',
+              'group-aria-[current=page]:text-primary-base',
+            )}
+          /> */}
+
+              <div
+                className='flex w-[180px] shrink-0 items-center gap-2'
+                data-hide-collapsed
+              >
+                <div className='flex-1 text-label-sm'>{label}</div>
+                {selected && (
+                  <RiArrowRightSLine className='size-5 text-text-sub-600' />
+                )}
+              </div>
+            </Link>
+          );
+        },
+      )}
+    </div>
+  );
+}
+
+function CuratedTokens({ collapsed }: { collapsed: boolean }) {
   return (
     <div className='space-y-2'>
       <div
@@ -213,55 +244,9 @@ function CuratedTokens({ collapsed }: { collapsed: boolean }) {
       >
         Curated Tokens
       </div>
-      <div className='space-y-1'>
-        {curatedTokens.map(({ icon: Icon, label, href, disabled }, i) => (
-          <Link
-            key={i}
-            href={href}
-            aria-current={pathname === href ? 'page' : undefined}
-            aria-disabled={disabled}
-            className={cn(
-              'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
-              'transition-default',
-              'aria-[current=page]:bg-bg-weak-50',
-              'aria-disabled:pointer-events-none aria-disabled:opacity-50',
-              {
-                'w-9 px-2': collapsed,
-                'w-full px-3': !collapsed,
-              },
-            )}
-          >
-            <div
-              className={cn(
-                'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
-                {
-                  '-left-[22px]': collapsed,
-                  '-left-5': !collapsed,
-                  'scale-100': pathname === href,
-                  'scale-0': pathname !== href,
-                },
-              )}
-            />
-            {Icon}
-            {/* <Icon
-              className={cn(
-                'transition-default size-5 shrink-0 text-text-sub-600',
-                'group-aria-[current=page]:text-primary-base',
-              )}
-            /> */}
-
-            <div
-              className='flex w-[180px] shrink-0 items-center gap-2'
-              data-hide-collapsed
-            >
-              <div className='flex-1 text-label-sm'>{label}</div>
-              {pathname === href && (
-                <RiArrowRightSLine className='size-5 text-text-sub-600' />
-              )}
-            </div>
-          </Link>
-        ))}
-      </div>
+      <React.Suspense fallback={<LoadingSpinner />}>
+        <CuratedTokenList collapsed={collapsed} />
+      </React.Suspense>
     </div>
   );
 }

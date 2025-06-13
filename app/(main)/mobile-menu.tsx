@@ -7,21 +7,16 @@ import * as DialogPrimitives from '@radix-ui/react-dialog';
 import {
   RiArrowRightSLine,
   RiCloseFill,
-  RiHeadphoneLine,
   RiMenu3Fill,
   RiSearch2Line,
-  RiSettings2Line,
 } from '@remixicon/react';
 
 import { cn } from '@/utils/cn';
 import { LABEL_COLORS } from '@/utils/consts';
 import useBreakpoint from '@/hooks/use-breakpoint';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
-import { CompanySwitchMobile } from '@/components/company-switch';
-import { MoveMoneyButton } from '@/components/move-money-button';
 import { curatedTokens, favoriteLinks } from '@/components/sidebar';
 import * as TopbarItemButton from '@/components/topbar-item-button';
-import { UserButtonMobile } from '@/components/user-button';
 
 export default function MobileMenu() {
   const { lg } = useBreakpoint();
@@ -72,7 +67,7 @@ export default function MobileMenu() {
             </DialogPrimitives.Description>
 
             <div className='flex h-[60px] w-full shrink-0 items-center border-b border-stroke-soft-200 px-4'>
-              <div className='relative flex-1'>
+              <div className='relative flex-1 pr-4'>
                 <RiSearch2Line className='absolute left-0 top-1/2 size-6 -translate-y-1/2 text-text-soft-400' />
                 <input
                   type='text'
@@ -81,14 +76,14 @@ export default function MobileMenu() {
                 />
               </div>
               <div className='flex gap-3'>
-                <div className='flex gap-1'>
+                {/* <div className='flex gap-1'>
                   <TopbarItemButton.Root>
                     <TopbarItemButton.Icon as={RiHeadphoneLine} />
                   </TopbarItemButton.Root>
                   <TopbarItemButton.Root>
                     <TopbarItemButton.Icon as={RiSettings2Line} />
                   </TopbarItemButton.Root>
-                </div>
+                </div> */}
                 <div className='flex w-1 shrink-0 items-center before:h-full before:w-px before:bg-stroke-soft-200' />
                 <DialogPrimitives.Close asChild>
                   <TopbarItemButton.Root>
@@ -97,7 +92,7 @@ export default function MobileMenu() {
                 </DialogPrimitives.Close>
               </div>
             </div>
-            <CompanySwitchMobile />
+            {/* <CompanySwitchMobile /> */}
 
             <TabMenuHorizontal.Root
               defaultValue='main'
@@ -108,7 +103,7 @@ export default function MobileMenu() {
                   value='main'
                   className='flex-1 text-label-md'
                 >
-                  Main
+                  Tokens
                 </TabMenuHorizontal.Trigger>
                 <div className='flex h-6 w-1 shrink-0 items-center before:h-full before:w-px before:bg-stroke-soft-200' />
                 <TabMenuHorizontal.Trigger
@@ -191,13 +186,13 @@ export default function MobileMenu() {
               </div>
             </TabMenuHorizontal.Root>
 
-            <div className='grid border-y border-stroke-soft-200 p-4'>
+            {/* <div className='grid border-y border-stroke-soft-200 p-4'>
               <MoveMoneyButton />
             </div>
 
             <div className='p-2'>
               <UserButtonMobile />
-            </div>
+            </div> */}
           </DialogPrimitives.Content>
         </DialogPrimitives.Overlay>
       </DialogPrimitives.Portal>

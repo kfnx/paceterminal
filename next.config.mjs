@@ -2,16 +2,6 @@
 const nextConfig = {
   output: 'export',
 
-  async redirects() {
-    return [
-      {
-        source: '/settings',
-        destination: '/settings/profile-settings',
-        permanent: true,
-      },
-    ];
-  },
-
   webpack: (config) => {
     // svgr
     config.module.rules.push({

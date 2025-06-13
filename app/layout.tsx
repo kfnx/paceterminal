@@ -1,3 +1,6 @@
+import dynamic from 'next/dynamic';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
+
 import { cn } from '@/utils/cn';
 
 import './globals.css';
@@ -8,7 +11,13 @@ import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { ThemeProvider } from 'next-themes';
 
 import { SearchMenu } from '@/components/search';
-import { Providers } from '@/app/providers';
+import { WalletConnectionProviders } from '@/app/wallet-providers';
+
+const InvisibleWalletMultiButtonDynamic = dynamic(
+  () =>
+    import('@/components/wallet').then((mod) => mod.InvisibleWalletMultiButton),
+  { ssr: false },
+);
 
 const fontInter = FontSans({
   subsets: ['latin'],
@@ -36,18 +45,21 @@ export default function RootLayout({
       className={cn(fontInter.className, 'antialiased')}
     >
       <body className='bg-bg-white-0'>
-        <Providers>
-          <ThemeProvider attribute='class'>
-            <TooltipProvider
-              delayDuration={100}
-              skipDelayDuration={300}
-              disableHoverableContent
-            >
-              {children}
-            </TooltipProvider>
-            <SearchMenu />
-          </ThemeProvider>
-        </Providers>
+        <NuqsAdapter>
+          <WalletConnectionProviders>
+            <ThemeProvider attribute='class'>
+              <TooltipProvider
+                delayDuration={100}
+                skipDelayDuration={300}
+                disableHoverableContent
+              >
+                {children}
+                <InvisibleWalletMultiButtonDynamic />
+              </TooltipProvider>
+              <SearchMenu />
+            </ThemeProvider>
+          </WalletConnectionProviders>
+        </NuqsAdapter>
       </body>
     </html>
   );

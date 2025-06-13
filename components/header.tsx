@@ -1,8 +1,37 @@
 'use client';
 
+import { Suspense } from 'react';
+import { useQueryState } from 'nuqs';
+
+import { getTokenFromAddress, tokens } from '@/lib/tokens';
 import { cnExt } from '@/utils/cn';
+import * as Avatar from '@/components/ui/avatar';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { LanguageSelect } from '@/components/language-select';
+import { NavigationTabs } from '@/components/navigation-tabs';
 import { SearchMenuButton } from '@/components/search';
-import TokenTabs from '@/components/token-tabs';
+import { WalletButton } from '@/components/wallet';
+
+function Title() {
+  const [tokenParam] = useQueryState('token');
+  const token = getTokenFromAddress(tokenParam || tokens.BUDDY);
+  const subtitle = token?.name ? `Creator ${token?.name}` : 'Creator Buddy';
+
+  return (
+    <div className='flex gap-4 lg:gap-3.5'>
+      <Avatar.Root size='48' color='blue'>
+        <Avatar.Image
+          src={`/images/placeholder/${token?.icon}.svg`}
+          alt='buddy'
+        />
+      </Avatar.Root>
+      <div className='space-y-1'>
+        <div className='text-label-md lg:text-label-lg'>{token?.name}</div>
+        <div className='text-paragraph-sm text-text-sub-600'>{subtitle}</div>
+      </div>
+    </div>
+  );
+}
 
 export default function Header({
   children,
@@ -26,21 +55,15 @@ export default function Header({
       )}
       {...rest}
     >
-      <div className='flex gap-4 lg:gap-3.5'>
-        {icon}
-        <div className='space-y-1'>
-          <div className='text-label-md lg:text-label-lg'>{title}</div>
-          <div className='text-paragraph-sm text-text-sub-600'>
-            {description}
-          </div>
-        </div>
-      </div>
-      <TokenTabs className='hidden lg:flex' />
+      <Suspense fallback={<LoadingSpinner />}>
+        <Title />
+      </Suspense>
+      <NavigationTabs className='hidden lg:flex' />
       <div className={cnExt('flex items-center gap-3', contentClassName)}>
         <SearchMenuButton className='hidden lg:flex' />
         {/* <NotificationButton className='hidden lg:flex' /> */}
-
-        {children}
+        <LanguageSelect className='hidden lg:flex' />
+        <WalletButton className='hidden lg:flex' />
       </div>
     </header>
   );
