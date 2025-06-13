@@ -31,7 +31,7 @@ export function NavigationTabs({
           Metrics
         </SegmentedControl.Trigger>
         <SegmentedControl.Trigger value='team'>Team</SegmentedControl.Trigger>
-        <SegmentedControl.Trigger value='flywheels'>
+        <SegmentedControl.Trigger value='flywheel'>
           Flywheel
         </SegmentedControl.Trigger>
         <SegmentedControl.Trigger value='technical'>
