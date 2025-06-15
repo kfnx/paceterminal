@@ -1,13 +1,3 @@
-<p align="center">
-  <a href="https://alignui.com">
-    <img src="./logo.svg" height="96">
-    <h3 align="center">AlignUI Design System</h3>
-  </a>
-  <p align="center">The Design System You Need</p>
-</p>
-
-[Join the AlignUI Community](https://discord.gg/alignui)
-
 ## Introduction
 
 paceterminal use Next.js and alignui

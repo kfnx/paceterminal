@@ -2,24 +2,22 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import {
   RiArrowRightSLine,
-  RiHeadphoneLine,
   RiSkipLeftLine,
   RiSkipRightLine,
 } from '@remixicon/react';
 import { useQueryState } from 'nuqs';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import { TOKENS } from '@/lib/tokens';
 import { cn, cnExt } from '@/utils/cn';
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/compact-button';
 import * as Divider from '@/components/ui/divider';
 
 import { LoadingSpinner } from './ui/loading-spinner';
-import IconCmd from '~/icons/icon-cmd.svg';
+import { CURATED_TOKENS } from '@/lib/tokens';
+import { useParams } from 'next/navigation';
 
 type CuratedTokens = {
   address: string;
@@ -29,52 +27,19 @@ type CuratedTokens = {
   disabled?: boolean;
 };
 
-export const curatedTokens: CuratedTokens[] = TOKENS.map((token) => ({
+export const curatedTokens: CuratedTokens[] = CURATED_TOKENS.map((token) => ({
   address: token.address,
   icon: (
     <Avatar.Root size='24' color='blue'>
       <Avatar.Image
-        src={`/images/placeholder/${token.icon}.svg`}
+        src={`/images/tokens/${token.icon}`}
         alt={token.name}
       />
     </Avatar.Root>
   ),
   label: token.name,
-  href: `?token=${token.address}`,
+  href: `/solana/${token.address}`,
 }));
-
-export const favoriteLinks = [
-  {
-    href: '#',
-    color: 'purple',
-    projectName: 'Loom Mobile App',
-    shortcut: (
-      <>
-        <IconCmd className='size-2.5' />1
-      </>
-    ),
-  },
-  {
-    href: '#',
-    color: 'red',
-    projectName: 'Monday Redesign',
-    shortcut: (
-      <>
-        <IconCmd className='size-2.5' />2
-      </>
-    ),
-  },
-  {
-    href: '#',
-    color: 'pink',
-    projectName: 'Udemy Courses',
-    shortcut: (
-      <>
-        <IconCmd className='size-2.5' />3
-      </>
-    ),
-  },
-];
 
 function useCollapsedState({
   defaultCollapsed = false,
@@ -159,7 +124,7 @@ export function SidebarHeader({
         </h1>
         {!collapsed && (
           <p className='text-paragraph-sm text-text-sub-600'>
-            Hong Pingpah Alaium
+            Hong Wilaheng
           </p>
         )}
       </div>
@@ -174,7 +139,8 @@ export function SidebarHeader({
 }
 
 function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
-  const [token] = useQueryState('token');
+  const params = useParams();
+  const token = params.address as string;
 
   return (
     <div className='space-y-1'>
@@ -183,7 +149,7 @@ function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
           const selected = token === address;
           return (
             <Link
-              key={i}
+              key={label}
               href={href}
               aria-current={selected}
               aria-disabled={disabled}
@@ -251,174 +217,6 @@ function CuratedTokens({ collapsed }: { collapsed: boolean }) {
   );
 }
 
-function TrendingTokens({ collapsed }: { collapsed: boolean }) {
-  const pathname = usePathname();
-
-  const links = [
-    {
-      href: '/settings/profile-settings',
-      icon: (
-        <Avatar.Root size='24' color='blue'>
-          <Avatar.Image src='/images/placeholder/solaris.svg' alt='buddy' />
-        </Avatar.Root>
-      ),
-      label: 'DTR',
-    },
-    {
-      href: '#',
-      icon: (
-        <Avatar.Root size='24' color='blue'>
-          <Avatar.Image src='/images/placeholder/apex.svg' alt='buddy' />
-        </Avatar.Root>
-      ),
-      label: 'AIBXC',
-      disabled: true,
-    },
-  ];
-
-  return (
-    <div className='space-y-2'>
-      <div
-        className={cn('p-1 text-subheading-xs uppercase text-text-soft-400', {
-          '-mx-2.5 w-14 px-0 text-center': collapsed,
-        })}
-      >
-        Trending Tokens
-      </div>
-      <div className='space-y-1'>
-        {links.map(({ icon: Icon, label, href, disabled }, i) => {
-          const isActivePage = pathname.startsWith(href);
-
-          return (
-            <Link
-              key={i}
-              href={href}
-              aria-current={isActivePage ? 'page' : undefined}
-              aria-disabled={disabled}
-              className={cn(
-                'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
-                'transition-default',
-                'aria-[current=page]:bg-bg-weak-50',
-                'aria-disabled:pointer-events-none aria-disabled:opacity-50',
-                {
-                  'w-9 px-2': collapsed,
-                  'w-full px-3': !collapsed,
-                },
-              )}
-            >
-              <div
-                className={cn(
-                  'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
-                  {
-                    '-left-[22px]': collapsed,
-                    '-left-5': !collapsed,
-                    'scale-100': isActivePage,
-                    'scale-0': !isActivePage,
-                  },
-                )}
-              />
-              {Icon}
-              {/* <Icon
-                className={cn(
-                  'transition-default size-5 shrink-0 text-text-sub-600',
-                  'group-aria-[current=page]:text-primary-base',
-                )}
-              /> */}
-
-              <div
-                className='flex w-[180px] shrink-0 items-center gap-2'
-                data-hide-collapsed
-              >
-                <div className='flex-1 text-label-sm'>{label}</div>
-                {isActivePage && (
-                  <RiArrowRightSLine className='size-5 text-text-sub-600' />
-                )}
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function LatestBlogs({ collapsed }: { collapsed: boolean }) {
-  const pathname = usePathname();
-
-  const links = [
-    {
-      href: '#',
-      icon: RiHeadphoneLine,
-      label: 'Support',
-      disabled: true,
-    },
-  ];
-
-  return (
-    <div className='space-y-2'>
-      <div
-        className={cn('p-1 text-subheading-xs uppercase text-text-soft-400', {
-          '-mx-2.5 w-14 px-0 text-center': collapsed,
-        })}
-      >
-        Latest Blogs
-      </div>
-      <div className='space-y-1'>
-        {links.map(({ icon: Icon, label, href, disabled }, i) => {
-          const isActivePage = pathname.startsWith(href);
-
-          return (
-            <Link
-              key={i}
-              href={href}
-              aria-current={isActivePage ? 'page' : undefined}
-              aria-disabled={disabled}
-              className={cn(
-                'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
-                'transition-default',
-                'aria-[current=page]:bg-bg-weak-50',
-                'aria-disabled:pointer-events-none aria-disabled:opacity-50',
-                {
-                  'w-9 px-2': collapsed,
-                  'w-full px-3': !collapsed,
-                },
-              )}
-            >
-              <div
-                className={cn(
-                  'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
-                  {
-                    '-left-[22px]': collapsed,
-                    '-left-5': !collapsed,
-                    'scale-100': isActivePage,
-                    'scale-0': !isActivePage,
-                  },
-                )}
-              />
-              <Icon
-                className={cn(
-                  'transition-default size-5 shrink-0 text-text-sub-600',
-                  'group-aria-[current=page]:text-primary-base',
-                )}
-              />
-
-              <div
-                className='flex w-[180px] shrink-0 items-center gap-2'
-                data-hide-collapsed
-              >
-                <div className='flex-1 text-label-sm'>{label}</div>
-                {isActivePage && (
-                  <RiArrowRightSLine className='size-5 text-text-sub-600' />
-                )}
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 function SidebarDivider({ collapsed }: { collapsed: boolean }) {
   return (
     <div className='px-5'>
@@ -459,7 +257,6 @@ export default function Sidebar({
           className='flex h-full w-[224px] min-w-[224px] flex-col overflow-auto'
         >
           <SidebarHeader collapsed={collapsed} setCollapsed={setCollapsed} />
-
           <SidebarDivider collapsed={collapsed} />
 
           <div
@@ -469,8 +266,6 @@ export default function Sidebar({
             })}
           >
             <CuratedTokens collapsed={collapsed} />
-            <TrendingTokens collapsed={collapsed} />
-            <LatestBlogs collapsed={collapsed} />
           </div>
         </div>
       </div>

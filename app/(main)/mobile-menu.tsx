@@ -12,10 +12,9 @@ import {
 } from '@remixicon/react';
 
 import { cn } from '@/utils/cn';
-import { LABEL_COLORS } from '@/utils/consts';
 import useBreakpoint from '@/hooks/use-breakpoint';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
-import { curatedTokens, favoriteLinks } from '@/components/sidebar';
+import { curatedTokens } from '@/components/sidebar';
 import * as TopbarItemButton from '@/components/topbar-item-button';
 
 export default function MobileMenu() {
@@ -122,7 +121,7 @@ export default function MobileMenu() {
                   <div className='flex flex-col gap-5'>
                     {curatedTokens.map(({ icon: Icon, label, href }, i) => (
                       <Link
-                        key={i}
+                        key={label}
                         href={href}
                         aria-current={pathname === href ? 'page' : undefined}
                         className={cn(
@@ -145,39 +144,6 @@ export default function MobileMenu() {
                             },
                           )}
                         />
-                        <RiArrowRightSLine className='size-6 text-text-sub-600' />
-                      </Link>
-                    ))}
-                  </div>
-                </TabMenuHorizontal.Content>
-                <TabMenuHorizontal.Content
-                  value='favorites'
-                  className='data-[state=active]:duration-300 data-[state=active]:animate-in data-[state=active]:fade-in-0'
-                >
-                  <div className='flex flex-col gap-5'>
-                    {favoriteLinks.map((project, i) => (
-                      <Link
-                        key={i}
-                        href={project.href}
-                        className={cn(
-                          'group flex w-full items-center gap-2.5 whitespace-nowrap px-5 text-text-sub-600',
-                        )}
-                      >
-                        <div className='flex size-[22px] shrink-0 items-center justify-center'>
-                          <div className='size-3 scale-110 rounded-full border-2 border-stroke-white-0 shadow-regular-sm'>
-                            <div
-                              className={cn(
-                                'size-2 rounded-full',
-                                LABEL_COLORS[
-                                  project.color as keyof typeof LABEL_COLORS
-                                ].bg,
-                              )}
-                            />
-                          </div>
-                        </div>
-                        <div className='flex-1 text-label-md'>
-                          {project.projectName}
-                        </div>
                         <RiArrowRightSLine className='size-6 text-text-sub-600' />
                       </Link>
                     ))}

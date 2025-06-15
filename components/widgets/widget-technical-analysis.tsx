@@ -43,7 +43,7 @@ function TeamMember({ name, description, image, role, x }: TeamMemberProps) {
   );
 }
 
-export default function WidgetTeam({
+export default function WidgetTechnicalAnalysis({
   ...rest
 }: React.ComponentPropsWithoutRef<typeof WidgetBox.Root>) {
   const params = useParams();
@@ -54,37 +54,39 @@ export default function WidgetTeam({
     <WidgetBox.Root {...rest} id='team'>
       <WidgetBox.Header>
         <WidgetBox.HeaderIcon as={RiTeamLine} />
-        Team
+        Technical Analysis
       </WidgetBox.Header>
 
       <div className='flex flex-col gap-4'>
         <Divider.Root />
 
-        <div className='w-full pb-1'>
-          <div className='flex flex-row items-center justify-center gap-0.5 space-x-8'>
-            {token?.teams && token?.teams?.length > 0 ? token?.teams?.map((team, index) => (
-              <TeamMember
-                key={team.name + index}
-                name={team.name}
-                description={'description' in team ? team.description : ''}
-                image={team.image}
-                role={team.role}
-                x={'x' in team ? team.x : ''}
-              />
-            )) : <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
-              <IllustrationEmptySavedActions className='size-[108px]' />
-              <div className='text-center text-paragraph-sm text-text-soft-400'>
-                Team member unknown.
+        <div className='flex w-full flex-col items-center justify-center gap-2 pb-1'>
+          <img src='/images/tradingtown.jpg' alt='Trading Town' className='h-32 w-32 object-cover' />
+          <span className='pb-4 text-text-sub-600'>Powered By Trading Town</span>
+          {token?.technicalAnalysis && token?.technicalAnalysis?.length > 0 ? token?.technicalAnalysis?.map((technicalAnalysis, index) => (
+            <div key={index} className='flex flex-col gap-4'>
+              <img src={`/images/technical-analysis/${technicalAnalysis.image}`} alt={technicalAnalysis.image} className='h-full w-full object-cover pb-8' />
+              <div className='flex items-center justify-center gap-2 space-x-12'>
+                <div className='rounded-md border border-text-sub-600 px-2 py-1 text-text-sub-600'>Support: ${technicalAnalysis.support}</div>
+                <div className='rounded-md border border-text-sub-600 px-2 py-1 text-text-sub-600'>Resistance: ${technicalAnalysis.resistance}</div>
+                <div className='rounded-md border border-text-sub-600 px-2 py-1 text-text-sub-600'>Bullish Meter: {technicalAnalysis.bullishMeter}%</div>
               </div>
-            </div>}
-          </div>
+              {('description' in technicalAnalysis) && <div className='px-8 pt-4 text-text-sub-600'>{technicalAnalysis.description}</div>}
+              {('date' in technicalAnalysis) && <div className='text-right text-paragraph-xs text-text-sub-600'>Added {technicalAnalysis.date}</div>}
+            </div>
+          )) : <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
+            <IllustrationEmptySavedActions className='size-[108px]' />
+            <div className='text-center text-paragraph-sm text-text-soft-400'>
+              Technical Analysis empty.
+            </div>
+          </div>}
         </div>
       </div>
     </WidgetBox.Root>
   );
 }
 
-export function WidgetTeamEmpty({
+export function WidgetTechnicalAnalysisEmpty({
   className,
   ...rest
 }: React.HTMLAttributes<HTMLDivElement>) {
@@ -96,7 +98,7 @@ export function WidgetTeamEmpty({
     >
       <WidgetBox.Header>
         <WidgetBox.HeaderIcon as={RiFlashlightLine} />
-        Team
+        Technical Analysis
       </WidgetBox.Header>
 
       <div className='flex flex-1 flex-col gap-4'>
@@ -104,7 +106,7 @@ export function WidgetTeamEmpty({
         <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
           <IllustrationEmptySavedActions className='size-[108px]' />
           <div className='text-center text-paragraph-sm text-text-soft-400'>
-            Team member unknown.
+            Technical Analysis empty.
           </div>
         </div>
       </div>

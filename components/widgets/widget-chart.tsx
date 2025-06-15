@@ -2,16 +2,18 @@
 
 import { Suspense } from 'react';
 import { RiFileChartLine } from '@remixicon/react';
-import { useQueryState } from 'nuqs';
 
-import { tokens } from '@/lib/tokens';
+import { CURATED_TOKENS } from '@/lib/tokens';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import * as WidgetBox from '@/components/widget-box';
+import { useParams } from 'next/navigation';
 
-const defaultToken = tokens.BUDDY;
+const defaultToken = CURATED_TOKENS[0].address;
 
 function DexScreenerFrame() {
-  const [token] = useQueryState('token');
+  const params = useParams();
+  const token = params.address as string;
+
   return (
     <iframe
       key={token || defaultToken}
