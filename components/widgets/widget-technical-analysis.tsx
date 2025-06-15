@@ -60,7 +60,7 @@ export default function WidgetTechnicalAnalysis({
       <div className='flex flex-col gap-4'>
         <Divider.Root />
 
-        <div className='flex w-full flex-col items-center justify-center gap-2 pb-1'>
+        <div className='flex w-full flex-col items-center justify-center gap-2 p-2'>
           <img src='/images/tradingtown.jpg' alt='Trading Town' className='h-32 w-32 object-cover' />
           <span className='pb-4 text-text-sub-600'>Powered By Trading Town</span>
           {token?.technicalAnalysis && token?.technicalAnalysis?.length > 0 ? token?.technicalAnalysis?.map((technicalAnalysis, index) => (

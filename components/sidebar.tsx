@@ -245,7 +245,7 @@ export default function Sidebar({
           'transition-all-default fixed left-0 top-0 z-40 hidden h-full overflow-hidden border-r border-stroke-soft-200 bg-bg-white-0 duration-300 lg:block',
           {
             'w-20': collapsed,
-            'w-[224px]': !collapsed,
+            'w-[272px]': !collapsed,
             '[&_[data-hide-collapsed]]:hidden': !collapsed
               ? false
               : defaultCollapsed,
@@ -254,7 +254,7 @@ export default function Sidebar({
       >
         <div
           ref={sidebarRef}
-          className='flex h-full w-[224px] min-w-[224px] flex-col overflow-auto'
+          className='flex h-full w-[272px] min-w-[272px] flex-col overflow-auto'
         >
           <SidebarHeader collapsed={collapsed} setCollapsed={setCollapsed} />
           <SidebarDivider collapsed={collapsed} />
@@ -273,7 +273,7 @@ export default function Sidebar({
       {/* a necessary placeholder because of sidebar is fixed */}
       <div
         className={cn('shrink-0', {
-          'w-[224px]': !collapsed,
+          'w-[272px]': !collapsed,
           'w-20': collapsed,
         })}
       />

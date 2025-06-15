@@ -8,11 +8,51 @@ export const CURATED_TOKENS = [
     icon: 'Hefh4Yv3cUGstf7wvEFPuKY7zAEhPxAvgZaoQnytW8md.webp',
     teams: [
       {
-        name: 'Hong Wilaheng',
-        role: 'Founder',
-        image: 'Hefh4Yv3cUGstf7wvEFPuKY7zAEhPxAvgZaoQnytW8md.webp',
+        name: 'krish',
+        role: 'Developer',
+        image:
+          'https://pbs.twimg.com/profile_images/1923520477949054976/1UOmtFY3_400x400.jpg',
+        x: 'top_jeet_',
+        description: 'Very Optimistic Developer',
+        developerDetails: [
+          {
+            label: 'Previous Projects',
+            value: 'None',
+          },
+          {
+            label: 'Account Mutual',
+            value: '@jonathanzliu, @frankdegods, @Topj33t',
+          },
+          {
+            label: 'Commitment',
+            value: 'Super Active In Telegram, Main Project, Funny',
+          },
+          {
+            label: 'Network',
+            value:
+              'Connected with major projects and developers in the ecosystem',
+          },
+        ],
+      },
+      {
+        name: 'Polymarket',
+        role: 'Advisor',
+        image:
+          'https://pbs.twimg.com/profile_images/1789484330638561280/t4Js9UFO_400x400.jpg',
+        x: 'Polymarket',
+        description: 'Endorsed In X Post',
+      },
+      {
+        name: 'Imran Khan',
+        role: 'Advisor',
+        image:
+          'https://pbs.twimg.com/profile_images/1773988714462461952/woSArAj4_400x400.jpg',
+        x: 'lmrankhan',
+        description: 'Engage With Polycule In X Comment',
       },
     ],
+    flywheels: null,
+    technicalAnalysis: [],
   },
   {
     address: '65svCEvM4HdBHXKDxfhjm3yw1A6mKXkdS6HXWXDQTSNA',
