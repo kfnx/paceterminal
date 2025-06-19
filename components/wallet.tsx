@@ -42,6 +42,7 @@ export function WalletButton({ className }: { className?: string }) {
         </>
       ) : connected ? (
         <>
+          <Button.Icon as={RiWallet3Line} />
           {formattedAddress}
           <Button.Icon as={RiCloseLine} />
         </>
