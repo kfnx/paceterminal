@@ -11,6 +11,10 @@ export function HeaderTitle() {
   const token = CURATED_TOKENS.find((t) => t.address === address);
   const subtitle = token?.name ? `Creator ${token?.name}` : 'Creator Buddy';
 
+  if (!address) {
+    return null
+  }
+
   return (
     <div className='flex gap-4 lg:gap-3.5'>
       <Avatar.Root size='48' color='blue'>

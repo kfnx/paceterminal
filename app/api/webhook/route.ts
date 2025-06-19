@@ -24,6 +24,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    console.log(0, request);
     const body = await request.json();
     console.log('body', body);
 

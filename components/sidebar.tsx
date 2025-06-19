@@ -7,7 +7,6 @@ import {
   RiSkipLeftLine,
   RiSkipRightLine,
 } from '@remixicon/react';
-import { useQueryState } from 'nuqs';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import { cn, cnExt } from '@/utils/cn';
@@ -18,6 +17,7 @@ import * as Divider from '@/components/ui/divider';
 import { LoadingSpinner } from './ui/loading-spinner';
 import { CURATED_TOKENS } from '@/lib/tokens';
 import { useParams } from 'next/navigation';
+import { SidebarProfile } from './sidebar-profile';
 
 type CuratedTokens = {
   address: string;
@@ -229,6 +229,23 @@ function SidebarDivider({ collapsed }: { collapsed: boolean }) {
   );
 }
 
+
+function UserProfile({ collapsed }: { collapsed: boolean }) {
+  return (
+    <div
+      className={cn('p-3', {
+        'px-2': collapsed,
+      })}
+    >
+      <SidebarProfile
+        className={cn('transition-all-default', {
+          'w-auto': collapsed,
+        })}
+      />
+    </div>
+  );
+}
+
 export default function Sidebar({
   defaultCollapsed = false,
 }: {
@@ -267,6 +284,10 @@ export default function Sidebar({
           >
             <CuratedTokens collapsed={collapsed} />
           </div>
+
+          <SidebarDivider collapsed={collapsed} />
+
+          <UserProfile collapsed={collapsed} />
         </div>
       </div>
 

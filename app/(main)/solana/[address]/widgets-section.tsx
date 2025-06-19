@@ -1,8 +1,6 @@
 'use client';
 
 import {
-  RiFileChartLine,
-  RiFlowChart,
   RiNewsLine,
   RiVipDiamondLine,
 } from '@remixicon/react';

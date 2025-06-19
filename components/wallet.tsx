@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  RiArrowDownSLine,
   RiCloseLine,
   RiLoader4Line,
   RiWallet3Line,

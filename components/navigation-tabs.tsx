@@ -4,11 +4,18 @@ import { useState } from 'react';
 
 import { cnExt } from '@/utils/cn';
 import * as SegmentedControl from '@/components/ui/segmented-control';
+import { useParams } from 'next/navigation';
 
 export function NavigationTabs({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
+  const params = useParams();
+  const address = params.address as string;
   const [selectedTab, setSelectedTab] = useState('chart');
+
+  if (!address) {
+    return <div className='hidden lg:flex' />;
+  }
 
   const handleValueChange = (value: string) => {
     setSelectedTab(value);
