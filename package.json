@@ -35,6 +35,7 @@
     "@solana/wallet-adapter-react-ui": "^0.9.39",
     "@solana/wallet-adapter-wallets": "^0.19.37",
     "@solana/web3.js": "^1.98.2",
+    "@supabase/supabase-js": "^2.50.0",
     "@tanstack/react-table": "^8.20.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
@@ -59,7 +60,8 @@
     "react-otp-input": "^3.1.1",
     "recharts": "^2.12.7",
     "tailwind-merge": "^2.5.2",
-    "tailwind-variants": "^0.2.1"
+    "tailwind-variants": "^0.2.1",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
