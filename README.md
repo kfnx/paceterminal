@@ -18,6 +18,21 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Analytics
+
+This project includes Umami analytics integration for privacy-focused website analytics. See [Analytics Setup Documentation](./docs/analytics-setup.md) for detailed configuration and usage instructions.
+
+### Quick Setup
+
+1. Add environment variables to `.env.local`:
+
+```bash
+NEXT_PUBLIC_UMAMI_WEBSITE_ID=your-website-id-here
+NEXT_PUBLIC_UMAMI_URL=https://your-umami-instance.com/script.js
+```
+
+2. Analytics are automatically enabled in production when configured.
+
 ## Pages
 
 - [Home](http://localhost:3000)
