@@ -12,6 +12,7 @@ import WidgetTeam from '@/components/widgets/widget-team';
 import WidgetFlywheel from '@/components/widgets/widget-flywheel';
 import WidgetTechnicalAnalysis from '@/components/widgets/widget-technical-analysis';
 import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
+import AdModal from '@/components/ad-modal';
 
 export function WidgetsSection() {
   return (
@@ -37,6 +38,7 @@ export function WidgetsSection() {
           </div>
         </div>
       </WidgetPlaceholder>
+      <AdModal />
     </div>
   );
 } 

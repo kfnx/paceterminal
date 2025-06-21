@@ -1,6 +1,4 @@
 import dynamic from 'next/dynamic';
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
-
 import { cn } from '@/utils/cn';
 
 import './globals.css';
@@ -27,10 +25,6 @@ const fontInter = FontSans({
 export const metadata: Metadata = {
   title: 'PACETERMINAL',
   description: 'PACETERMINAL',
-  // robots: {
-  //   index: false,
-  //   follow: false,
-  // },
 };
 
 export default function RootLayout({
@@ -45,21 +39,19 @@ export default function RootLayout({
       className={cn(fontInter.className, 'antialiased')}
     >
       <body className='bg-bg-white-0'>
-        <NuqsAdapter>
-          <WalletConnectionProviders>
-            <ThemeProvider attribute='class'>
-              <TooltipProvider
-                delayDuration={100}
-                skipDelayDuration={300}
-                disableHoverableContent
-              >
-                {children}
-                <InvisibleWalletMultiButtonDynamic />
-              </TooltipProvider>
-              <SearchMenu />
-            </ThemeProvider>
-          </WalletConnectionProviders>
-        </NuqsAdapter>
+        <WalletConnectionProviders>
+          <ThemeProvider attribute='class'>
+            <TooltipProvider
+              delayDuration={100}
+              skipDelayDuration={300}
+              disableHoverableContent
+            >
+              {children}
+              <InvisibleWalletMultiButtonDynamic />
+            </TooltipProvider>
+            <SearchMenu />
+          </ThemeProvider>
+        </WalletConnectionProviders>
       </body>
     </html>
   );

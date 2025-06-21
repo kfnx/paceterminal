@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer base {
+
   /*#region Colors */
   :root {
     --neutral-950: 221.54 31.71% 8.04%;
@@ -342,6 +343,7 @@
     --social-amazon: 0 0% 100%;
     --social-zendesk: 0 0% 100%;
   }
+
   /*#endregion Colors */
 }
 
@@ -372,6 +374,7 @@
     --illustration-sub-300: var(--neutral-700);
     --illustration-strong-400: var(--neutral-600);
   }
+
   /*#endregion */
 }
 
@@ -387,24 +390,3 @@
     mask-composite: exclude;
   }
 }
-
-/* #dexscreener-embed {
-  position: relative;
-  width: 100%;
-  padding-bottom: 125%;
-}
-
-@media (min-width: 1400px) {
-  #dexscreener-embed {
-    padding-bottom: 65%;
-  }
-}
-
-#dexscreener-embed iframe {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  border: 0;
-} */
