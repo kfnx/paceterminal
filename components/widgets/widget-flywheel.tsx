@@ -20,7 +20,7 @@ export default function WidgetFlywheel({
   const token = CURATED_TOKENS.find((token) => token.address === address);
 
   return (
-    <WidgetBox.Root {...rest} id='team'>
+    <WidgetBox.Root {...rest} id='flywheels'>
       <WidgetBox.Header>
         <WidgetBox.HeaderIcon as={RiTeamLine} />
         Flywheel

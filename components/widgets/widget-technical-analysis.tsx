@@ -3,7 +3,6 @@
 import {
   RiFlashlightLine,
   RiTeamLine,
-  RiTwitterLine,
 } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
@@ -12,36 +11,6 @@ import IllustrationEmptySavedActions from '@/components/empty-state-illustration
 import * as WidgetBox from '@/components/widget-box';
 import { useParams } from 'next/navigation';
 import { CURATED_TOKENS } from '@/lib/tokens';
-import Link from 'next/link';
-
-type TeamMemberProps = {
-  name: string;
-  description?: string;
-  image: string;
-  role: string;
-  x?: string;
-};
-
-function TeamMember({ name, description, image, role, x }: TeamMemberProps) {
-  return (
-    <div className='flex flex-col items-center gap-3 space-x-2 text-center'>
-      <div className='flex items-center gap-1'>
-        <img src={image} alt={name} className='max-h-32 max-w-32 rounded-full object-cover' />
-      </div>
-      <div className='flex flex-col gap-1'>
-        <div className='text-label-sm text-text-strong-950'>{name}</div>
-        <div className='text-paragraph-xs text-text-sub-600'>{role}</div>
-      </div>
-      {x && <div className='flex flex-row items-center gap-1 text-paragraph-xs text-text-sub-600'>
-        <RiTwitterLine />
-        <Link href={`https://x.com/${x}`} target='_blank'>
-          @{x}
-        </Link>
-      </div>}
-      <div className='text-paragraph-xs text-text-sub-600'>{description}</div>
-    </div>
-  );
-}
 
 export default function WidgetTechnicalAnalysis({
   ...rest
@@ -51,7 +20,7 @@ export default function WidgetTechnicalAnalysis({
   const token = CURATED_TOKENS.find((token) => token.address === address);
 
   return (
-    <WidgetBox.Root {...rest} id='team'>
+    <WidgetBox.Root {...rest} id='technical-analysis'>
       <WidgetBox.Header>
         <WidgetBox.HeaderIcon as={RiTeamLine} />
         Technical Analysis

@@ -33,15 +33,15 @@ export function NavigationTabs({
       className={cnExt(className)}
     >
       <SegmentedControl.List>
-        <SegmentedControl.Trigger value='chart'>Chart</SegmentedControl.Trigger>
+        <SegmentedControl.Trigger value='top'>Chart</SegmentedControl.Trigger>
         <SegmentedControl.Trigger value='metrics'>
           Metrics
         </SegmentedControl.Trigger>
         <SegmentedControl.Trigger value='team'>Team</SegmentedControl.Trigger>
-        <SegmentedControl.Trigger value='flywheel'>
+        <SegmentedControl.Trigger value='flywheels'>
           Flywheel
         </SegmentedControl.Trigger>
-        <SegmentedControl.Trigger value='technical'>
+        <SegmentedControl.Trigger value='technical-analysis'>
           Technical
         </SegmentedControl.Trigger>
         <SegmentedControl.Trigger value='alpha'>Alpha</SegmentedControl.Trigger>

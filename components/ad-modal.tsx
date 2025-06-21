@@ -83,7 +83,7 @@ export default function AdModal() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className='flex items-start gap-4'>
-          <img src='/images/ads/placeholder.png' alt='ad' className='w-full' onClick={handleAdsClick} />
+          <img src='/images/ads/placeholder.png' alt='ad' className='w-full cursor-pointer' onClick={handleAdsClick} />
         </Modal.Body>
       </Modal.Content>
     </Modal.Root>

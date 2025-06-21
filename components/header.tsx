@@ -29,7 +29,7 @@ export default function Header({
       {...rest}
     >
       <HeaderTitle />
-      <NavigationTabs className='hidden lg:flex' />
+      <NavigationTabs className='fixed left-[40%] hidden lg:flex' />
       <div className={cnExt('flex items-center gap-3', contentClassName)}>
         {/* <SearchMenuButton className='hidden lg:flex' /> */}
         {/* <NotificationButton className='hidden lg:flex' /> */}
