@@ -1,7 +1,6 @@
 import { cnExt } from '@/utils/cn';
 import { LanguageSelect } from '@/components/language-select';
 import { NavigationTabs } from '@/components/navigation-tabs';
-import { SearchMenuButton } from '@/components/search';
 import { ThemeToggler } from '@/components/theme-toggler';
 import { WalletButton } from '@/components/wallet';
 import { HeaderTitle } from '@/components/header-title';

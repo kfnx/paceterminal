@@ -4,6 +4,7 @@ import * as React from 'react';
 import { RiGlobalLine } from '@remixicon/react';
 
 import * as Select from '@/components/ui/select';
+import { cnExt } from '@/utils/cn';
 
 const languages = [
   {
@@ -16,10 +17,10 @@ const languages = [
   },
 ];
 
-export function LanguageSelect({ ...props }) {
+export function LanguageSelect({ className }: { className?: string }) {
   return (
-    <Select.Root defaultValue='eng' variant='inline' {...props}>
-      <Select.Trigger>
+    <Select.Root variant='inline'>
+      <Select.Trigger className={cnExt(className)}>
         <Select.TriggerIcon as={RiGlobalLine} />
         <Select.Value placeholder='Select Language' />
       </Select.Trigger>

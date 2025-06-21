@@ -42,8 +42,8 @@ export function WidgetsSection() {
         <AdModal />
       </div>
       <div
-        className={'flex h-[600px] w-[240px] min-w-0 cursor-pointer flex-col gap-2'}
-        onClick={(e) => {
+        className={'hidden h-[600px] w-[240px] min-w-0 cursor-pointer flex-col gap-2 lg:flex'}
+        onClick={() => {
           window?.open('https://x.com/PaceTerminal', '_blank');
         }}
       >

@@ -17,8 +17,8 @@ export default function HeaderMobile() {
         <img src='/images/placeholder/apex.svg' alt='' className='size-9' />
       </Link>
 
-      <div className='flex gap-3'>
-        <SearchMenuButton />
+      <div className='flex items-center gap-3'>
+        {/* <SearchMenuButton /> */}
         <LanguageSelect />
         <WalletButton />
         {/* <NotificationButton /> */}
