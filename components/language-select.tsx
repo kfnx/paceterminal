@@ -19,10 +19,10 @@ const languages = [
 
 export function LanguageSelect({ className }: { className?: string }) {
   return (
-    <Select.Root variant='inline'>
+    <Select.Root variant='compact' defaultValue='id'>
       <Select.Trigger className={cnExt(className)}>
         <Select.TriggerIcon as={RiGlobalLine} />
-        <Select.Value placeholder='Select Language' />
+        <Select.Value />
       </Select.Trigger>
       <Select.Content>
         {languages.map((lang) => (
