@@ -7,18 +7,19 @@ import { CURATED_TOKENS } from '@/lib/tokens';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import * as WidgetBox from '@/components/widget-box';
 import { useParams } from 'next/navigation';
+import { useTheme } from 'next-themes';
 
 const defaultToken = CURATED_TOKENS[0].address;
 
 function DexScreenerFrame() {
   const params = useParams();
-  const token = params.address as string;
+  const token = params.address as string || defaultToken;
+  const { theme } = useTheme();
 
   return (
     <iframe
-      key={token || defaultToken}
       className='min-h-[800px] w-full [grid-column:1/-1]'
-      src={`https://dexscreener.com/solana/${token || defaultToken}?embed=1&loadChartSettings=0&chartLeftToolbar=0&chartTheme=dark&chartStyle=0&chartType=usd&interval=15`}
+      src={`https://dexscreener.com/solana/${token}?embed=1&loadChartSettings=0&chartLeftToolbar=0&theme=${theme}&chartTheme=${theme}&chartStyle=1&chartType=usd&interval=15`}
     />
   );
 }

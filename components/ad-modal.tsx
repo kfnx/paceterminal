@@ -5,7 +5,7 @@ import * as Modal from '@/components/ui/modal';
 // import { WalletButton } from './wallet';
 
 const TIME_BEFORE_AD_OPEN = 10_000;
-const TIME_TO_CLOSE_AD = 30_000;
+const TIME_TO_CLOSE_AD = 15_000;
 const AD_SHOW_INTERVAL = 10 * 60 * 1000; // 10 minutes in milliseconds
 const AD_TRACKING_KEY = 'ad-modal-last-shown';
 
