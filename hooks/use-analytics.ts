@@ -15,29 +15,41 @@ declare global {
 export function useAnalytics() {
   const trackEvent = useCallback(
     (action: string, category: string, label?: string, value?: number) => {
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', action, {
-          event_category: category,
-          event_label: label,
-          value: value,
-        });
+      try {
+        if (typeof window !== 'undefined' && window.gtag) {
+          window.gtag('event', action, {
+            event_category: category,
+            event_label: label,
+            value: value,
+          });
+        }
+      } catch (error) {
+        console.warn('Analytics trackEvent error:', error);
       }
     },
     [],
   );
 
   const trackPageView = useCallback((url: string) => {
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('config', 'G-6CLBJ1L2S8', {
-        page_path: url,
-      });
+    try {
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('config', 'G-6CLBJ1L2S8', {
+          page_path: url,
+        });
+      }
+    } catch (error) {
+      console.warn('Analytics trackPageView error:', error);
     }
   }, []);
 
   const trackCustomEvent = useCallback(
     (eventName: string, parameters: Record<string, any> = {}) => {
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', eventName, parameters);
+      try {
+        if (typeof window !== 'undefined' && window.gtag) {
+          window.gtag('event', eventName, parameters);
+        }
+      } catch (error) {
+        console.warn('Analytics trackCustomEvent error:', error);
       }
     },
     [],
