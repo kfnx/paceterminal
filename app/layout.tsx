@@ -10,6 +10,8 @@ import { ThemeProvider } from 'next-themes';
 
 import { SearchMenu } from '@/components/search';
 import { WalletConnectionProviders } from '@/app/wallet-providers';
+import { GoogleAnalyticsWrapper } from '@/components/google-analytics';
+import { AnalyticsPageTracker } from '@/components/analytics-page-tracker';
 
 const InvisibleWalletMultiButtonDynamic = dynamic(
   () =>
@@ -52,6 +54,8 @@ export default function RootLayout({
             <SearchMenu />
           </ThemeProvider>
         </WalletConnectionProviders>
+        <GoogleAnalyticsWrapper />
+        <AnalyticsPageTracker />
       </body>
     </html>
   );

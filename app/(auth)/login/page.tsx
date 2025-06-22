@@ -18,11 +18,23 @@ import * as FancyButton from '@/components/ui/fancy-button';
 import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
 import * as LinkButton from '@/components/ui/link-button';
+import { useAnalytics } from '@/hooks/use-analytics';
+import { ANALYTICS_EVENTS, ANALYTICS_CATEGORIES, ANALYTICS_LABELS } from '@/lib/analytics-events';
 
 function PasswordInput(
   props: React.ComponentPropsWithoutRef<typeof Input.Input>,
 ) {
   const [showPassword, setShowPassword] = React.useState(false);
+  const { trackEvent } = useAnalytics();
+
+  const handleTogglePassword = () => {
+    setShowPassword((s) => !s);
+    trackEvent(
+      ANALYTICS_EVENTS.BUTTON_CLICK,
+      ANALYTICS_CATEGORIES.USER_INTERACTION,
+      showPassword ? 'hide_password' : 'show_password'
+    );
+  };
 
   return (
     <Input.Root>
@@ -33,7 +45,7 @@ function PasswordInput(
           placeholder='••••••••••'
           {...props}
         />
-        <button type='button' onClick={() => setShowPassword((s) => !s)}>
+        <button type='button' onClick={handleTogglePassword}>
           {showPassword ? (
             <RiEyeOffLine className='size-5 text-text-soft-400 group-has-[disabled]:text-text-disabled-300' />
           ) : (
@@ -46,9 +58,58 @@ function PasswordInput(
 }
 
 export default function PageLogin() {
+  const { trackEvent, trackCustomEvent } = useAnalytics();
+  const [formData, setFormData] = React.useState({
+    email: '',
+    password: '',
+    keepLoggedIn: false,
+  });
+
+  const handleInputChange = (field: string, value: string | boolean) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Track login attempt
+    trackEvent(
+      ANALYTICS_EVENTS.LOGIN_ATTEMPT,
+      ANALYTICS_CATEGORIES.AUTHENTICATION,
+      ANALYTICS_LABELS.LOGIN_FORM
+    );
+
+    // Track custom event with form data (without sensitive info)
+    trackCustomEvent('login_form_submitted', {
+      has_email: !!formData.email,
+      has_password: !!formData.password,
+      keep_logged_in: formData.keepLoggedIn,
+    });
+
+    // TODO: Implement actual login logic here
+    console.log('Login attempt:', { email: formData.email, keepLoggedIn: formData.keepLoggedIn });
+  };
+
+  const handleForgotPasswordClick = () => {
+    trackEvent(
+      ANALYTICS_EVENTS.LINK_CLICK,
+      ANALYTICS_CATEGORIES.USER_INTERACTION,
+      'forgot_password_link'
+    );
+  };
+
+  const handleKeepLoggedInChange = (checked: boolean) => {
+    handleInputChange('keepLoggedIn', checked);
+    trackEvent(
+      ANALYTICS_EVENTS.BUTTON_CLICK,
+      ANALYTICS_CATEGORIES.USER_INTERACTION,
+      checked ? 'keep_logged_in_enabled' : 'keep_logged_in_disabled'
+    );
+  };
+
   return (
     <div className='w-full max-w-[472px] px-4'>
-      <div className='flex w-full flex-col gap-6 rounded-20 bg-bg-white-0 p-5 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200 md:p-8'>
+      <form onSubmit={handleFormSubmit} className='flex w-full flex-col gap-6 rounded-20 bg-bg-white-0 p-5 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200 md:p-8'>
         <div className='flex flex-col items-center gap-2'>
           {/* icon */}
           <div
@@ -89,6 +150,8 @@ export default function PageLogin() {
                   type='email'
                   placeholder='hello@alignui.com'
                   required
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
                 />
               </Input.Wrapper>
             </Input.Root>
@@ -98,13 +161,22 @@ export default function PageLogin() {
             <Label.Root htmlFor='password'>
               Password <Label.Asterisk />
             </Label.Root>
-            <PasswordInput id='password' required />
+            <PasswordInput
+              id='password'
+              required
+              value={formData.password}
+              onChange={(e) => handleInputChange('password', e.target.value)}
+            />
           </div>
         </div>
 
         <div className='flex items-center justify-between gap-4'>
           <div className='flex items-start gap-2'>
-            <Checkbox.Root id='agree' />
+            <Checkbox.Root
+              id='agree'
+              checked={formData.keepLoggedIn}
+              onCheckedChange={handleKeepLoggedInChange}
+            />
             <LabelPrimitive.Root
               htmlFor='agree'
               className='block cursor-pointer text-paragraph-sm'
@@ -113,14 +185,16 @@ export default function PageLogin() {
             </LabelPrimitive.Root>
           </div>
           <LinkButton.Root variant='gray' size='medium' underline asChild>
-            <Link href='/reset-password'>Forgot password?</Link>
+            <Link href='/reset-password' onClick={handleForgotPasswordClick}>
+              Forgot password?
+            </Link>
           </LinkButton.Root>
         </div>
 
-        <FancyButton.Root variant='primary' size='medium'>
+        <FancyButton.Root variant='primary' size='medium' type='submit'>
           Login
         </FancyButton.Root>
-      </div>
+      </form>
     </div>
   );
 }
