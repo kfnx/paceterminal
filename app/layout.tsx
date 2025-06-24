@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic';
 import { cn } from '@/utils/cn';
 
 import './globals.css';
@@ -7,17 +6,10 @@ import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { ThemeProvider } from 'next-themes';
-
-import { SearchMenu } from '@/components/search';
 import { WalletConnectionProviders } from '@/app/wallet-providers';
 import { GoogleAnalyticsWrapper } from '@/components/google-analytics';
 import { AnalyticsPageTracker } from '@/components/analytics-page-tracker';
-
-const InvisibleWalletMultiButtonDynamic = dynamic(
-  () =>
-    import('@/components/wallet').then((mod) => mod.InvisibleWalletMultiButton),
-  { ssr: false },
-);
+import { PaymentModal } from '@/components/payment-modal';
 
 const fontInter = FontSans({
   subsets: ['latin'],
@@ -49,9 +41,8 @@ export default function RootLayout({
               disableHoverableContent
             >
               {children}
-              <InvisibleWalletMultiButtonDynamic />
             </TooltipProvider>
-            <SearchMenu />
+            <PaymentModal />
           </ThemeProvider>
         </WalletConnectionProviders>
         <GoogleAnalyticsWrapper />

@@ -8,8 +8,7 @@ import {
   RiLogoutBoxRLine,
   RiMoonLine,
   RiPaypalLine,
-  RiWallet2Line,
-  RiWallet3Line,
+  RiWalletLine,
 } from '@remixicon/react';
 import { useTheme } from 'next-themes';
 
@@ -24,11 +23,16 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletAddress } from '@/hooks/use-wallet-address';
 import { WalletButton } from './wallet';
 import * as Button from '@/components/ui/button';
+import { useAtom } from 'jotai';
+import { paymentModalOpenAtom } from '@/components/payment-modal';
 
 export function SidebarProfile({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme();
   const { connected, formattedAddress, isLoading } = useWalletAddress();
   const { disconnect } = useWallet();
+  const [paymentModalOpen, setPaymentModalOpen] = useAtom(
+    paymentModalOpenAtom,
+  );
 
   if (isLoading) {
     return (
@@ -61,7 +65,7 @@ export function SidebarProfile({ className }: { className?: string }) {
         >
           <div className='w-full flex-1 space-y-1'>
             <div className='flex items-center gap-4 text-label-sm'>
-              <Button.Icon as={RiWallet3Line} />
+              <Button.Icon as={RiWalletLine} />
               {formattedAddress}
             </div>
           </div>
@@ -83,7 +87,7 @@ export function SidebarProfile({ className }: { className?: string }) {
         </Dropdown.Item>
         <Divider.Root variant='line-spacing' />
         <Dropdown.Group>
-          <Dropdown.Item>
+          <Dropdown.Item onClick={() => setPaymentModalOpen(true)}>
             <Dropdown.ItemIcon as={RiPaypalLine} />
             Remove Ads
           </Dropdown.Item>
@@ -92,12 +96,9 @@ export function SidebarProfile({ className }: { className?: string }) {
         <Dropdown.Group>
           <Dropdown.Item onClick={() => disconnect()}>
             <Dropdown.ItemIcon as={RiLogoutBoxRLine} />
-            Logout
+            Disconnect Wallet
           </Dropdown.Item>
         </Dropdown.Group>
-        <div className='p-2 text-paragraph-sm text-text-soft-400'>
-          v.0.1
-        </div>
       </Dropdown.Content>
     </Dropdown.Root>
   );

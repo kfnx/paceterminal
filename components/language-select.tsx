@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { RiGlobalLine } from '@remixicon/react';
-
+import IndonesiaFlag from '~/flags/ID.svg';
+import UnitedStatesFlag from '~/flags/US.svg';
 import * as Select from '@/components/ui/select';
 import { cnExt } from '@/utils/cn';
 
@@ -10,24 +10,25 @@ const languages = [
   {
     value: 'id',
     label: 'ID',
+    icon: <IndonesiaFlag className='h-4 w-4' />,
   },
   {
     value: 'en',
     label: 'EN',
+    icon: <UnitedStatesFlag className='h-4 w-4' />,
   },
 ];
 
 export function LanguageSelect({ className }: { className?: string }) {
   return (
-    <Select.Root variant='compact' defaultValue='id'>
+    <Select.Root variant='inline' defaultValue='id'>
       <Select.Trigger className={cnExt(className)}>
-        <Select.TriggerIcon as={RiGlobalLine} />
         <Select.Value />
       </Select.Trigger>
       <Select.Content>
         {languages.map((lang) => (
           <Select.Item key={lang.value} value={lang.value}>
-            {lang.label}
+            {lang.icon} {lang.label}
           </Select.Item>
         ))}
       </Select.Content>
