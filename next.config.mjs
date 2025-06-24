@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-
+  output: 'standalone',
   webpack: (config) => {
     // svgr
     config.module.rules.push({

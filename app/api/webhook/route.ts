@@ -10,7 +10,8 @@ const transactionSchema = z.object({
 });
 
 // Your Solana address - replace with your actual address
-const SOLANA_PAYMENT_ADDRESS = process.env.SOLANA_PAYMENT_ADDRESS;
+const PAYMENT_ADDRESS =
+  process.env.NEXT_PUBLIC_SOLANA_PAYMENT_RECIPIENT_ADDRESS;
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -24,12 +25,14 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    console.log(0, request);
     const body = await request.json();
-    console.log('body', body);
 
     await supabase.from('logs').insert({
-      message: JSON.stringify({ ...body, target: SOLANA_PAYMENT_ADDRESS }),
+      message: JSON.stringify({
+        ...body,
+        target: PAYMENT_ADDRESS,
+        path: '/webhook',
+      }),
     });
 
     // Validate the request body
@@ -44,7 +47,7 @@ export async function POST(request: Request) {
     const { to, from, amount } = result.data;
 
     // Check if the transaction is for your address and meets the minimum amount
-    if (to === SOLANA_PAYMENT_ADDRESS && amount >= 0.5) {
+    if (to === PAYMENT_ADDRESS && amount >= 0.5) {
       console.log('Transaction processed successfully', to, from, amount);
 
       // Store transaction in transactions table

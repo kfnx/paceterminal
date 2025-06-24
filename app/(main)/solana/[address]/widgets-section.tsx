@@ -15,8 +15,10 @@ import WidgetFlywheel from '@/components/widgets/widget-flywheel';
 import WidgetTechnicalAnalysis from '@/components/widgets/widget-technical-analysis';
 import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
 import AdModal from '@/components/ad-modal';
+import { useMemberStatus } from '@/hooks/use-member-status';
 
 export function WidgetsSection() {
+  const { isMember } = useMemberStatus();
   const [showAds, setShowAds] = useState(true);
   const [canClose, setCanClose] = useState(30000); // 30 seconds in milliseconds
 
@@ -63,7 +65,7 @@ export function WidgetsSection() {
         </WidgetPlaceholder>
         <AdModal />
       </div>
-      {showAds && (
+      {showAds && !isMember && (
         <div
           className={'relative hidden h-[600px] w-[240px] min-w-0 cursor-pointer flex-col gap-2 lg:flex'}
           onClick={() => {

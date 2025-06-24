@@ -10,6 +10,7 @@ import { WalletConnectionProviders } from '@/app/wallet-providers';
 import { GoogleAnalyticsWrapper } from '@/components/google-analytics';
 import { AnalyticsPageTracker } from '@/components/analytics-page-tracker';
 import { PaymentModal } from '@/components/payment-modal';
+import { Toaster } from 'sonner';
 
 const fontInter = FontSans({
   subsets: ['latin'],
@@ -43,6 +44,7 @@ export default function RootLayout({
               {children}
             </TooltipProvider>
             <PaymentModal />
+            <Toaster richColors closeButton />
           </ThemeProvider>
         </WalletConnectionProviders>
         <GoogleAnalyticsWrapper />

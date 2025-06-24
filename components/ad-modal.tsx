@@ -3,6 +3,7 @@
 import * as React from 'react';
 import * as Modal from '@/components/ui/modal';
 import { WalletButton } from './wallet-button';
+import { useMemberStatus } from '@/hooks/use-member-status';
 
 const TIME_BEFORE_AD_OPEN = 10_000;
 const TIME_TO_CLOSE_AD = 15_000;
@@ -12,17 +13,21 @@ const AD_TRACKING_KEY = 'ad-modal-last-shown';
 export default function AdModal() {
   const [open, setOpen] = React.useState(false);
   const [timeToClose, setTimeToClose] = React.useState(TIME_TO_CLOSE_AD);
+  const { isMember } = useMemberStatus();
 
   // Check if enough time has passed since last ad showing
   const canShowAd = React.useCallback(() => {
     if (typeof window === 'undefined') return false;
+
+    // Don't show ads to members
+    if (isMember) return false;
 
     const lastShown = localStorage.getItem(AD_TRACKING_KEY);
     if (!lastShown) return true;
 
     const timeSinceLastShow = Date.now() - parseInt(lastShown, 10);
     return timeSinceLastShow >= AD_SHOW_INTERVAL;
-  }, []);
+  }, [isMember]);
 
   // Record the current time when ad is shown
   const recordAdShown = React.useCallback(() => {
@@ -54,6 +59,14 @@ export default function AdModal() {
     }, 1000);
     return () => clearInterval(interval);
   }, [open]);
+
+  // Close modal immediately if user becomes a member while modal is open
+  React.useEffect(() => {
+    if (open && isMember) {
+      setOpen(false);
+      setTimeToClose(0);
+    }
+  }, [open, isMember]);
 
   const handleOpenChange = (newOpen: boolean) => {
     // Only allow closing if timeToClose is 0 (user can close manually)

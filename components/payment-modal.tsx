@@ -5,17 +5,108 @@ import * as Modal from '@/components/ui/modal';
 import * as Button from '@/components/ui/button';
 import { atom, useAtom } from 'jotai';
 import * as Badge from '@/components/ui/badge';
-
-export const usePaymentModal = () => {
-  const [isOpen, setOpen] = React.useState(false);
-
-  return { isOpen, openPaymentModal: () => setOpen(true), closePaymentModal: () => setOpen(false) };
-}
+import { useWalletTransaction } from '@/hooks/use-wallet-transaction';
+import { useMemberStatus } from '@/hooks/use-member-status';
+import { toast } from 'sonner';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export const paymentModalOpenAtom = atom(false);
 
 export function PaymentModal() {
   const [open, setOpen] = useAtom(paymentModalOpenAtom);
+  const [paymentType, setPaymentType] = React.useState<'ONE_MONTH' | 'ONE_YEAR' | null>(null);
+  const { publicKey } = useWallet();
+  const { refetch: refetchMemberStatus } = useMemberStatus();
+
+  const { isExecuting, signature, error, success, payUSDC, resetTransaction } =
+    useWalletTransaction();
+
+  const handlePay = (type: 'ONE_MONTH' | 'ONE_YEAR') => {
+    setPaymentType(type);
+    payUSDC(type);
+  };
+
+  React.useEffect(() => {
+    const toastId = 'payment-toast';
+    if (isExecuting) {
+      toast.loading('Transaction is being processed...', {
+        id: toastId,
+      });
+    } else {
+      toast.dismiss(toastId);
+    }
+  }, [isExecuting]);
+
+  React.useEffect(() => {
+    const toastId = 'payment-toast';
+    if (error) {
+      toast.error(error, {
+        id: toastId,
+        duration: 5000,
+      });
+    }
+  }, [error]);
+
+  React.useEffect(() => {
+    const verifyPayment = async () => {
+      const fromAddress = publicKey?.toBase58();
+      if (success && signature && fromAddress && paymentType) {
+        const toastId = 'payment-toast';
+        toast.success('Transaction successful! Verifying...', {
+          id: toastId,
+          action: {
+            label: 'View Transaction',
+            onClick: () =>
+              window.open(`https://solscan.io/tx/${signature}`, '_blank'),
+          },
+        });
+
+        try {
+          const response = await fetch('/api/verify-payment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              signature,
+              fromAddress,
+              type: paymentType,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            toast.success('Payment verified!', {
+              id: 'verification-toast',
+            });
+
+            // Refetch member status to update the UI immediately
+            await refetchMemberStatus();
+
+            setOpen(false);
+          } else {
+            toast.error(result.message || 'Payment verification failed.', {
+              id: 'verification-toast',
+            });
+          }
+        } catch (e) {
+          toast.error('An error occurred during verification.', {
+            id: 'verification-toast',
+          });
+        }
+      }
+    };
+
+    verifyPayment();
+  }, [success, signature, publicKey, paymentType, setOpen, refetchMemberStatus]);
+
+  React.useEffect(() => {
+    // When the modal closes, reset the transaction state
+    if (!open) {
+      resetTransaction();
+    }
+  }, [open, resetTransaction]);
 
   return (
     <Modal.Root open={open} onOpenChange={setOpen}>
@@ -25,17 +116,30 @@ export function PaymentModal() {
           <div className='flex flex-row gap-12'>
             <div className='flex flex-col items-center justify-between gap-4'>
               <p className='text-label-xl'>$20 a month</p>
-              <Button.Root variant='primary'>
+              <Button.Root
+                variant='primary'
+                onClick={() => handlePay('ONE_MONTH')}
+                disabled={isExecuting}
+              >
                 Pay with Crypto USDC
               </Button.Root>
             </div>
             <div className='flex flex-col items-center justify-between gap-4'>
               <p className='text-label-xl'>$200 a year </p>
 
-              <Badge.Root size='medium' variant='light' color='green' className='mb-8'>
+              <Badge.Root
+                size='medium'
+                variant='light'
+                color='green'
+                className='mb-8'
+              >
                 SAVE $40!
               </Badge.Root>
-              <Button.Root variant='primary'>
+              <Button.Root
+                variant='primary'
+                onClick={() => handlePay('ONE_YEAR')}
+                disabled={isExecuting}
+              >
                 Pay with Crypto USDC
               </Button.Root>
             </div>

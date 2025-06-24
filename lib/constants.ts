@@ -1,0 +1,7 @@
+export const ONE_MONTH_USDC_AMOUNT = 2;
+export const ONE_YEAR_USDC_AMOUNT = 4;
+export const PAYMENT_RECIPIENT =
+  process.env.NEXT_PUBLIC_SOLANA_PAYMENT_RECIPIENT_ADDRESS ||
+  'pace8vZSciSoFhSZJ685YipGPbstTH7FYnrjFMZpjfM';
+export const USDC_MAINNET = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+export const USDC_DEVNET = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';

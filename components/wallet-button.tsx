@@ -3,13 +3,14 @@
 // https://github.com/anza-xyz/wallet-adapter/tree/master/packages/core/react#creating-a-custom-connect-button
 import { useWalletMultiButton } from "@solana/wallet-adapter-base-ui";
 import * as Button from "@/components/ui/button";
-import { RiCloseLine, RiWalletLine, RiArrowDownSLine, RiLockUnlockLine } from "@remixicon/react";
+import { RiCloseLine, RiWalletLine, RiArrowDownSLine, RiLockUnlockLine, RiStarLine } from "@remixicon/react";
 import { RiLogoutBoxRLine } from "@remixicon/react";
 import { useWalletAddress } from '@/hooks/use-wallet-address';
 import { disconnect } from "process";
 import * as Dropdown from "@/components/ui/dropdown";
 import { useAtom } from "jotai";
 import { paymentModalOpenAtom } from "./payment-modal";
+import { useMemberStatus } from "@/hooks/use-member-status";
 
 
 export function WalletButton() {
@@ -31,6 +32,7 @@ export function WalletButton() {
     },
   });
   const { connected, formattedAddress } = useWalletAddress();
+  const { isMember, expiredAt, loading } = useMemberStatus();
 
   const [_paymentModalOpen, setPaymentModalOpen] = useAtom(
     paymentModalOpenAtom,
@@ -53,7 +55,6 @@ export function WalletButton() {
       break;
   }
 
-
   if (connected) {
     return <Dropdown.Root>
       <Dropdown.Trigger asChild>
@@ -62,10 +63,14 @@ export function WalletButton() {
           {label} {connected && <Button.Icon as={RiArrowDownSLine} />}
         </Button.Root>
       </Dropdown.Trigger>
-      <Dropdown.Content align='end' className='w-48'>
-        <Dropdown.Item onClick={() => setPaymentModalOpen(true)}>
-          <Dropdown.ItemIcon as={RiLockUnlockLine} />
-          Remove Ads
+      <Dropdown.Content align='end' className='w-56'>
+        <Dropdown.Item onClick={() => {
+          if (!isMember) {
+            setPaymentModalOpen(true)
+          }
+        }}>
+          <Dropdown.ItemIcon as={isMember ? RiStarLine : RiLockUnlockLine} />
+          {loading ? 'Checking status...' : isMember && expiredAt ? `Member until ${expiredAt.toLocaleDateString()}` : 'Remove Ads'}
         </Dropdown.Item>
         <Dropdown.Item onClick={() => onDisconnect?.()}>
           <Dropdown.ItemIcon as={RiLogoutBoxRLine} />
@@ -81,7 +86,6 @@ export function WalletButton() {
         mode='stroke'
         disabled={buttonState === 'connecting' || buttonState === 'disconnecting'}
         onClick={() => {
-          console.log('buttonState', buttonState);
           switch (buttonState) {
             case 'connected':
               onDisconnect?.();

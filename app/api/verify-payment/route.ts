@@ -3,23 +3,31 @@ import { Connection } from '@solana/web3.js';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 
+import {
+  ONE_MONTH_USDC_AMOUNT,
+  ONE_YEAR_USDC_AMOUNT,
+  USDC_MAINNET,
+} from '@/lib/constants';
+
 const NETWORK = 'https://api.mainnet-beta.solana.com';
 const connection = new Connection(NETWORK, 'confirmed');
-const USDC_MINT_ADDRESS = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'; // USDC on Solana Mainnet-beta
 
-const SOLANA_PAYMENT_ADDRESS = process.env.SOLANA_PAYMENT_ADDRESS!;
-if (!SOLANA_PAYMENT_ADDRESS) {
-  throw new Error('SOLANA_PAYMENT_ADDRESS environment variable is not set');
+const PAYMENT_ADDRESS =
+  process.env.NEXT_PUBLIC_SOLANA_PAYMENT_RECIPIENT_ADDRESS!;
+if (!PAYMENT_ADDRESS) {
+  throw new Error('PAYMENT_ADDRESS environment variable is not set');
 }
-
-const COST_PER_MONTH = 2;
-const COST_PER_YEAR = 4;
 
 const PaymentRequestSchema = z.object({
   signature: z.string(),
   fromAddress: z.string(),
-  type: z.enum(['MONTHLY', 'YEARLY']),
+  type: z.enum(['ONE_MONTH', 'ONE_YEAR']),
 });
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+);
 
 export async function POST(request: Request) {
   try {
@@ -35,7 +43,27 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
+
     const { signature, fromAddress, type } = validation.data;
+
+    await supabase.from('logs').insert({
+      message: JSON.stringify({
+        ...body,
+        target: PAYMENT_ADDRESS,
+        path: '/verify-payment',
+        ...validation.data,
+      }),
+    });
+
+    await supabase.from('members').insert({
+      solana_address: fromAddress,
+      expired_at: new Date(
+        Date.now() +
+          (type === 'ONE_MONTH'
+            ? 30 * 24 * 60 * 60 * 1000
+            : 365 * 24 * 60 * 60 * 1000),
+      ),
+    });
 
     // Get transaction details
     const transaction = await connection.getTransaction(signature, {
@@ -64,7 +92,7 @@ export async function POST(request: Request) {
 
     for (const post of postTokenBalances) {
       // Ensure we are checking the correct token
-      if (post.mint !== USDC_MINT_ADDRESS) {
+      if (post.mint !== USDC_MAINNET) {
         continue;
       }
 
@@ -75,11 +103,12 @@ export async function POST(request: Request) {
         (post.uiTokenAmount.uiAmount || 0) -
         (pre ? pre.uiTokenAmount.uiAmount || 0 : 0);
 
-      if (post.owner === SOLANA_PAYMENT_ADDRESS && amountChange > 0) {
+      if (post.owner === PAYMENT_ADDRESS && amountChange > 0) {
         const receivedAmount = amountChange;
 
         // Verify amount based on subscription type
-        const minAmount = type === 'MONTHLY' ? COST_PER_MONTH : COST_PER_YEAR;
+        const minAmount =
+          type === 'ONE_MONTH' ? ONE_MONTH_USDC_AMOUNT : ONE_YEAR_USDC_AMOUNT;
         if (receivedAmount < minAmount) {
           return NextResponse.json(
             {
@@ -103,7 +132,7 @@ export async function POST(request: Request) {
 
           if (
             otherPost.owner === fromAddress &&
-            otherPost.mint === USDC_MINT_ADDRESS &&
+            otherPost.mint === USDC_MAINNET &&
             otherAmountChange < 0 // Sender's balance must decrease
           ) {
             // We can check if `otherAmountChange` is close to `-receivedAmount`
@@ -111,7 +140,7 @@ export async function POST(request: Request) {
             // and the receiver got at least the minimum amount is often sufficient.
             transferDetails = {
               from: fromAddress,
-              to: SOLANA_PAYMENT_ADDRESS,
+              to: PAYMENT_ADDRESS,
               amount: receivedAmount,
               mint: post.mint,
               verified: true,
