@@ -5,9 +5,11 @@ import {
   RiArrowDownSLine,
   RiArrowRightSLine,
   RiLoader4Line,
+  RiLockUnlockLine,
   RiLogoutBoxRLine,
   RiMoonLine,
   RiPaypalLine,
+  RiStarLine,
   RiWalletLine,
 } from '@remixicon/react';
 import { useTheme } from 'next-themes';
@@ -25,14 +27,16 @@ import { WalletButton } from './wallet';
 import * as Button from '@/components/ui/button';
 import { useAtom } from 'jotai';
 import { paymentModalOpenAtom } from '@/components/payment-modal';
+import { useMemberStatus } from '@/hooks/use-member-status';
 
 export function SidebarProfile({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme();
   const { connected, formattedAddress, isLoading } = useWalletAddress();
   const { disconnect } = useWallet();
-  const [paymentModalOpen, setPaymentModalOpen] = useAtom(
+  const [_paymentModalOpen, setPaymentModalOpen] = useAtom(
     paymentModalOpenAtom,
   );
+  const { isMember, expiredAt, loading } = useMemberStatus();
 
   if (isLoading) {
     return (
@@ -87,9 +91,13 @@ export function SidebarProfile({ className }: { className?: string }) {
         </Dropdown.Item>
         <Divider.Root variant='line-spacing' />
         <Dropdown.Group>
-          <Dropdown.Item onClick={() => setPaymentModalOpen(true)}>
-            <Dropdown.ItemIcon as={RiPaypalLine} />
-            Remove Ads
+          <Dropdown.Item onClick={() => {
+            if (!isMember) {
+              setPaymentModalOpen(true)
+            }
+          }}>
+            <Dropdown.ItemIcon as={isMember ? RiStarLine : RiLockUnlockLine} />
+            {loading ? 'Checking status...' : isMember && expiredAt ? `Member until ${expiredAt.toLocaleDateString()}` : 'Remove Ads'}
           </Dropdown.Item>
         </Dropdown.Group>
         <Divider.Root variant='line-spacing' />
