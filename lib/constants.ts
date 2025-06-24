@@ -1,5 +1,5 @@
-export const ONE_MONTH_USDC_AMOUNT = 2;
-export const ONE_YEAR_USDC_AMOUNT = 4;
+export const ONE_MONTH_USDC_AMOUNT = 20;
+export const ONE_YEAR_USDC_AMOUNT = 200;
 export const PAYMENT_RECIPIENT =
   process.env.NEXT_PUBLIC_SOLANA_PAYMENT_RECIPIENT_ADDRESS ||
   'pace8vZSciSoFhSZJ685YipGPbstTH7FYnrjFMZpjfM';
