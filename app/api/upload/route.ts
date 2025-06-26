@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  // ObjectCannedACL,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 
 // Configuration constants
@@ -86,6 +90,7 @@ async function uploadFileToS3(
     Body: file,
     ContentType: contentType,
     CacheControl: 'public, max-age=31536000', // 1 year cache
+    // ACL: ObjectCannedACL.public_read, // Make object publicly readable
   };
 
   const command = new PutObjectCommand(params);

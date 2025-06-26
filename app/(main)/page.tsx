@@ -1,5 +1,6 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import {
   RiFileChartLine,
   RiFlowChart,
@@ -11,7 +12,6 @@ import WidgetChart from '@/components/widgets/widget-chart';
 import WidgetMetrics from '@/components/widgets/widget-metrics';
 import { WidgetPlaceholder } from '@/components/widgets/widget-placeholder';
 import WidgetTeam from '@/components/widgets/widget-team';
-import { useParams } from 'next/navigation';
 
 export default function PageHome() {
   const params = useParams();

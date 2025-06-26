@@ -2,8 +2,10 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import * as LabelPrimitive from '@radix-ui/react-label';
 import {
+  RiErrorWarningLine,
   RiEyeLine,
   RiEyeOffLine,
   RiLock2Line,
@@ -11,15 +13,20 @@ import {
   RiUserFill,
 } from '@remixicon/react';
 
+import {
+  ANALYTICS_CATEGORIES,
+  ANALYTICS_EVENTS,
+  ANALYTICS_LABELS,
+} from '@/lib/analytics-events';
 import { cn } from '@/utils/cn';
+import { useAnalytics } from '@/hooks/use-analytics';
+import { useAuth } from '@/hooks/use-auth';
 import * as Checkbox from '@/components/ui/checkbox';
 import * as Divider from '@/components/ui/divider';
 import * as FancyButton from '@/components/ui/fancy-button';
 import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
 import * as LinkButton from '@/components/ui/link-button';
-import { useAnalytics } from '@/hooks/use-analytics';
-import { ANALYTICS_EVENTS, ANALYTICS_CATEGORIES, ANALYTICS_LABELS } from '@/lib/analytics-events';
 
 function PasswordInput(
   props: React.ComponentPropsWithoutRef<typeof Input.Input>,
@@ -32,7 +39,7 @@ function PasswordInput(
     trackEvent(
       ANALYTICS_EVENTS.BUTTON_CLICK,
       ANALYTICS_CATEGORIES.USER_INTERACTION,
-      showPassword ? 'hide_password' : 'show_password'
+      showPassword ? 'hide_password' : 'show_password',
     );
   };
 
@@ -58,25 +65,44 @@ function PasswordInput(
 }
 
 export default function PageLogin() {
+  const router = useRouter();
   const { trackEvent, trackCustomEvent } = useAnalytics();
+  const { signIn, user, loading } = useAuth();
+
   const [formData, setFormData] = React.useState({
     email: '',
     password: '',
     keepLoggedIn: false,
   });
 
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  // Redirect if user is already logged in
+  React.useEffect(() => {
+    if (user && !loading) {
+      router.push('/admin');
+    }
+  }, [user, loading, router]);
+
   const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (error) {
+      setError(null);
+    }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
 
     // Track login attempt
     trackEvent(
       ANALYTICS_EVENTS.LOGIN_ATTEMPT,
       ANALYTICS_CATEGORIES.AUTHENTICATION,
-      ANALYTICS_LABELS.LOGIN_FORM
+      ANALYTICS_LABELS.LOGIN_FORM,
     );
 
     // Track custom event with form data (without sensitive info)
@@ -86,15 +112,45 @@ export default function PageLogin() {
       keep_logged_in: formData.keepLoggedIn,
     });
 
-    // TODO: Implement actual login logic here
-    console.log('Login attempt:', { email: formData.email, keepLoggedIn: formData.keepLoggedIn });
+    try {
+      const { error: signInError } = await signIn({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (signInError) {
+        setError(signInError.message);
+
+        // Track login failure
+        trackEvent(
+          ANALYTICS_EVENTS.LOGIN_FAILURE,
+          ANALYTICS_CATEGORIES.AUTHENTICATION,
+          signInError.message,
+        );
+      } else {
+        // Track successful login
+        trackEvent(
+          ANALYTICS_EVENTS.LOGIN_SUCCESS,
+          ANALYTICS_CATEGORIES.AUTHENTICATION,
+          ANALYTICS_LABELS.LOGIN_FORM,
+        );
+
+        // Redirect to admin dashboard
+        router.push('/admin');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+      console.error('Login error:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleForgotPasswordClick = () => {
     trackEvent(
       ANALYTICS_EVENTS.LINK_CLICK,
       ANALYTICS_CATEGORIES.USER_INTERACTION,
-      'forgot_password_link'
+      'forgot_password_link',
     );
   };
 
@@ -103,13 +159,31 @@ export default function PageLogin() {
     trackEvent(
       ANALYTICS_EVENTS.BUTTON_CLICK,
       ANALYTICS_CATEGORIES.USER_INTERACTION,
-      checked ? 'keep_logged_in_enabled' : 'keep_logged_in_disabled'
+      checked ? 'keep_logged_in_enabled' : 'keep_logged_in_disabled',
     );
   };
 
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className='w-full max-w-[472px] px-4'>
+        <div className='flex w-full flex-col gap-6 rounded-20 bg-bg-white-0 p-5 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200 md:p-8'>
+          <div className='flex items-center justify-center py-8'>
+            <div className='text-paragraph-md text-text-sub-600'>
+              Loading...
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='w-full max-w-[472px] px-4'>
-      <form onSubmit={handleFormSubmit} className='flex w-full flex-col gap-6 rounded-20 bg-bg-white-0 p-5 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200 md:p-8'>
+      <form
+        onSubmit={handleFormSubmit}
+        className='flex w-full flex-col gap-6 rounded-20 bg-bg-white-0 p-5 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200 md:p-8'
+      >
         <div className='flex flex-col items-center gap-2'>
           {/* icon */}
           <div
@@ -137,6 +211,14 @@ export default function PageLogin() {
 
         <Divider.Root />
 
+        {/* Error Message */}
+        {error && (
+          <div className='flex items-center gap-2 rounded-lg bg-error-lighter p-3 text-paragraph-sm text-error-base'>
+            <RiErrorWarningLine className='size-4 shrink-0' />
+            <span>{error}</span>
+          </div>
+        )}
+
         <div className='flex flex-col gap-3'>
           <div className='flex flex-col gap-1'>
             <Label.Root htmlFor='email'>
@@ -152,6 +234,7 @@ export default function PageLogin() {
                   required
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
+                  disabled={isSubmitting}
                 />
               </Input.Wrapper>
             </Input.Root>
@@ -166,6 +249,7 @@ export default function PageLogin() {
               required
               value={formData.password}
               onChange={(e) => handleInputChange('password', e.target.value)}
+              disabled={isSubmitting}
             />
           </div>
         </div>
@@ -176,6 +260,7 @@ export default function PageLogin() {
               id='agree'
               checked={formData.keepLoggedIn}
               onCheckedChange={handleKeepLoggedInChange}
+              disabled={isSubmitting}
             />
             <LabelPrimitive.Root
               htmlFor='agree'
@@ -185,14 +270,22 @@ export default function PageLogin() {
             </LabelPrimitive.Root>
           </div>
           <LinkButton.Root variant='gray' size='medium' underline asChild>
-            <Link href='/reset-password' onClick={handleForgotPasswordClick}>
+            <Link
+              href='/admin/reset-password'
+              onClick={handleForgotPasswordClick}
+            >
               Forgot password?
             </Link>
           </LinkButton.Root>
         </div>
 
-        <FancyButton.Root variant='primary' size='medium' type='submit'>
-          Login
+        <FancyButton.Root
+          variant='primary'
+          size='medium'
+          type='submit'
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Signing in...' : 'Login'}
         </FancyButton.Root>
       </form>
     </div>

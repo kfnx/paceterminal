@@ -13,21 +13,7 @@ const actions = {
       href: '/register',
     },
   },
-  '/register': {
-    text: 'Already have an account?',
-    link: {
-      label: 'Login',
-      href: '/login',
-    },
-  },
   '/reset-password': {
-    text: 'Changed your mind?',
-    link: {
-      label: 'Go Back',
-      href: '/login',
-    },
-  },
-  '/verification': {
     text: 'Changed your mind?',
     link: {
       label: 'Go Back',

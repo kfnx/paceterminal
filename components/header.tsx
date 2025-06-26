@@ -1,9 +1,9 @@
 'use client';
 
 import { cnExt } from '@/utils/cn';
+import { HeaderTitle } from '@/components/header-title';
 import { NavigationTabs } from '@/components/navigation-tabs';
 import { ThemeToggler } from '@/components/theme-toggler';
-import { HeaderTitle } from '@/components/header-title';
 import { WalletButton } from '@/components/wallet-button';
 
 export default function Header({
@@ -29,7 +29,7 @@ export default function Header({
       {...rest}
     >
       <HeaderTitle />
-      <NavigationTabs className='fixed left-[40%] hidden lg:flex' />
+      <NavigationTabs className='hidden lg:flex' />
       <div className={cnExt('flex items-center gap-3', contentClassName)}>
         {/* <SearchMenuButton className='hidden lg:flex' /> */}
         {/* <NotificationButton className='hidden lg:flex' /> */}
