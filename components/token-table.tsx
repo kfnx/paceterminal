@@ -101,13 +101,12 @@ const columns: ColumnDef<Token>[] = [
     enableSorting: true,
     cell: ({ row }) => {
       const token = row.original;
-      const hasImage = token.image;
 
       return (
         <div className='flex items-center gap-3'>
-          {hasImage ? (
+          {token.image ? (
             <Avatar.Root size='32'>
-              <Avatar.Image src={`/images/tokens/${token.image}`} />
+              <Avatar.Image src={token.image} />
             </Avatar.Root>
           ) : (
             <div className='flex size-8 shrink-0 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>

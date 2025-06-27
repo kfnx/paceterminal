@@ -38,7 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       // Redirect to admin dashboard if accessing auth routes with session
       if (isAuthRoute && user) {
-        router.push('/admin/home');
+        router.push('/admin');
         return;
       }
     }

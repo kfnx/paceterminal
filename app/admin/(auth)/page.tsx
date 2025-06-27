@@ -6,6 +6,7 @@ import { RiLogoutBoxLine, RiUserFill } from '@remixicon/react';
 
 import { useAuth } from '@/hooks/use-auth';
 import * as FancyButton from '@/components/ui/fancy-button';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -38,9 +39,9 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className='min-h-screen bg-bg-white-0 p-4'>
+    <div className='flex min-h-screen items-center justify-center bg-bg-white-0 p-4'>
       <div className='mx-auto max-w-4xl'>
-        <div className='flex items-center justify-between rounded-20 bg-bg-white-0 p-6 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+        <div className='flex items-center justify-between gap-12 rounded-20 bg-bg-white-0 p-6 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
           <div className='flex items-center gap-4'>
             <div className='flex size-12 items-center justify-center rounded-full bg-bg-soft-200'>
               <RiUserFill className='size-6 text-text-sub-600' />
@@ -68,7 +69,7 @@ export default function AdminDashboard() {
           <h2 className='mb-4 text-title-h6 text-text-strong-950'>
             User Information
           </h2>
-          <div className='space-y-3'>
+          <div className='space-y-3 pb-4'>
             <div>
               <span className='text-paragraph-sm font-medium text-text-sub-600'>
                 Email:
@@ -96,6 +97,12 @@ export default function AdminDashboard() {
               </span>
             </div>
           </div>
+
+          <Link href='/admin/home'>
+            <FancyButton.Root variant='primary' size='medium' className='w-full max-w-fit'>
+              Go to Admin dashboard
+            </FancyButton.Root>
+          </Link>
         </div>
       </div>
     </div>
