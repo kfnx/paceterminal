@@ -40,7 +40,6 @@ export default function AdminDashboard() {
   return (
     <div className='min-h-screen bg-bg-white-0 p-4'>
       <div className='mx-auto max-w-4xl'>
-        asdasd
         <div className='flex items-center justify-between rounded-20 bg-bg-white-0 p-6 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
           <div className='flex items-center gap-4'>
             <div className='flex size-12 items-center justify-center rounded-full bg-bg-soft-200'>
@@ -98,7 +97,6 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-        asdasd
       </div>
     </div>
   );
