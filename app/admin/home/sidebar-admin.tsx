@@ -15,31 +15,7 @@ import * as Button from '@/components/ui/compact-button';
 import * as Divider from '@/components/ui/divider';
 
 import { LoadingSpinner } from '../../../components/ui/loading-spinner';
-import { CURATED_TOKENS } from '@/lib/tokens';
 import { useParams } from 'next/navigation';
-import { SidebarProfile } from '../../../components/sidebar-profile';
-
-type CuratedTokens = {
-  address: string;
-  icon: React.ReactNode;
-  label: string;
-  href: string;
-  disabled?: boolean;
-};
-
-export const curatedTokens: CuratedTokens[] = CURATED_TOKENS.map((token) => ({
-  address: token.address,
-  icon: (
-    <Avatar.Root size='24' color='blue'>
-      <Avatar.Image
-        src={`/images/tokens/${token.icon}`}
-        alt={token.name}
-      />
-    </Avatar.Root>
-  ),
-  label: token.name,
-  href: `/solana/${token.address}`,
-}));
 
 function useCollapsedState({
   defaultCollapsed = false,
@@ -138,69 +114,8 @@ export function SidebarHeader({
   );
 }
 
-function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
-  const params = useParams();
-  const token = params.address as string;
-
-  return (
-    <div className='space-y-1'>
-      {curatedTokens.map(
-        ({ icon: Icon, label, href, disabled, address }, i) => {
-          const selected = token === address;
-          return (
-            <Link
-              key={label}
-              href={href}
-              aria-current={selected}
-              aria-disabled={disabled}
-              className={cn(
-                'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
-                'transition-default',
-                'aria-[current=page]:bg-bg-weak-50',
-                'aria-disabled:pointer-events-none aria-disabled:opacity-50',
-                {
-                  'w-9 px-2': collapsed,
-                  'w-full px-3': !collapsed,
-                },
-              )}
-            >
-              <div
-                className={cn(
-                  'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
-                  {
-                    '-left-[22px]': collapsed,
-                    '-left-5': !collapsed,
-                    'scale-100': selected,
-                    'scale-0': !selected,
-                  },
-                )}
-              />
-              {Icon}
-              {/* <Icon
-              className={cn(
-              'transition-default size-5 shrink-0 text-text-sub-600',
-              'group-aria-[current=page]:text-primary-base',
-            )}
-          /> */}
-
-              <div
-                className='flex w-[180px] shrink-0 items-center gap-2'
-                data-hide-collapsed
-              >
-                <div className='flex-1 text-label-sm'>{label}</div>
-                {selected && (
-                  <RiArrowRightSLine className='size-5 text-text-sub-600' />
-                )}
-              </div>
-            </Link>
-          );
-        },
-      )}
-    </div>
-  );
-}
-
-function CuratedTokens({ collapsed }: { collapsed: boolean }) {
+function MenuItems({ collapsed }: { collapsed: boolean }) {
+  const selected = false;
   return (
     <div className='space-y-2'>
       <div
@@ -208,11 +123,98 @@ function CuratedTokens({ collapsed }: { collapsed: boolean }) {
           '-mx-2.5 w-14 px-0 text-center': collapsed,
         })}
       >
-        Curated Tokens
+        Menu
       </div>
-      <React.Suspense fallback={<LoadingSpinner />}>
-        <CuratedTokenList collapsed={collapsed} />
-      </React.Suspense>
+      <div className='space-y-1'>
+        <Link
+          href={'/admin/home'}
+          aria-current={true}
+          aria-disabled={false}
+          className={cn(
+            'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
+            'transition-default',
+            'aria-[current=page]:bg-bg-weak-50',
+            'aria-disabled:pointer-events-none aria-disabled:opacity-50',
+            {
+              'w-9 px-2': collapsed,
+              'w-full px-3': !collapsed,
+            },
+          )}
+        >
+          <div
+            className={cn(
+              'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
+              {
+                '-left-[22px]': collapsed,
+                '-left-5': !collapsed,
+                'scale-100': selected,
+                'scale-0': !selected,
+              },
+            )}
+          />
+          {/* {Icon} */}
+          {/* <RiToken2Line
+            className={cn(
+              'transition-default size-5 shrink-0 text-text-sub-600',
+              'group-aria-[current=page]:text-primary-base',
+            )}
+          /> */}
+
+          <div
+            className='flex w-[180px] shrink-0 items-center gap-2'
+            data-hide-collapsed
+          >
+            <div className='flex-1 text-label-sm'>Manage Token</div>
+            {selected && (
+              <RiArrowRightSLine className='size-5 text-text-sub-600' />
+            )}
+          </div>
+        </Link>
+        <Link
+          href={'/admin/home'}
+          aria-current={true}
+          aria-disabled={false}
+          className={cn(
+            'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
+            'transition-default',
+            'aria-[current=page]:bg-bg-weak-50',
+            'aria-disabled:pointer-events-none aria-disabled:opacity-50',
+            {
+              'w-9 px-2': collapsed,
+              'w-full px-3': !collapsed,
+            },
+          )}
+        >
+          <div
+            className={cn(
+              'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
+              {
+                '-left-[22px]': collapsed,
+                '-left-5': !collapsed,
+                'scale-100': selected,
+                'scale-0': !selected,
+              },
+            )}
+          />
+          {/* {Icon} */}
+          {/* <RiToken2Line
+            className={cn(
+              'transition-default size-5 shrink-0 text-text-sub-600',
+              'group-aria-[current=page]:text-primary-base',
+            )}
+          /> */}
+
+          <div
+            className='flex w-[180px] shrink-0 items-center gap-2'
+            data-hide-collapsed
+          >
+            <div className='flex-1 text-label-sm'>Manage Ads</div>
+            {selected && (
+              <RiArrowRightSLine className='size-5 text-text-sub-600' />
+            )}
+          </div>
+        </Link>
+      </div>
     </div>
   );
 }
@@ -237,11 +239,11 @@ function UserProfile({ collapsed }: { collapsed: boolean }) {
         'px-2': collapsed,
       })}
     >
-      <SidebarProfile
+      {/* <SidebarProfile
         className={cn('transition-all-default', {
           'w-auto': collapsed,
         })}
-      />
+      /> */}
     </div>
   );
 }
@@ -282,7 +284,7 @@ export default function Sidebar({
               'px-5': !collapsed,
             })}
           >
-            <CuratedTokens collapsed={collapsed} />
+            <MenuItems collapsed={collapsed} />
           </div>
 
           <SidebarDivider collapsed={collapsed} />
