@@ -8,9 +8,9 @@ import {
   RiArrowRightDoubleLine,
   RiArrowRightSLine,
   RiArrowUpSFill,
+  RiCoinLine,
   RiExpandUpDownFill,
   RiMore2Line,
-  RiCoinLine,
 } from '@remixicon/react';
 import {
   flexRender,
@@ -24,6 +24,7 @@ import { atom, useSetAtom } from 'jotai';
 
 import { cn } from '@/utils/cn';
 import { formatDate } from '@/utils/date-formatter';
+import type { Token } from '@/hooks/use-tokens';
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/button';
 import * as Checkbox from '@/components/ui/checkbox';
@@ -32,7 +33,6 @@ import * as Select from '@/components/ui/select';
 import * as Table from '@/components/ui/table';
 
 import { TokenDetailDrawer } from './token-detail-drawer';
-import type { Token } from '@/hooks/use-tokens';
 
 export const tokenDetailModalOpenAtom = atom(false);
 
@@ -59,31 +59,6 @@ function ActionCell({ row }: { row: any }) {
 }
 
 const columns: ColumnDef<Token>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox.Root
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox.Root
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-    meta: {
-      className: 'pr-0 w-0',
-    },
-  },
   {
     id: 'name',
     accessorKey: 'name',
@@ -217,11 +192,7 @@ const columns: ColumnDef<Token>[] = [
   },
 ];
 
-export function TokensTable({
-  data: tableData,
-}: {
-  data: Token[];
-}) {
+export function TokensTable({ data: tableData }: { data: Token[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
@@ -260,9 +231,9 @@ export function TokensTable({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </Table.Head>
                 );
               })}

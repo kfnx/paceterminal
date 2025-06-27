@@ -32,7 +32,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (!loading) {
       // Redirect to login if accessing protected route without session
       if (isProtectedRoute && !user) {
-        router.push('/admin/login');
+        router.push('/login');
         return;
       }
 

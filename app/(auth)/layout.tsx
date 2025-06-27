@@ -1,4 +1,4 @@
-import { AuthProvider } from './auth-provider';
+import { AuthProvider } from '../auth-provider';
 import AuthFooter from './footer';
 import AuthHeader from './header';
 
