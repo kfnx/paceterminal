@@ -9,6 +9,8 @@ import {
   RiArrowRightSLine,
   RiArrowUpSFill,
   RiCoinLine,
+  RiDeleteBinLine,
+  RiEditLine,
   RiExpandUpDownFill,
   RiMore2Line,
 } from '@remixicon/react';
@@ -22,6 +24,7 @@ import {
 } from '@tanstack/react-table';
 import { atom, useSetAtom } from 'jotai';
 
+import { supabase } from '@/lib/supabase';
 import { cn } from '@/utils/cn';
 import { formatDate } from '@/utils/date-formatter';
 import type { Token } from '@/hooks/use-tokens';
@@ -33,8 +36,11 @@ import * as Select from '@/components/ui/select';
 import * as Table from '@/components/ui/table';
 
 import { TokenDetailDrawer } from './token-detail-drawer';
+import { TokenForm } from './token-form';
 
 export const tokenDetailModalOpenAtom = atom(false);
+export const tokenEditModalOpenAtom = atom(false);
+export const selectedTokenAtom = atom<Token | null>(null);
 
 const getSortingIcon = (state: 'asc' | 'desc' | false) => {
   if (state === 'asc')
@@ -44,17 +50,48 @@ const getSortingIcon = (state: 'asc' | 'desc' | false) => {
   return <RiExpandUpDownFill className='size-5 text-text-sub-600' />;
 };
 
-function ActionCell({ row }: { row: any }) {
+function ActionCell({
+  row,
+  onEdit,
+  onDelete,
+}: {
+  row: any;
+  onEdit: (token: Token) => void;
+  onDelete: (token: Token) => void;
+}) {
   const setDetailModalOpen = useSetAtom(tokenDetailModalOpenAtom);
+
+  const handleEdit = () => {
+    onEdit(row.original);
+  };
+
+  const handleDelete = () => {
+    if (confirm(`Are you sure you want to delete "${row.original.name}"?`)) {
+      onDelete(row.original);
+    }
+  };
+
   return (
-    <Button.Root
-      variant='neutral'
-      mode='ghost'
-      size='xsmall'
-      onClick={() => setDetailModalOpen(true)}
-    >
-      <Button.Icon as={RiMore2Line} />
-    </Button.Root>
+    <div className='flex items-center gap-1'>
+      <Button.Root
+        variant='neutral'
+        mode='ghost'
+        size='xsmall'
+        onClick={handleEdit}
+        title='Edit token'
+      >
+        <Button.Icon as={RiEditLine} />
+      </Button.Root>
+      <Button.Root
+        variant='neutral'
+        mode='ghost'
+        size='xsmall'
+        onClick={handleDelete}
+        title='Delete token'
+      >
+        <Button.Icon as={RiDeleteBinLine} />
+      </Button.Root>
+    </div>
   );
 }
 
@@ -203,15 +240,38 @@ const columns: ColumnDef<Token>[] = [
   {
     id: 'actions',
     enableHiding: false,
-    cell: ActionCell,
+    cell: ({ row, table }) => (
+      <ActionCell
+        row={row}
+        onEdit={(token) => {
+          const meta = table.options.meta as { onEdit: (token: Token) => void };
+          meta.onEdit(token);
+        }}
+        onDelete={(token) => {
+          const meta = table.options.meta as {
+            onDelete: (token: Token) => void;
+          };
+          meta.onDelete(token);
+        }}
+      />
+    ),
     meta: {
       className: 'px-5 w-0',
     },
   },
 ];
 
-export function TokensTable({ data: tableData }: { data: Token[] }) {
+export function TokensTable({
+  data: tableData,
+  onRefetch,
+}: {
+  data: Token[];
+  onRefetch?: () => void;
+}) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
+  const [selectedToken, setSelectedToken] = React.useState<Token | null>(null);
+  const [isDeleting, setIsDeleting] = React.useState(false);
 
   const table = useReactTable({
     data: tableData,
@@ -230,11 +290,53 @@ export function TokensTable({ data: tableData }: { data: Token[] }) {
         },
       ],
     },
+    meta: {
+      onEdit: (token: Token) => {
+        setSelectedToken(token);
+        setIsEditModalOpen(true);
+      },
+      onDelete: async (token: Token) => {
+        if (confirm(`Are you sure you want to delete "${token.name}"?`)) {
+          setIsDeleting(true);
+          try {
+            const { error } = await supabase
+              .from('tokens')
+              .delete()
+              .eq('address', token.address);
+
+            if (error) throw error;
+
+            // Refresh the data instead of reloading the page
+            onRefetch?.();
+          } catch (err) {
+            console.error('Error deleting token:', err);
+            alert('Failed to delete token. Please try again.');
+          } finally {
+            setIsDeleting(false);
+          }
+        }
+      },
+    },
   });
+
+  const handleEditSuccess = () => {
+    setIsEditModalOpen(false);
+    setSelectedToken(null);
+    onRefetch?.();
+  };
 
   return (
     <>
       <TokenDetailDrawer />
+      <TokenForm
+        token={selectedToken}
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedToken(null);
+        }}
+        onSuccess={handleEditSuccess}
+      />
 
       <Table.Root className='relative left-1/2 w-screen -translate-x-1/2 px-4 lg:mx-0 lg:w-full lg:px-0 [&>table]:min-w-[860px]'>
         <Table.Header className='whitespace-nowrap'>

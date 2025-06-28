@@ -1,11 +1,12 @@
 'use client';
 
-import { cnExt } from '@/utils/cn';
-import { RiLogoutBoxLine, RiUserFill } from '@remixicon/react';
-import * as FancyButton from '@/components/ui/fancy-button';
-import { useAuth } from '@/hooks/use-auth';
-import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import { RiLogoutBoxLine, RiUserFill } from '@remixicon/react';
+
+import { supabase } from '@/lib/supabase';
+import { cnExt } from '@/utils/cn';
+import { useAuth } from '@/hooks/use-auth';
+import * as FancyButton from '@/components/ui/fancy-button';
 
 export default function Header({
   children,
@@ -43,24 +44,12 @@ export default function Header({
         />
       </Avatar.Root> */}
       <div className='flex items-center gap-4'>
-        <div className='flex size-12 items-center justify-center rounded-full bg-bg-soft-200'>
-          <RiUserFill className='size-6 text-text-sub-600' />
-        </div>
-        <div>
-          <h1 className='text-title-h5 text-text-strong-950'>
-            Admin Dashboard
-          </h1>
-          <p className='text-paragraph-sm text-text-sub-600'>
-            Welcome back, {user.email}
-          </p>
-        </div>
+        <p className='text-paragraph-sm text-text-sub-600'>
+          Welcome back, {user.email}
+        </p>
       </div>
 
-      <FancyButton.Root
-        variant='neutral'
-        size='medium'
-        onClick={handleSignOut}
-      >
+      <FancyButton.Root variant='neutral' size='medium' onClick={handleSignOut}>
         <RiLogoutBoxLine className='size-4' />
         Sign Out
       </FancyButton.Root>

@@ -1,10 +1,108 @@
-import WidgetAdminTokens from '@/components/widgets/widget-admin-tokens';
+'use client';
 
-export default function PageHome() {
+import * as React from 'react';
+import { useRouter } from 'next/navigation';
+import { RiAddLine, RiCoinLine } from '@remixicon/react';
+
+import { useTokens } from '@/hooks/use-tokens';
+import * as Button from '@/components/ui/button';
+
+export default function AdminDashboardPage() {
+  const router = useRouter();
+  const { tokens, loading } = useTokens();
+
+  const handleManageTokens = () => {
+    router.push('/admin/tokens');
+  };
+
   return (
-    <div className='flex flex-col gap-6 overflow-hidden px-4 pb-6 lg:p-8'>
-      <h3 className='text-2xl font-bold'>Token Management</h3>
-      <WidgetAdminTokens />
+    <div className='flex flex-1 flex-col p-6'>
+      <div className='mb-6'>
+        <h1 className='text-title-h2 text-text-strong-950'>Admin Dashboard</h1>
+        <p className='mt-1 text-paragraph-sm text-text-sub-600'>
+          Manage your application settings and content
+        </p>
+      </div>
+
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+        <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
+          <div className='mb-4'>
+            <h3 className='mb-2 flex items-center gap-2 text-title-h4 text-text-strong-950'>
+              <RiCoinLine className='size-5 text-primary-base' />
+              Token Management
+            </h3>
+            <p className='text-paragraph-sm text-text-sub-600'>
+              Manage your token collection and settings
+            </p>
+          </div>
+          <div className='mb-4'>
+            <div className='text-title-h3 text-text-strong-950'>
+              {loading ? '...' : tokens.length}
+            </div>
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Total Tokens
+            </div>
+          </div>
+          <Button.Root onClick={handleManageTokens} className='w-full'>
+            <Button.Icon as={RiAddLine} />
+            Manage Tokens
+          </Button.Root>
+        </div>
+
+        <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
+          <div className='mb-4'>
+            <h3 className='mb-2 text-title-h4 text-text-strong-950'>
+              Analytics
+            </h3>
+            <p className='text-paragraph-sm text-text-sub-600'>
+              View application analytics and insights
+            </p>
+          </div>
+          <div className='mb-4'>
+            <div className='text-title-h3 text-text-strong-950'>
+              Coming Soon
+            </div>
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Analytics dashboard
+            </div>
+          </div>
+          <Button.Root
+            variant='neutral'
+            mode='stroke'
+            className='w-full'
+            disabled
+          >
+            View Analytics
+          </Button.Root>
+        </div>
+
+        <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
+          <div className='mb-4'>
+            <h3 className='mb-2 text-title-h4 text-text-strong-950'>
+              Settings
+            </h3>
+            <p className='text-paragraph-sm text-text-sub-600'>
+              Configure application settings
+            </p>
+          </div>
+          <div className='mb-4'>
+            <div className='text-title-h3 text-text-strong-950'>
+              Coming Soon
+            </div>
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Application settings
+            </div>
+          </div>
+          <Button.Root
+            variant='neutral'
+            mode='stroke'
+            className='w-full'
+            disabled
+          >
+            Open Settings
+          </Button.Root>
+        </div>
+      </div>
     </div>
   );
 }

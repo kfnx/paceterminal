@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import type { Tables } from '@/lib/database.types';
 import { supabase } from '@/lib/supabase';
@@ -12,33 +12,33 @@ export function useTokens() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchTokens() {
-      try {
-        setLoading(true);
-        setError(null);
+  const fetchTokens = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const { data, error: fetchError } = await supabase
-          .from('tokens')
-          .select('*')
-          .order('ordering', { ascending: true })
-          .order('created_at', { ascending: false });
+      const { data, error: fetchError } = await supabase
+        .from('tokens')
+        .select('*')
+        .order('ordering', { ascending: true })
+        .order('created_at', { ascending: false });
 
-        if (fetchError) {
-          throw fetchError;
-        }
-
-        setTokens(data || []);
-      } catch (err) {
-        console.error('Error fetching tokens:', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch tokens');
-      } finally {
-        setLoading(false);
+      if (fetchError) {
+        throw fetchError;
       }
-    }
 
-    fetchTokens();
+      setTokens(data || []);
+    } catch (err) {
+      console.error('Error fetching tokens:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch tokens');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  return { tokens, loading, error };
+  useEffect(() => {
+    fetchTokens();
+  }, [fetchTokens]);
+
+  return { tokens, loading, error, refetch: fetchTokens };
 }

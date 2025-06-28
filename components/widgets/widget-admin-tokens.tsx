@@ -1,16 +1,13 @@
 'use client';
 
-import {
-  RiCoinLine,
-  RiSearch2Line,
-} from '@remixicon/react';
+import { RiCoinLine, RiSearch2Line } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
+import { useTokens } from '@/hooks/use-tokens';
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
 import * as Kbd from '@/components/ui/kbd';
 import { TokensTable } from '@/components/token-table';
-import { useTokens } from '@/hooks/use-tokens';
 
 import IconCmd from '~/icons/icon-cmd.svg';
 
@@ -18,7 +15,7 @@ export default function WidgetAdminTokens({
   className,
   ...rest
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const { tokens, loading, error } = useTokens();
+  const { tokens, loading, error, refetch } = useTokens();
 
   return (
     <div
@@ -60,7 +57,9 @@ export default function WidgetAdminTokens({
 
       {loading && (
         <div className='flex items-center justify-center py-8'>
-          <div className='text-paragraph-sm text-text-sub-600'>Loading tokens...</div>
+          <div className='text-paragraph-sm text-text-sub-600'>
+            Loading tokens...
+          </div>
         </div>
       )}
 
@@ -72,12 +71,14 @@ export default function WidgetAdminTokens({
 
       {!loading && !error && tokens.length === 0 && (
         <div className='flex items-center justify-center py-8'>
-          <div className='text-paragraph-sm text-text-sub-600'>No tokens found</div>
+          <div className='text-paragraph-sm text-text-sub-600'>
+            No tokens found
+          </div>
         </div>
       )}
 
       {!loading && !error && tokens.length > 0 && (
-        <TokensTable data={tokens} />
+        <TokensTable data={tokens} onRefetch={refetch} />
       )}
     </div>
   );

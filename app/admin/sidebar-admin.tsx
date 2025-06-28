@@ -121,7 +121,7 @@ function MenuItems({ collapsed }: { collapsed: boolean }) {
       </div>
       <div className='space-y-1'>
         <Link
-          href={'/admin'}
+          href={'/admin/tokens'}
           aria-current={true}
           aria-disabled={false}
           className={cn(

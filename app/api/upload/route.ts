@@ -21,11 +21,6 @@ const ALLOWED_FILE_TYPES = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 ];
 
-console.log('🚀 ~ AWS_S3_BUCKET_NAME:', process.env.AWS_S3_BUCKET_NAME);
-console.log('🚀 ~ AWS_ACCESS_KEY_ID:', process.env.AWS_ACCESS_KEY_ID);
-console.log('🚀 ~ AWS_SECRET_ACCESS_KEY:', process.env.AWS_SECRET_ACCESS_KEY);
-console.log('🚀 ~ AWS_S3_REGION:', process.env.AWS_S3_REGION);
-
 // Check for required environment variables
 if (
   !process.env.AWS_S3_BUCKET_NAME ||
