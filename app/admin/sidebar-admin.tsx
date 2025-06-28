@@ -6,6 +6,7 @@ import {
   RiArrowRightSLine,
   RiSkipLeftLine,
   RiSkipRightLine,
+  RiUserLine,
 } from '@remixicon/react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
@@ -234,19 +235,18 @@ function MenuItems({ collapsed }: { collapsed: boolean }) {
               },
             )}
           />
-          {/* {Icon} */}
-          {/* <RiToken2Line
+          <RiUserLine
             className={cn(
               'transition-default size-5 shrink-0 text-text-sub-600',
               'group-aria-[current=page]:text-primary-base',
             )}
-          /> */}
+          />
 
           <div
             className='flex w-[180px] shrink-0 items-center gap-2'
             data-hide-collapsed
           >
-            <div className='flex-1 text-label-sm'>Manage Admins</div>
+            <div className='flex-1 text-label-sm'>User Management</div>
             {selected && (
               <RiArrowRightSLine className='size-5 text-text-sub-600' />
             )}

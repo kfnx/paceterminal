@@ -55,7 +55,7 @@ The `useAuth` hook provides:
 
 The `AuthProvider` component handles route protection by:
 
-- Redirecting unauthenticated users to `/admin/login`
+- Redirecting unauthenticated users to `/login`
 - Redirecting authenticated users away from auth pages
 - Managing loading states during authentication checks
 
@@ -71,11 +71,11 @@ The admin dashboard (`/admin`) shows:
 
 ### Login
 
-Users can log in at `/admin/login` with their email and password.
+Users can log in at `/login` with their email and password.
 
 ### Password Reset
 
-Users can request a password reset at `/admin/reset-password`. They will receive an email with a reset link.
+Users can request a password reset at `/password`. They will receive an email with a reset link.
 
 ### Logout
 
@@ -95,4 +95,4 @@ To test the authentication:
 1. Set up your Supabase project
 2. Configure environment variables
 3. Create a user in your Supabase dashboard or enable sign-ups
-4. Navigate to `/admin/login` to test the authentication flow
+4. Navigate to `/login` to test the authentication flow

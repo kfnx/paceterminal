@@ -81,7 +81,7 @@ export function useAuth(): AuthHookReturn {
 
   const resetPassword = async (email: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/admin/update-password`,
+      redirectTo: `${window.location.origin}/update-password`,
     });
 
     return { error };

@@ -270,10 +270,7 @@ export default function PageLogin() {
             </LabelPrimitive.Root>
           </div>
           <LinkButton.Root variant='gray' size='medium' underline asChild>
-            <Link
-              href='/admin/reset-password'
-              onClick={handleForgotPasswordClick}
-            >
+            <Link href='/reset-password' onClick={handleForgotPasswordClick}>
               Forgot password?
             </Link>
           </LinkButton.Root>

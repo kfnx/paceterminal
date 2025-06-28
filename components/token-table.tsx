@@ -296,7 +296,7 @@ export function TokensTable({
         setIsEditModalOpen(true);
       },
       onDelete: async (token: Token) => {
-        if (confirm(`Are you sure you want to delete "${token.name}"?`)) {
+        if (confirm(`Seriusly delete "${token.name}"?`)) {
           setIsDeleting(true);
           try {
             const { error } = await supabase

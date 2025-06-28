@@ -117,7 +117,7 @@ export default function ResetPasswordPage() {
 
             <LinkButton.Root variant='gray' size='medium' underline asChild>
               <Link
-                href={user ? '/admin' : '/admin/login'}
+                href={user ? '/admin' : '/login'}
                 onClick={user ? handleBackToDashboard : handleBackToLogin}
               >
                 <RiArrowLeftLine className='size-4' />
@@ -208,7 +208,7 @@ export default function ResetPasswordPage() {
         <div className='text-center'>
           <LinkButton.Root variant='gray' size='medium' underline asChild>
             <Link
-              href={user ? '/admin' : '/admin/login'}
+              href={user ? '/admin' : '/login'}
               onClick={user ? handleBackToDashboard : handleBackToLogin}
             >
               <RiArrowLeftLine className='size-4' />

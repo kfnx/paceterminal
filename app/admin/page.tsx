@@ -2,17 +2,23 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { RiAddLine, RiCoinLine } from '@remixicon/react';
+import { RiAddLine, RiCoinLine, RiUserLine } from '@remixicon/react';
 
 import { useTokens } from '@/hooks/use-tokens';
+import { useUsers } from '@/hooks/use-users';
 import * as Button from '@/components/ui/button';
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-  const { tokens, loading } = useTokens();
+  const { tokens, loading: tokensLoading } = useTokens();
+  const { users, loading: usersLoading } = useUsers();
 
   const handleManageTokens = () => {
     router.push('/admin/tokens');
+  };
+
+  const handleManageUsers = () => {
+    router.push('/admin/users');
   };
 
   return (
@@ -37,7 +43,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className='mb-4'>
             <div className='text-title-h3 text-text-strong-950'>
-              {loading ? '...' : tokens.length}
+              {tokensLoading ? '...' : tokens.length}
             </div>
             <div className='text-paragraph-sm text-text-sub-600'>
               Total Tokens
@@ -46,6 +52,30 @@ export default function AdminDashboardPage() {
           <Button.Root onClick={handleManageTokens} className='w-full'>
             <Button.Icon as={RiAddLine} />
             Manage Tokens
+          </Button.Root>
+        </div>
+
+        <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
+          <div className='mb-4'>
+            <h3 className='mb-2 flex items-center gap-2 text-title-h4 text-text-strong-950'>
+              <RiUserLine className='size-5 text-primary-base' />
+              User Management
+            </h3>
+            <p className='text-paragraph-sm text-text-sub-600'>
+              Manage users and their permissions
+            </p>
+          </div>
+          <div className='mb-4'>
+            <div className='text-title-h3 text-text-strong-950'>
+              {usersLoading ? '...' : users.length}
+            </div>
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Total Users
+            </div>
+          </div>
+          <Button.Root onClick={handleManageUsers} className='w-full'>
+            <Button.Icon as={RiAddLine} />
+            Manage Users
           </Button.Root>
         </div>
 
@@ -73,33 +103,6 @@ export default function AdminDashboardPage() {
             disabled
           >
             View Analytics
-          </Button.Root>
-        </div>
-
-        <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
-          <div className='mb-4'>
-            <h3 className='mb-2 text-title-h4 text-text-strong-950'>
-              Settings
-            </h3>
-            <p className='text-paragraph-sm text-text-sub-600'>
-              Configure application settings
-            </p>
-          </div>
-          <div className='mb-4'>
-            <div className='text-title-h3 text-text-strong-950'>
-              Coming Soon
-            </div>
-            <div className='text-paragraph-sm text-text-sub-600'>
-              Application settings
-            </div>
-          </div>
-          <Button.Root
-            variant='neutral'
-            mode='stroke'
-            className='w-full'
-            disabled
-          >
-            Open Settings
           </Button.Root>
         </div>
       </div>

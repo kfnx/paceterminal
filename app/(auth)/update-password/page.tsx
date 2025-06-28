@@ -38,7 +38,7 @@ export default function UpdatePasswordPage() {
   // Redirect if user is not authenticated or if not coming from password reset
   React.useEffect(() => {
     if (!loading && !user) {
-      router.push('/admin/login');
+      router.push('/login');
     }
   }, [user, loading, router]);
 
@@ -171,7 +171,7 @@ export default function UpdatePasswordPage() {
 
           <div className='text-center'>
             <LinkButton.Root variant='gray' size='medium' underline asChild>
-              <Link href='/admin/login' onClick={handleBackToLogin}>
+              <Link href='/login' onClick={handleBackToLogin}>
                 <RiArrowLeftLine className='size-4' />
                 Back to login
               </Link>
@@ -313,7 +313,7 @@ export default function UpdatePasswordPage() {
 
         <div className='text-center'>
           <LinkButton.Root variant='gray' size='medium' underline asChild>
-            <Link href='/admin/login' onClick={handleBackToLogin}>
+            <Link href='/login' onClick={handleBackToLogin}>
               <RiArrowLeftLine className='size-4' />
               Back to login
             </Link>

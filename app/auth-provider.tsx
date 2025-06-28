@@ -16,8 +16,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Define protected routes
   const protectedRoutes = ['/admin'];
-  const authRoutes = ['/admin/login'];
-  const publicAuthRoutes = ['/admin/reset-password']; // Routes that both authenticated and unauthenticated users can access
+  const authRoutes = ['/login'];
+  const publicAuthRoutes = ['/reset-password']; // Routes that both authenticated and unauthenticated users can access
 
   const isProtectedRoute = protectedRoutes.some(
     (route) =>
