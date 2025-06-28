@@ -136,11 +136,29 @@ const columns: ColumnDef<Token>[] = [
         </button>
       </div>
     ),
-    cell: ({ row }) => (
-      <div className='text-paragraph-sm text-text-sub-600'>
-        {row.original.tier || 'N/A'}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const getTierLetter = (tier: number | null | undefined) => {
+        if (!tier) return 'N/A';
+        switch (tier) {
+          case 1:
+            return 'S';
+          case 2:
+            return 'A';
+          case 3:
+            return 'B';
+          case 4:
+            return 'C';
+          default:
+            return 'N/A';
+        }
+      };
+
+      return (
+        <div className='text-paragraph-sm text-text-sub-600'>
+          {getTierLetter(row.original.tier)}
+        </div>
+      );
+    },
   },
   {
     id: 'description',
