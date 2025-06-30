@@ -3,6 +3,7 @@ description:
 globs: 
 alwaysApply: true
 ---
-this project use pnpm for any package manager usage
-this project use @remixicon/react when using icon in react file
-this project use next 14 and app router
+use pnpm for any package manager usage
+use @remixicon/react when using icon in react file
+use next 14 and app router
+use @tanstack/react-query to fetch

@@ -22,6 +22,7 @@ import * as Textarea from '@/components/ui/textarea';
 
 interface TokenFormProps {
   token?: Token | null;
+  initialAddress?: string;
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
@@ -56,6 +57,7 @@ const tierOptions = [
 
 export function TokenForm({
   token,
+  initialAddress,
   isOpen,
   onClose,
   onSuccess,
@@ -77,9 +79,12 @@ export function TokenForm({
         ordering: token.ordering,
       });
     } else {
-      setFormData(initialFormData);
+      setFormData({
+        ...initialFormData,
+        address: initialAddress || '',
+      });
     }
-  }, [token, isOpen]);
+  }, [token, initialAddress, isOpen]);
 
   const handleInputChange = (
     field: keyof FormData,

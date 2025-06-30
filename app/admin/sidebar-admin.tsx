@@ -4,6 +4,8 @@ import * as React from 'react';
 import Link from 'next/link';
 import {
   RiArrowRightSLine,
+  RiCoinLine,
+  RiMoneyDollarCircleLine,
   RiSkipLeftLine,
   RiSkipRightLine,
   RiUserLine,
@@ -159,6 +161,7 @@ function MenuItems({ collapsed }: { collapsed: boolean }) {
             className='flex w-[180px] shrink-0 items-center gap-2'
             data-hide-collapsed
           >
+            <Button.Icon as={RiCoinLine} />
             <div className='flex-1 text-label-sm'>Manage Tokens</div>
             {selected && (
               <RiArrowRightSLine className='size-5 text-text-sub-600' />
@@ -203,6 +206,7 @@ function MenuItems({ collapsed }: { collapsed: boolean }) {
             className='flex w-[180px] shrink-0 items-center gap-2'
             data-hide-collapsed
           >
+            <Button.Icon as={RiMoneyDollarCircleLine} />
             <div className='flex-1 text-label-sm'>Manage Ads</div>
             {selected && (
               <RiArrowRightSLine className='size-5 text-text-sub-600' />

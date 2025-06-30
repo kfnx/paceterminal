@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 export interface User {
   id: string;
@@ -11,35 +11,43 @@ export interface User {
   confirmed_at: string | null;
 }
 
+interface UsersResponse {
+  users: User[];
+}
+
+interface ErrorResponse {
+  error: string;
+}
+
+const fetchUsers = async (): Promise<User[]> => {
+  const response = await fetch('/api/admin/users');
+
+  if (!response.ok) {
+    const errorData: ErrorResponse = await response.json();
+    throw new Error(errorData.error || 'Failed to fetch users');
+  }
+
+  const data: UsersResponse = await response.json();
+  return data.users;
+};
+
 export function useUsers() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: users = [],
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['users'],
+    queryFn: fetchUsers,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+  });
 
-  const fetchUsers = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch('/api/admin/users');
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch users');
-      }
-
-      setUsers(data.users);
-    } catch (err) {
-      console.error('Error fetching users:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch users');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
-
-  return { users, loading, error, refetch: fetchUsers };
+  return {
+    users,
+    loading,
+    error: error?.message || null,
+    refetch,
+  };
 }

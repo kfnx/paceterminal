@@ -14,7 +14,7 @@ import IllustrationEmptySavedActions from '@/components/empty-state-illustration
 import AdModal from '@/components/ad-modal';
 import { RightSideAd } from '@/components/RightSideAd';
 
-export function WidgetsSection() {
+export function Content() {
   return (
     <div className='flex flex-row gap-6 px-4 pb-6 lg:px-8 lg:pt-1' id='top'>
       <div className='flex flex-1 flex-col gap-6'>

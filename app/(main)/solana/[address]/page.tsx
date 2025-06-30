@@ -1,5 +1,5 @@
 import { CURATED_TOKENS } from '@/lib/tokens';
-import { WidgetsSection } from './widgets-section';
+import { Content } from './content';
 import { notFound } from 'next/navigation';
 
 export function generateStaticParams() {
@@ -8,12 +8,12 @@ export function generateStaticParams() {
   }));
 }
 
-export default function PageHome({ params }: { params: { address: string } }) {
+export default function SolanaTokenPage({ params }: { params: { address: string } }) {
   const token = CURATED_TOKENS.find((token) => token.address === params.address);
 
   if (!token) {
     notFound();
   }
 
-  return <WidgetsSection />;
+  return <Content />;
 }

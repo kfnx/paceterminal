@@ -1,44 +1,43 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import type { Tables } from '@/lib/database.types';
 import { supabase } from '@/lib/supabase';
 
 export type Token = Tables<'tokens'>;
 
+const fetchTokens = async (): Promise<Token[]> => {
+  const { data, error } = await supabase
+    .from('tokens')
+    .select('*')
+    .order('ordering', { ascending: true })
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return data || [];
+};
+
 export function useTokens() {
-  const [tokens, setTokens] = useState<Token[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: tokens = [],
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['tokens'],
+    queryFn: fetchTokens,
+    staleTime: 30 * 60 * 1000, // 30 minutes - data stays fresh longer
+    gcTime: 24 * 60 * 60 * 1000, // 24 hours - keep in cache for a full day
+  });
 
-  const fetchTokens = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const { data, error: fetchError } = await supabase
-        .from('tokens')
-        .select('*')
-        .order('ordering', { ascending: true })
-        .order('created_at', { ascending: false });
-
-      if (fetchError) {
-        throw fetchError;
-      }
-
-      setTokens(data || []);
-    } catch (err) {
-      console.error('Error fetching tokens:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch tokens');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTokens();
-  }, [fetchTokens]);
-
-  return { tokens, loading, error, refetch: fetchTokens };
+  return {
+    tokens,
+    loading,
+    error: error?.message || null,
+    refetch,
+  };
 }
