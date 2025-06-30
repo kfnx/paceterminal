@@ -3,36 +3,36 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-interface InviteUserParams {
-  email: string;
+interface DeleteUserParams {
+  userId: string;
 }
 
-interface InviteUserResult {
+interface DeleteUserResult {
   error?: string;
 }
 
-export function useInviteUser() {
+export function useDeleteUser() {
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
 
-  const inviteUser = async ({
-    email,
-  }: InviteUserParams): Promise<InviteUserResult> => {
+  const deleteUser = async ({
+    userId,
+  }: DeleteUserParams): Promise<DeleteUserResult> => {
     try {
       setLoading(true);
 
-      const response = await fetch('/api/admin/invite-user', {
-        method: 'POST',
+      const response = await fetch('/api/admin/delete-user', {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ userId }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        return { error: data.error || 'Failed to invite user' };
+        return { error: data.error || 'Failed to delete user' };
       }
 
       // Invalidate the users cache to force a fresh fetch
@@ -40,12 +40,12 @@ export function useInviteUser() {
 
       return {};
     } catch (err) {
-      console.error('Error inviting user:', err);
-      return { error: 'Failed to invite user' };
+      console.error('Error deleting user:', err);
+      return { error: 'Failed to delete user' };
     } finally {
       setLoading(false);
     }
   };
 
-  return { inviteUser, loading };
+  return { deleteUser, loading };
 }

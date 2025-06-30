@@ -40,8 +40,7 @@ export function useUsers() {
   } = useQuery({
     queryKey: ['users'],
     queryFn: fetchUsers,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+    staleTime: 30 * 1000, // 30 seconds - reduced from 5 minutes for more responsive updates
   });
 
   return {
