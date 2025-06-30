@@ -6,12 +6,14 @@ import { toast } from 'sonner';
 
 import { useToken } from '@/hooks/use-token';
 import { useTeams, type Team } from '@/hooks/use-teams';
+import { useFlywheel, type Flywheel } from '@/hooks/use-flywheel';
 import type { Token } from '@/hooks/use-tokens';
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/button';
 import * as Badge from '@/components/ui/badge';
 
 import { TokenForm } from './token-form';
+import { FlywheelForm } from './flywheel-form';
 
 interface TokenDetailPageProps {
   address: string;
@@ -20,12 +22,19 @@ interface TokenDetailPageProps {
 export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const { data: token, isLoading, error, refetch } = useToken(address);
   const { teams, loading: teamsLoading, error: teamsError } = useTeams(address);
+  const { flywheel, loading: flywheelLoading, error: flywheelError, refetch: refetchFlywheel } = useFlywheel(address);
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
+  const [isEditFlywheelModalOpen, setIsEditFlywheelModalOpen] = React.useState(false);
 
   const handleSuccess = () => {
     refetch();
     toast.success('Token updated successfully!');
+  };
+
+  const handleFlywheelSuccess = () => {
+    refetchFlywheel();
+    toast.success('Flywheel updated successfully!');
   };
 
   if (isLoading) {
@@ -228,17 +237,17 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         </div>
 
         <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <div className="flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between">
             <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
               Team
             </h3>
             <Button.Root
               variant="neutral"
               mode="stroke"
-              onClick={() => setIsEditModalOpen(true)}
+              // onClick={() => setIsEditTeamModalOpen(true)}
+              size="xsmall"
             >
               <RiEditLine className="size-4" />
-              Edit Team Members
             </Button.Root>
           </div>
           {teamsLoading ? (
@@ -300,9 +309,45 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         </div>
 
         <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
-            Flywheel
-          </h3>
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
+              Flywheel
+            </h3>
+            <Button.Root
+              variant="neutral"
+              mode="stroke"
+              onClick={() => setIsEditFlywheelModalOpen(true)}
+              size="xsmall"
+            >
+              <RiEditLine className="size-4" />
+            </Button.Root>
+          </div>
+          {flywheelLoading ? (
+            <div className="text-paragraph-sm text-text-sub-600">Loading flywheel...</div>
+          ) : flywheelError ? (
+            <div className="text-paragraph-sm text-red-600">
+              Error loading flywheel: {flywheelError}
+            </div>
+          ) : flywheel && flywheel.image ? (
+            <div className="w-full">
+              <img
+                src={flywheel.image}
+                alt="Flywheel"
+                className="h-full w-full rounded-lg object-cover"
+              />
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-4 py-8">
+              <div className="flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200">
+                <RiCoinLine className="size-8 text-text-sub-600" />
+              </div>
+              <div className="text-center">
+                <p className="text-paragraph-sm text-text-sub-600">
+                  No flywheel found for this token.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
@@ -329,6 +374,14 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSuccess={handleSuccess}
+      />
+
+      <FlywheelForm
+        flywheel={flywheel}
+        tokenAddress={address}
+        isOpen={isEditFlywheelModalOpen}
+        onClose={() => setIsEditFlywheelModalOpen(false)}
+        onSuccess={handleFlywheelSuccess}
       />
     </div>
   );
