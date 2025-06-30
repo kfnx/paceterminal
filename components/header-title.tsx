@@ -23,8 +23,6 @@ export function HeaderTitle() {
     return null;
   }
 
-  const subtitle = token.name ? `Creator ${token.name}` : 'Creator Buddy';
-
   return (
     <div className='flex gap-4 lg:gap-3.5'>
       <Avatar.Root size='48' color='blue'>
@@ -35,7 +33,7 @@ export function HeaderTitle() {
       </Avatar.Root>
       <div className='space-y-1'>
         <div className='text-label-md lg:text-label-lg'>{token.name}</div>
-        <div className='text-paragraph-sm text-text-sub-600'>{subtitle}</div>
+        <div className='text-paragraph-sm text-text-sub-600'>{token.label}</div>
       </div>
     </div>
   );
