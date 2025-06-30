@@ -8,11 +8,14 @@ import { supabase } from '@/lib/supabase';
 export type Token = Tables<'tokens'>;
 
 const fetchTokens = async (): Promise<Token[]> => {
+  console.log('fetchTokens');
   const { data, error } = await supabase
     .from('tokens')
     .select('*')
     .order('ordering', { ascending: true })
     .order('created_at', { ascending: false });
+
+  console.log('fetchTokens', data);
 
   if (error) {
     throw error;

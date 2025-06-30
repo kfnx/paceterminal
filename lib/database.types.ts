@@ -51,6 +51,44 @@ export type Database = {
         }
         Relationships: []
       }
+      teams: {
+        Row: {
+          address: string | null
+          description: string | null
+          id: string
+          image: string | null
+          name: string | null
+          role: string | null
+          x_account: string | null
+        }
+        Insert: {
+          address?: string | null
+          description?: string | null
+          id?: string
+          image?: string | null
+          name?: string | null
+          role?: string | null
+          x_account?: string | null
+        }
+        Update: {
+          address?: string | null
+          description?: string | null
+          id?: string
+          image?: string | null
+          name?: string | null
+          role?: string | null
+          x_account?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teams_address_fkey"
+            columns: ["address"]
+            isOneToOne: false
+            referencedRelation: "tokens"
+            referencedColumns: ["address"]
+          },
+        ]
+      }
       tokens: {
         Row: {
           address: string

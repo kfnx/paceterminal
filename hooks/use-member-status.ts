@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import { useWalletAddress } from './use-wallet-address';
 
@@ -16,61 +16,52 @@ interface MembershipData {
   } | null;
 }
 
+async function fetchMembershipStatus(address: string): Promise<MembershipData> {
+  const response = await fetch(
+    `/api/member?address=${encodeURIComponent(address)}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`API error: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
 export function useMemberStatus() {
   const { publicKey } = useWalletAddress();
   const address = publicKey?.toBase58();
-  const [isMember, setIsMember] = useState(false);
-  const [expiredAt, setExpiredAt] = useState<Date | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  const checkMembership = useCallback(async () => {
-    if (!address) {
-      setLoading(false);
-      setIsMember(false);
-      setExpiredAt(null);
-      return;
-    }
+  const {
+    data: membershipData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['membership', address],
+    queryFn: () => fetchMembershipStatus(address!),
+    enabled: !!address,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2,
+  });
 
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `/api/member?address=${encodeURIComponent(address)}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
+  const isMember = membershipData?.isMember ?? false;
+  const expiredAt =
+    membershipData?.isActive && membershipData.data?.expired_at
+      ? new Date(membershipData.data.expired_at)
+      : null;
 
-      if (!response.ok) {
-        console.error('API error:', response.status, response.statusText);
-        setIsMember(false);
-        setExpiredAt(null);
-        return;
-      }
-
-      const data: MembershipData = await response.json();
-
-      setIsMember(data.isMember);
-
-      if (data.isActive && data.data?.expired_at) {
-        setExpiredAt(new Date(data.data.expired_at));
-      } else {
-        setExpiredAt(null);
-      }
-    } catch (error) {
-      console.error('Error checking membership:', error);
-      setIsMember(false);
-      setExpiredAt(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [address]);
-
-  useEffect(() => {
-    checkMembership();
-  }, [checkMembership]);
-
-  return { isMember, expiredAt, loading, refetch: checkMembership };
+  return {
+    isMember,
+    expiredAt,
+    loading: isLoading,
+    error,
+    refetch,
+  };
 }

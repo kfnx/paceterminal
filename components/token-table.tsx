@@ -30,13 +30,12 @@ import { formatDate } from '@/utils/date-formatter';
 import type { Token } from '@/hooks/use-tokens';
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/button';
-import * as Checkbox from '@/components/ui/checkbox';
 import * as Pagination from '@/components/ui/pagination';
 import * as Select from '@/components/ui/select';
 import * as Table from '@/components/ui/table';
 
-import { TokenDetailDrawer } from './token-detail-drawer';
 import { TokenForm } from './token-form';
+import Link from 'next/link';
 
 export const tokenDetailModalOpenAtom = atom(false);
 export const tokenEditModalOpenAtom = atom(false);
@@ -52,19 +51,11 @@ const getSortingIcon = (state: 'asc' | 'desc' | false) => {
 
 function ActionCell({
   row,
-  onEdit,
   onDelete,
 }: {
   row: any;
-  onEdit: (token: Token) => void;
   onDelete: (token: Token) => void;
 }) {
-  const setDetailModalOpen = useSetAtom(tokenDetailModalOpenAtom);
-
-  const handleEdit = () => {
-    onEdit(row.original);
-  };
-
   const handleDelete = () => {
     if (confirm(`Are you sure you want to delete "${row.original.name}"?`)) {
       onDelete(row.original);
@@ -73,15 +64,16 @@ function ActionCell({
 
   return (
     <div className='flex items-center gap-1'>
-      <Button.Root
-        variant='neutral'
-        mode='ghost'
-        size='xsmall'
-        onClick={handleEdit}
-        title='Edit token'
-      >
-        <Button.Icon as={RiEditLine} />
-      </Button.Root>
+      <Link href={`/admin/tokens/${row.original.address}`}>
+        <Button.Root
+          variant='neutral'
+          mode='ghost'
+          size='xsmall'
+          title='Edit token'
+        >
+          <Button.Icon as={RiEditLine} />
+        </Button.Root>
+      </Link>
       <Button.Root
         variant='neutral'
         mode='ghost'
@@ -243,10 +235,6 @@ const columns: ColumnDef<Token>[] = [
     cell: ({ row, table }) => (
       <ActionCell
         row={row}
-        onEdit={(token) => {
-          const meta = table.options.meta as { onEdit: (token: Token) => void };
-          meta.onEdit(token);
-        }}
         onDelete={(token) => {
           const meta = table.options.meta as {
             onDelete: (token: Token) => void;
@@ -327,7 +315,6 @@ export function TokensTable({
 
   return (
     <>
-      <TokenDetailDrawer />
       <TokenForm
         token={selectedToken}
         isOpen={isEditModalOpen}
@@ -351,9 +338,9 @@ export function TokensTable({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </Table.Head>
                 );
               })}
