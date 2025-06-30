@@ -78,33 +78,6 @@ export default function AdminDashboardPage() {
             Manage Users
           </Button.Root>
         </div>
-
-        <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
-          <div className='mb-4'>
-            <h3 className='mb-2 text-title-h4 text-text-strong-950'>
-              Analytics
-            </h3>
-            <p className='text-paragraph-sm text-text-sub-600'>
-              View application analytics and insights
-            </p>
-          </div>
-          <div className='mb-4'>
-            <div className='text-title-h3 text-text-strong-950'>
-              Coming Soon
-            </div>
-            <div className='text-paragraph-sm text-text-sub-600'>
-              Analytics dashboard
-            </div>
-          </div>
-          <Button.Root
-            variant='neutral'
-            mode='stroke'
-            className='w-full'
-            disabled
-          >
-            View Analytics
-          </Button.Root>
-        </div>
       </div>
     </div>
   );

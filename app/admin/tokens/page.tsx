@@ -74,7 +74,7 @@ export default function AdminTokensPage() {
     <div className='flex flex-1 flex-col p-6'>
       <div className='mb-6 flex items-center justify-between'>
         <div>
-          <h1 className='text-title-h2 text-text-strong-950'>
+          <h1 className='text-text-strong-950'>
             Token Management
           </h1>
           <p className='mt-1 text-paragraph-sm text-text-sub-600'>
@@ -87,7 +87,7 @@ export default function AdminTokensPage() {
         </Button.Root>
       </div>
 
-      <div className='flex-1'>
+      <div className='flex-1 space-y-4'>
         <Filters />
         <TokensTable
           data={tokens}

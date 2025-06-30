@@ -141,21 +141,23 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
             </div>
           </div>
         </div>
-        <Button.Root
-          variant="neutral"
-          mode="stroke"
-          onClick={() => setIsEditModalOpen(true)}
-        >
-          <RiEditLine className="size-4" />
-          Edit Token
-        </Button.Root>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
-            Token Information
-          </h3>
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
+              Token Information
+            </h3>
+            <Button.Root
+              variant="neutral"
+              mode="stroke"
+              onClick={() => setIsEditModalOpen(true)}
+              size="xsmall"
+            >
+              <RiEditLine className="size-4" />
+            </Button.Root>
+          </div>
           <div className="space-y-4">
             <div>
               <label className="text-paragraph-sm font-medium text-text-sub-600">
@@ -193,30 +195,6 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
                 </p>
               </div>
             )}
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
-            Metadata
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <label className="text-paragraph-sm font-medium text-text-sub-600">
-                Created At
-              </label>
-              <p className="mt-1 text-paragraph-sm text-text-strong-950">
-                {token.created_at ? new Date(token.created_at).toLocaleString() : 'N/A'}
-              </p>
-            </div>
-            <div>
-              <label className="text-paragraph-sm font-medium text-text-sub-600">
-                Updated At
-              </label>
-              <p className="mt-1 text-paragraph-sm text-text-strong-950">
-                {token.updated_at ? new Date(token.updated_at).toLocaleString() : 'N/A'}
-              </p>
-            </div>
             {token.image && (
               <div>
                 <label className="text-paragraph-sm font-medium text-text-sub-600">
