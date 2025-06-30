@@ -37,19 +37,25 @@ export function useAuth(): AuthHookReturn {
   });
 
   useEffect(() => {
-    // Get initial session
-    const getInitialSession = async () => {
+    // Get initial user - more secure than getSession()
+    const getInitialUser = async () => {
       const {
-        data: { session },
-      } = await supabase.auth.getSession();
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+
+      if (error) {
+        console.error('Error getting user:', error);
+      }
+
       setAuthState({
-        user: session?.user ?? null,
-        session,
+        user: user ?? null,
+        session: null, // We'll get session from auth state change
         loading: false,
       });
     };
 
-    getInitialSession();
+    getInitialUser();
 
     // Listen for auth changes
     const {

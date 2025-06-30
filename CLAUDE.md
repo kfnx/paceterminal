@@ -31,7 +31,9 @@ Pace Terminal is a cryptocurrency token research and analysis platform focused o
 
 ### Backend & Data
 - **Database**: Supabase (PostgreSQL) with typed schema
-- **Authentication**: Supabase Auth with email/password
+- **Authentication**: Supabase Auth with @supabase/ssr for server-side rendering
+- **Session Management**: Next.js middleware with automatic token refresh
+- **Route Protection**: Server-side user validation for admin routes
 - **File Storage**: AWS S3 for token and flywheel images
 - **API**: Next.js 14 API routes with proper authentication middleware
 
@@ -119,8 +121,12 @@ Required environment variables for development:
 - Image upload components handle S3 integration seamlessly
 
 ### Authentication Flow
-- Supabase handles authentication with email verification
-- Admin operations require service role key validation
+- Supabase Auth with modern @supabase/ssr patterns for secure server-side rendering
+- Client-side: `createBrowserClient()` for hooks and client components
+- Server-side: `createClient()` from `/lib/supabase-server.ts` for RSC and API routes
+- Middleware handles automatic token refresh and route protection
+- Admin routes protected via server-side `getUser()` validation (more secure than `getSession()`)
+- Service role key for admin operations (user management, invitations)
 - Wallet addresses used for membership verification alongside email auth
 
 ## Testing and Quality

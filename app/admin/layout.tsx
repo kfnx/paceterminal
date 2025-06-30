@@ -1,14 +1,26 @@
+import { redirect } from 'next/navigation';
 import HeaderMobile from '@/components/header-mobile';
+import { createClient } from '@/lib/supabase-server';
 
 import { AuthProvider } from '../auth-provider';
 import Header from './header';
 import Sidebar from './sidebar-admin';
 
-export default function Layout({
+export default async function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = createClient();
+  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login');
+  }
+
   return (
     <AuthProvider>
       <div className='flex min-h-screen flex-col items-start lg:grid lg:grid-cols-[auto,minmax(0,1fr)]'>

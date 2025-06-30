@@ -1,3 +1,4 @@
+import { createBrowserClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
 
 import type { Database } from './database.types';
@@ -9,7 +10,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+// Client-side Supabase client - use for client components and hooks
+export const supabase = createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
+
+// Legacy client for backward compatibility
+export const legacySupabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
 // Server-side client with service role key for admin operations
 export const createServerSupabaseClient = () => {
