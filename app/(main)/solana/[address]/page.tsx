@@ -1,19 +1,34 @@
-import { CURATED_TOKENS } from '@/lib/tokens';
 import { Content } from './content';
 import { notFound } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import type { Token } from '@/hooks/use-tokens';
 
-export function generateStaticParams() {
-  return CURATED_TOKENS.map((token) => ({
-    address: token.address,
-  }));
+export async function generateStaticParams() {
+  try {
+    const { data: tokens } = await supabase
+      .from('tokens')
+      .select('address')
+      .order('ordering', { ascending: true });
+    
+    return tokens?.map((token) => ({
+      address: token.address,
+    })) || [];
+  } catch (error) {
+    console.error('Error fetching tokens for static params:', error);
+    return [];
+  }
 }
 
-export default function SolanaTokenPage({ params }: { params: { address: string } }) {
-  const token = CURATED_TOKENS.find((token) => token.address === params.address);
+export default async function SolanaTokenPage({ params }: { params: { address: string } }) {
+  const { data: token, error } = await supabase
+    .from('tokens')
+    .select('*')
+    .eq('address', params.address)
+    .single();
 
-  if (!token) {
+  if (error || !token) {
     notFound();
   }
 
-  return <Content />;
+  return <Content token={token} />;
 }

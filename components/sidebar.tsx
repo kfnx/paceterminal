@@ -15,9 +15,10 @@ import * as Button from '@/components/ui/compact-button';
 import * as Divider from '@/components/ui/divider';
 
 import { LoadingSpinner } from './ui/loading-spinner';
-import { CURATED_TOKENS } from '@/lib/tokens';
 import { useParams } from 'next/navigation';
 import { SidebarProfile } from './sidebar-profile';
+import { useAllTokens } from '@/hooks/use-all-tokens';
+import { getTokenImageUrl } from '@/utils/image-url';
 
 type CuratedTokens = {
   address: string;
@@ -26,20 +27,6 @@ type CuratedTokens = {
   href: string;
   disabled?: boolean;
 };
-
-export const curatedTokens: CuratedTokens[] = CURATED_TOKENS.map((token) => ({
-  address: token.address,
-  icon: (
-    <Avatar.Root size='24' color='blue'>
-      <Avatar.Image
-        src={`/images/tokens/${token.icon}`}
-        alt={token.name}
-      />
-    </Avatar.Root>
-  ),
-  label: token.name,
-  href: `/solana/${token.address}`,
-}));
 
 function useCollapsedState({
   defaultCollapsed = false,
@@ -119,9 +106,11 @@ export function SidebarHeader({
       })}
     >
       <div className='flex flex-col items-start'>
-        <h1 className='text-2xl font-bold text-text-strong-950'>
-          {collapsed ? 'PACE' : 'PACETERMINAL'}
-        </h1>
+        <Link href='/'>
+          <h1 className='text-2xl font-bold text-text-strong-950'>
+            {collapsed ? 'PACE' : 'PACETERMINAL'}
+          </h1>
+        </Link>
         {!collapsed && (
           <p className='text-paragraph-sm text-text-sub-600'>
             Hong Wilaheng
@@ -140,62 +129,80 @@ export function SidebarHeader({
 
 function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
   const params = useParams();
-  const token = params.address as string;
+  const currentTokenAddress = params.address as string;
+  const { data: tokens, isLoading, error } = useAllTokens();
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return (
+      <div className='text-center text-paragraph-sm text-text-soft-400'>
+        Failed to load tokens
+      </div>
+    );
+  }
+
+  if (!tokens || tokens.length === 0) {
+    return (
+      <div className='text-center text-paragraph-sm text-text-soft-400'>
+        No tokens found
+      </div>
+    );
+  }
 
   return (
     <div className='space-y-1'>
-      {curatedTokens.map(
-        ({ icon: Icon, label, href, disabled, address }, i) => {
-          const selected = token === address;
-          return (
-            <Link
-              key={label}
-              href={href}
-              aria-current={selected}
-              aria-disabled={disabled}
+      {tokens.map((token) => {
+        const selected = currentTokenAddress === token.address;
+        const href = `/solana/${token.address}`;
+        
+        return (
+          <Link
+            key={token.address}
+            href={href}
+            aria-current={selected}
+            className={cn(
+              'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
+              'transition-default',
+              'aria-[current=page]:bg-bg-weak-50',
+              {
+                'w-9 px-2': collapsed,
+                'w-full px-3': !collapsed,
+              },
+            )}
+          >
+            <div
               className={cn(
-                'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
-                'transition-default',
-                'aria-[current=page]:bg-bg-weak-50',
-                'aria-disabled:pointer-events-none aria-disabled:opacity-50',
+                'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
                 {
-                  'w-9 px-2': collapsed,
-                  'w-full px-3': !collapsed,
+                  '-left-[22px]': collapsed,
+                  '-left-5': !collapsed,
+                  'scale-100': selected,
+                  'scale-0': !selected,
                 },
               )}
-            >
-              <div
-                className={cn(
-                  'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
-                  {
-                    '-left-[22px]': collapsed,
-                    '-left-5': !collapsed,
-                    'scale-100': selected,
-                    'scale-0': !selected,
-                  },
-                )}
+            />
+            <Avatar.Root size='24' color='blue'>
+              <Avatar.Image
+                src={getTokenImageUrl(token.image)}
+                alt={token.name}
               />
-              {Icon}
-              {/* <Icon
-              className={cn(
-              'transition-default size-5 shrink-0 text-text-sub-600',
-              'group-aria-[current=page]:text-primary-base',
-            )}
-          /> */}
+            </Avatar.Root>
 
-              <div
-                className='flex w-[180px] shrink-0 items-center gap-2'
-                data-hide-collapsed
-              >
-                <div className='flex-1 text-label-sm'>{label}</div>
-                {selected && (
-                  <RiArrowRightSLine className='size-5 text-text-sub-600' />
-                )}
-              </div>
-            </Link>
-          );
-        },
-      )}
+            <div
+              className='flex w-[180px] shrink-0 items-center gap-2'
+              data-hide-collapsed
+            >
+              <div className='flex-1 text-label-sm'>{token.name}</div>
+              {selected && (
+                <RiArrowRightSLine className='size-5 text-text-sub-600' />
+              )}
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 }
@@ -210,9 +217,7 @@ function CuratedTokens({ collapsed }: { collapsed: boolean }) {
       >
         Curated Tokens
       </div>
-      <React.Suspense fallback={<LoadingSpinner />}>
-        <CuratedTokenList collapsed={collapsed} />
-      </React.Suspense>
+      <CuratedTokenList collapsed={collapsed} />
     </div>
   );
 }

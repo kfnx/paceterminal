@@ -11,7 +11,7 @@ import * as Divider from '@/components/ui/divider';
 import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
 import * as WidgetBox from '@/components/widget-box';
 import { useParams } from 'next/navigation';
-import { CURATED_TOKENS } from '@/lib/tokens';
+import { useTeams } from '@/hooks/use-teams';
 import Link from 'next/link';
 
 type TeamMemberProps = {
@@ -48,7 +48,7 @@ export default function WidgetTeam({
 }: React.ComponentPropsWithoutRef<typeof WidgetBox.Root>) {
   const params = useParams();
   const address = params.address as string;
-  const token = CURATED_TOKENS.find((token) => token.address === address);
+  const { teams, loading } = useTeams(address);
 
   return (
     <WidgetBox.Root {...rest} id='team'>
@@ -62,19 +62,19 @@ export default function WidgetTeam({
 
         <div className='w-full pb-1'>
           <div className='flex flex-row items-center justify-center gap-0.5 space-x-8'>
-            {token?.teams && token?.teams?.length > 0 ? token?.teams?.map((team, index) => (
+            {!loading && teams && teams.length > 0 ? teams.map((team, index) => (
               <TeamMember
-                key={team.name + index}
-                name={team.name}
-                description={'description' in team ? team.description : ''}
-                image={team.image}
-                role={team.role}
-                x={'x' in team ? team.x : ''}
+                key={team.id}
+                name={team.name || ''}
+                description={team.description || ''}
+                image={team.image || ''}
+                role={team.role || ''}
+                x={team.x_account || ''}
               />
             )) : <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
               <IllustrationEmptySavedActions className='size-[108px]' />
               <div className='text-center text-paragraph-sm text-text-soft-400'>
-                Team member unknown.
+                {loading ? 'Loading team...' : 'Team member unknown.'}
               </div>
             </div>}
           </div>

@@ -9,15 +9,9 @@ import { cnExt } from '@/utils/cn';
 import * as Divider from '@/components/ui/divider';
 import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
 import * as WidgetBox from '@/components/widget-box';
-import { useParams } from 'next/navigation';
-import { CURATED_TOKENS } from '@/lib/tokens';
-
 export default function WidgetTechnicalAnalysis({
   ...rest
 }: React.ComponentPropsWithoutRef<typeof WidgetBox.Root>) {
-  const params = useParams();
-  const address = params.address as string;
-  const token = CURATED_TOKENS.find((token) => token.address === address);
 
   return (
     <WidgetBox.Root {...rest} id='technical-analysis'>
@@ -32,23 +26,12 @@ export default function WidgetTechnicalAnalysis({
         <div className='flex w-full flex-col items-center justify-center gap-2 p-2'>
           <img src='/images/tradingtown.jpg' alt='Trading Town' className='h-32 w-32 object-cover' />
           <span className='pb-4 text-text-sub-600'>Powered By Trading Town</span>
-          {token?.technicalAnalysis && token?.technicalAnalysis?.length > 0 ? token?.technicalAnalysis?.map((technicalAnalysis, index) => (
-            <div key={index} className='flex flex-col gap-4'>
-              <img src={`/images/technical-analysis/${technicalAnalysis.image}`} alt={technicalAnalysis.image} className='h-full w-full object-cover pb-8' />
-              <div className='flex items-center justify-center gap-2 space-x-12'>
-                <div className='rounded-md border border-text-sub-600 px-2 py-1 text-text-sub-600'>Support: ${technicalAnalysis.support}</div>
-                <div className='rounded-md border border-text-sub-600 px-2 py-1 text-text-sub-600'>Resistance: ${technicalAnalysis.resistance}</div>
-                <div className='rounded-md border border-text-sub-600 px-2 py-1 text-text-sub-600'>Bullish Meter: {technicalAnalysis.bullishMeter}%</div>
-              </div>
-              {('description' in technicalAnalysis) && <div className='px-8 pt-4 text-text-sub-600'>{technicalAnalysis.description}</div>}
-              {('date' in technicalAnalysis) && <div className='text-right text-paragraph-xs text-text-sub-600'>Added {technicalAnalysis.date}</div>}
-            </div>
-          )) : <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
+          <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
             <IllustrationEmptySavedActions className='size-[108px]' />
             <div className='text-center text-paragraph-sm text-text-soft-400'>
-              Technical Analysis empty.
+              Technical Analysis will be available when database schema is updated.
             </div>
-          </div>}
+          </div>
         </div>
       </div>
     </WidgetBox.Root>

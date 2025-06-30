@@ -1,30 +1,40 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-
-import { CURATED_TOKENS } from '@/lib/tokens';
+import { useCurrentToken } from '@/hooks/use-current-token';
 import * as Avatar from '@/components/ui/avatar';
+import { getTokenImageUrl } from '@/utils/image-url';
 
 export function HeaderTitle() {
-  const params = useParams();
-  const address = params.address as string;
-  const token = CURATED_TOKENS.find((t) => t.address === address);
-  const subtitle = token?.name ? `Creator ${token?.name}` : 'Creator Buddy';
+  const { data: token, isLoading } = useCurrentToken();
 
-  if (!address) {
-    return null
+  if (isLoading) {
+    return (
+      <div className='flex gap-4 lg:gap-3.5'>
+        <div className='h-12 w-12 animate-pulse rounded-full bg-bg-weak-50' />
+        <div className='space-y-1'>
+          <div className='h-5 w-24 animate-pulse rounded bg-bg-weak-50' />
+          <div className='h-4 w-32 animate-pulse rounded bg-bg-weak-50' />
+        </div>
+      </div>
+    );
   }
+
+  if (!token) {
+    return null;
+  }
+
+  const subtitle = token.name ? `Creator ${token.name}` : 'Creator Buddy';
 
   return (
     <div className='flex gap-4 lg:gap-3.5'>
       <Avatar.Root size='48' color='blue'>
         <Avatar.Image
-          src={`/images/tokens/${token?.icon}`}
-          alt='buddy'
+          src={getTokenImageUrl(token.image)}
+          alt={token.name}
         />
       </Avatar.Root>
       <div className='space-y-1'>
-        <div className='text-label-md lg:text-label-lg'>{token?.name}</div>
+        <div className='text-label-md lg:text-label-lg'>{token.name}</div>
         <div className='text-paragraph-sm text-text-sub-600'>{subtitle}</div>
       </div>
     </div>

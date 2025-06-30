@@ -14,13 +14,17 @@ import {
 import { cn } from '@/utils/cn';
 import useBreakpoint from '@/hooks/use-breakpoint';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
-import { curatedTokens } from '@/components/sidebar';
+import { useAllTokens } from '@/hooks/use-all-tokens';
 import * as TopbarItemButton from '@/components/topbar-item-button';
+import * as Avatar from '@/components/ui/avatar';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { getTokenImageUrl } from '@/utils/image-url';
 
 export default function MobileMenu() {
   const { lg } = useBreakpoint();
   const [open, setOpen] = React.useState(false);
   const pathname = usePathname();
+  const { data: tokens, isLoading, error } = useAllTokens();
 
   React.useEffect(() => {
     setOpen(false);
@@ -119,34 +123,50 @@ export default function MobileMenu() {
                   className='data-[state=active]:duration-300 data-[state=active]:animate-in data-[state=active]:fade-in-0'
                 >
                   <div className='flex flex-col gap-5'>
-                    {curatedTokens.map(({ icon: Icon, label, href }, i) => (
-                      <Link
-                        key={label}
-                        href={href}
-                        aria-current={pathname === href ? 'page' : undefined}
-                        className={cn(
-                          'group relative flex w-full items-center gap-2.5 whitespace-nowrap px-5 text-text-sub-600',
-                        )}
-                      >
-                        {Icon}
-                        {/* <Icon
-                          className={cn(
-                            'transition-default size-[22px] shrink-0 text-text-sub-600',
-                            'group-aria-[current=page]:text-primary-base',
-                          )}
-                        /> */}
-                        <div className='flex-1 text-label-md'>{label}</div>
-                        <div
-                          className={cn(
-                            'transition-default absolute left-0 top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
-                            {
-                              'scale-0': pathname !== href,
-                            },
-                          )}
-                        />
-                        <RiArrowRightSLine className='size-6 text-text-sub-600' />
-                      </Link>
-                    ))}
+                    {isLoading ? (
+                      <div className='flex justify-center p-5'>
+                        <LoadingSpinner />
+                      </div>
+                    ) : error ? (
+                      <div className='p-5 text-center text-paragraph-sm text-text-soft-400'>
+                        Failed to load tokens
+                      </div>
+                    ) : !tokens || tokens.length === 0 ? (
+                      <div className='p-5 text-center text-paragraph-sm text-text-soft-400'>
+                        No tokens found
+                      </div>
+                    ) : (
+                      tokens.map((token) => {
+                        const href = `/solana/${token.address}`;
+                        return (
+                          <Link
+                            key={token.address}
+                            href={href}
+                            aria-current={pathname === href ? 'page' : undefined}
+                            className={cn(
+                              'group relative flex w-full items-center gap-2.5 whitespace-nowrap px-5 text-text-sub-600',
+                            )}
+                          >
+                            <Avatar.Root size='24' color='blue'>
+                              <Avatar.Image
+                                src={getTokenImageUrl(token.image)}
+                                alt={token.name}
+                              />
+                            </Avatar.Root>
+                            <div className='flex-1 text-label-md'>{token.name}</div>
+                            <div
+                              className={cn(
+                                'transition-default absolute left-0 top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
+                                {
+                                  'scale-0': pathname !== href,
+                                },
+                              )}
+                            />
+                            <RiArrowRightSLine className='size-6 text-text-sub-600' />
+                          </Link>
+                        );
+                      })
+                    )}
                   </div>
                 </TabMenuHorizontal.Content>
               </div>

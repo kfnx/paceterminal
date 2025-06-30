@@ -94,9 +94,11 @@ export function SidebarHeader({
       })}
     >
       <div className='flex flex-col items-start'>
-        <h1 className='text-2xl font-bold text-text-strong-950'>
-          {collapsed ? 'PACE' : 'PACETERMINAL'}
-        </h1>
+        <Link href='/'>
+          <h1 className='text-2xl font-bold text-text-strong-950'>
+            {collapsed ? 'PACE' : 'PACETERMINAL'}
+          </h1>
+        </Link>
         {!collapsed && (
           <p className='text-paragraph-sm text-text-sub-600'>Hong Wilaheng</p>
         )}

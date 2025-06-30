@@ -13,8 +13,13 @@ import WidgetTechnicalAnalysis from '@/components/widgets/widget-technical-analy
 import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
 import AdModal from '@/components/ad-modal';
 import { RightSideAd } from '@/components/RightSideAd';
+import type { Token } from '@/hooks/use-tokens';
 
-export function Content() {
+interface ContentProps {
+  token: Token;
+}
+
+export function Content({ token }: ContentProps) {
   return (
     <div className='flex flex-row gap-6 px-4 pb-6 lg:px-8 lg:pt-1' id='top'>
       <div className='flex flex-1 flex-col gap-6'>
