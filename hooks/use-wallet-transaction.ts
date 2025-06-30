@@ -142,10 +142,6 @@ export function useWalletTransaction(
         setError('Wallet not connected or missing required functions');
         return null;
       }
-      console.log('connection', connection.rpcEndpoint);
-      console.log('sender address', publicKey.toBase58());
-      console.log('receiver address', recipient);
-      console.log('token address', tokenMint);
 
       try {
         setIsExecuting(true);
@@ -164,7 +160,6 @@ export function useWalletTransaction(
           TOKEN_PROGRAM_ID,
           ASSOCIATED_TOKEN_PROGRAM_ID,
         );
-        console.log('sender ATA:', senderTokenAccount.toBase58());
 
         // Get recipient's token account
         const recipientTokenAccount = await getAssociatedTokenAddress(
@@ -174,7 +169,6 @@ export function useWalletTransaction(
           TOKEN_PROGRAM_ID,
           ASSOCIATED_TOKEN_PROGRAM_ID,
         );
-        console.log('recipient ATA:', recipientTokenAccount.toBase58());
 
         const transaction = new Transaction();
 
@@ -182,7 +176,6 @@ export function useWalletTransaction(
         try {
           await getAccount(connection, recipientTokenAccount);
         } catch (e: any) {
-          console.log('recipient token account does not exist:', e);
           // Create recipient token account if it doesn't exist
           transaction.add(
             createAssociatedTokenAccountInstruction(
@@ -246,10 +239,6 @@ export function useWalletTransaction(
         setError('Wallet not connected or missing required functions');
         return null;
       }
-      console.log('connection', connection.rpcEndpoint);
-      console.log('sender address', publicKey.toBase58());
-      console.log('receiver address', PAYMENT_RECIPIENT);
-      console.log('token address', USDC_MAINNET);
 
       try {
         setIsExecuting(true);
@@ -268,7 +257,6 @@ export function useWalletTransaction(
           TOKEN_PROGRAM_ID,
           ASSOCIATED_TOKEN_PROGRAM_ID,
         );
-        console.log('sender ATA:', senderTokenAccount.toBase58());
 
         // Get recipient's token account
         const recipientTokenAccount = await getAssociatedTokenAddress(
@@ -278,7 +266,6 @@ export function useWalletTransaction(
           TOKEN_PROGRAM_ID,
           ASSOCIATED_TOKEN_PROGRAM_ID,
         );
-        console.log('recipient ATA:', recipientTokenAccount.toBase58());
 
         const transaction = new Transaction();
 
@@ -286,7 +273,6 @@ export function useWalletTransaction(
         try {
           await getAccount(connection, recipientTokenAccount);
         } catch (e: any) {
-          console.log('recipient token account does not exist:', e);
           // Create recipient token account if it doesn't exist
           transaction.add(
             createAssociatedTokenAccountInstruction(

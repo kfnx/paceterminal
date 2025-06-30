@@ -152,8 +152,6 @@ export async function POST(request: Request) {
       if (transferDetails) break;
     }
 
-    console.log('🚀 ~ POST ~ transferDetails:', transferDetails);
-
     return NextResponse.json(
       {
         success: true,

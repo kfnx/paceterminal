@@ -376,7 +376,75 @@ export function TokensTable({
   );
 }
 
-export function TokenTablePagination() {
+export function TokenTablePagination({
+  currentPage = 1,
+  totalPages = 1,
+  pageSize = 10,
+  total = 0,
+  onPageChange,
+  onPageSizeChange,
+}: {
+  currentPage?: number;
+  totalPages?: number;
+  pageSize?: number;
+  total?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
+}) {
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages && onPageChange) {
+      onPageChange(page);
+    }
+  };
+
+  const handlePageSizeChange = (newPageSize: string) => {
+    if (onPageSizeChange) {
+      onPageSizeChange(parseInt(newPageSize, 10));
+    }
+  };
+
+  const generatePageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisiblePages = 7;
+
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages if total is small
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Always show first page
+      pages.push(1);
+
+      if (currentPage <= 4) {
+        // Show pages 2-5, then ellipsis, then last page
+        for (let i = 2; i <= 5; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 3) {
+        // Show first page, ellipsis, then last 4 pages
+        pages.push('...');
+        for (let i = totalPages - 4; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        // Show first page, ellipsis, current-1, current, current+1, ellipsis, last page
+        pages.push('...');
+        pages.push(currentPage - 1);
+        pages.push(currentPage);
+        pages.push(currentPage + 1);
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  };
+
+  const pageNumbers = generatePageNumbers();
+
   return (
     <div className='mt-auto'>
       <div className='mt-4 flex items-center justify-between py-4 lg:hidden'>
@@ -385,50 +453,79 @@ export function TokenTablePagination() {
           mode='stroke'
           size='xsmall'
           className='w-28'
+          disabled={currentPage <= 1}
+          onClick={() => handlePageChange(currentPage - 1)}
         >
           Previous
         </Button.Root>
         <span className='whitespace-nowrap text-center text-paragraph-sm text-text-sub-600'>
-          Page 2 of 16
+          Page {currentPage} of {totalPages}
         </span>
         <Button.Root
           variant='neutral'
           mode='stroke'
           size='xsmall'
           className='w-28'
+          disabled={currentPage >= totalPages}
+          onClick={() => handlePageChange(currentPage + 1)}
         >
           Next
         </Button.Root>
       </div>
       <div className='mt-10 hidden items-center gap-3 lg:flex'>
         <span className='flex-1 whitespace-nowrap text-paragraph-sm text-text-sub-600'>
-          Page 2 of 16
+          Page {currentPage} of {totalPages} ({total} total items)
         </span>
 
         <Pagination.Root>
-          <Pagination.NavButton>
+          <Pagination.NavButton
+            disabled={currentPage <= 1}
+            onClick={() => handlePageChange(1)}
+          >
             <Pagination.NavIcon as={RiArrowLeftDoubleLine} />
           </Pagination.NavButton>
-          <Pagination.NavButton>
+          <Pagination.NavButton
+            disabled={currentPage <= 1}
+            onClick={() => handlePageChange(currentPage - 1)}
+          >
             <Pagination.NavIcon as={RiArrowLeftSLine} />
           </Pagination.NavButton>
-          <Pagination.Item>1</Pagination.Item>
-          <Pagination.Item>2</Pagination.Item>
-          <Pagination.Item>3</Pagination.Item>
-          <Pagination.Item current>4</Pagination.Item>
-          <Pagination.Item>5</Pagination.Item>
-          <Pagination.Item>...</Pagination.Item>
-          <Pagination.Item>16</Pagination.Item>
-          <Pagination.NavButton>
+
+          {pageNumbers.map((page, index) => (
+            <React.Fragment key={index}>
+              {page === '...' ? (
+                <span className='px-2 text-paragraph-sm text-text-sub-600'>...</span>
+              ) : (
+                <Pagination.Item
+                  current={page === currentPage}
+                  onClick={() => handlePageChange(page as number)}
+                >
+                  {page}
+                </Pagination.Item>
+              )}
+            </React.Fragment>
+          ))}
+
+          <Pagination.NavButton
+            disabled={currentPage >= totalPages}
+            onClick={() => handlePageChange(totalPages)}
+          >
             <Pagination.NavIcon as={RiArrowRightDoubleLine} />
           </Pagination.NavButton>
-          <Pagination.NavButton>
+          <Pagination.NavButton
+            disabled={currentPage >= totalPages}
+            onClick={() => handlePageChange(currentPage + 1)}
+          >
             <Pagination.NavIcon as={RiArrowRightSLine} />
           </Pagination.NavButton>
         </Pagination.Root>
 
         <div className='flex flex-1 justify-end'>
-          <Select.Root size='xsmall' defaultValue='7'>
+          <Select.Root
+            size='xsmall'
+            value={pageSize.toString()}
+            onValueChange={handlePageSizeChange}
+          >
             <Select.Trigger className='w-auto'>
               <Select.Value />
             </Select.Trigger>

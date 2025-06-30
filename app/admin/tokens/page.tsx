@@ -2,20 +2,51 @@
 
 import * as React from 'react';
 import { RiAddLine } from '@remixicon/react';
+import { useAtomValue } from 'jotai';
 
 import { useTokens } from '@/hooks/use-tokens';
 import * as Alert from '@/components/ui/alert';
 import * as Button from '@/components/ui/button';
 import { TokenForm } from '@/components/token-form';
 import { TokensTable, TokenTablePagination } from '@/components/token-table';
+import {
+  tokenSearchAtom,
+  tokenTierFilterAtom,
+  tokenSortFieldAtom,
+  tokenSortOrderAtom
+} from './filters';
+import { Filters } from './filters';
 
 export default function AdminTokensPage() {
-  const { tokens, loading, error, refetch } = useTokens();
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(10);
+
+  // Get filter values to reset pagination when they change
+  const search = useAtomValue(tokenSearchAtom);
+  const tierFilter = useAtomValue(tokenTierFilterAtom);
+  const sortField = useAtomValue(tokenSortFieldAtom);
+  const sortOrder = useAtomValue(tokenSortOrderAtom);
+
+  const { tokens, total, page, totalPages, loading, error, refetch } = useTokens(currentPage, pageSize);
   const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
+
+  // Reset to page 1 when filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [search, tierFilter, sortField, sortOrder]);
 
   const handleAddSuccess = () => {
     setIsAddModalOpen(false);
     refetch();
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to first page when changing page size
   };
 
   if (loading) {
@@ -57,10 +88,21 @@ export default function AdminTokensPage() {
       </div>
 
       <div className='flex-1'>
-        <TokensTable data={tokens} onRefetch={refetch} />
+        <Filters />
+        <TokensTable
+          data={tokens}
+          onRefetch={refetch}
+        />
+        <TokenTablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          total={total}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+        />
       </div>
 
-      <TokenTablePagination />
 
       <TokenForm
         isOpen={isAddModalOpen}

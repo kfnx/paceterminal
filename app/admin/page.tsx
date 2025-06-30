@@ -10,7 +10,7 @@ import * as Button from '@/components/ui/button';
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-  const { tokens, loading: tokensLoading } = useTokens();
+  const { total: tokensTotal, loading: tokensLoading } = useTokens(1, 1); // Just get the count
   const { users, loading: usersLoading } = useUsers();
 
   const handleManageTokens = () => {
@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className='mb-4'>
             <div className='text-title-h3 text-text-strong-950'>
-              {tokensLoading ? '...' : tokens.length}
+              {tokensLoading ? '...' : tokensTotal}
             </div>
             <div className='text-paragraph-sm text-text-sub-600'>
               Total Tokens
@@ -62,7 +62,7 @@ export default function AdminDashboardPage() {
               User Management
             </h3>
             <p className='text-paragraph-sm text-text-sub-600'>
-              Manage users and their permissions
+              Manage user accounts and permissions
             </p>
           </div>
           <div className='mb-4'>

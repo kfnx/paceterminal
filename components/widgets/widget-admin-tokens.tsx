@@ -1,13 +1,21 @@
 'use client';
 
+import * as React from 'react';
 import { RiCoinLine, RiSearch2Line } from '@remixicon/react';
+import { useAtomValue } from 'jotai';
 
 import { cnExt } from '@/utils/cn';
 import { useTokens } from '@/hooks/use-tokens';
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
 import * as Kbd from '@/components/ui/kbd';
-import { TokensTable } from '@/components/token-table';
+import { TokensTable, TokenTablePagination } from '@/components/token-table';
+import {
+  tokenSearchAtom,
+  tokenTierFilterAtom,
+  tokenSortFieldAtom,
+  tokenSortOrderAtom
+} from '@/app/admin/tokens/filters';
 
 import IconCmd from '~/icons/icon-cmd.svg';
 
@@ -15,7 +23,30 @@ export default function WidgetAdminTokens({
   className,
   ...rest
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const { tokens, loading, error, refetch } = useTokens();
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(10);
+
+  // Get filter values to reset pagination when they change
+  const search = useAtomValue(tokenSearchAtom);
+  const tierFilter = useAtomValue(tokenTierFilterAtom);
+  const sortField = useAtomValue(tokenSortFieldAtom);
+  const sortOrder = useAtomValue(tokenSortOrderAtom);
+
+  const { tokens, total, totalPages, loading, error, refetch } = useTokens(currentPage, pageSize);
+
+  // Reset to page 1 when filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [search, tierFilter, sortField, sortOrder]);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
 
   return (
     <div
@@ -78,7 +109,28 @@ export default function WidgetAdminTokens({
       )}
 
       {!loading && !error && tokens.length > 0 && (
-        <TokensTable data={tokens} onRefetch={refetch} />
+        <>
+          <TokensTable
+            data={tokens}
+            onRefetch={refetch}
+            pagination={{
+              currentPage,
+              totalPages,
+              pageSize,
+              total,
+              onPageChange: handlePageChange,
+              onPageSizeChange: handlePageSizeChange,
+            }}
+          />
+          <TokenTablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            total={total}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        </>
       )}
     </div>
   );

@@ -115,7 +115,6 @@ export function useWalletConnection(
 
         // Use provided token mint or default
         const mint = tokenMint ? new PublicKey(tokenMint) : getUsdcMint();
-        console.log('Token mint:', mint.toString());
 
         const tokenAccount = await getAssociatedTokenAddress(
           mint,

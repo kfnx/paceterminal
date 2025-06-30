@@ -48,8 +48,6 @@ export async function POST(request: Request) {
 
     // Check if the transaction is for your address and meets the minimum amount
     if (to === PAYMENT_ADDRESS && amount >= 0.5) {
-      console.log('Transaction processed successfully', to, from, amount);
-
       // Store transaction in transactions table
       const { error: transactionError } = await supabase
         .from('transactions')

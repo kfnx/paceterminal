@@ -8,13 +8,11 @@ import { supabase } from '@/lib/supabase';
 export type Team = Tables<'teams'>;
 
 const fetchTeams = async (address: string): Promise<Team[]> => {
-  console.log('fetchTeams', address);
   const { data, error } = await supabase
     .from('teams')
     .select('*')
     .eq('address', address)
     .order('name', { ascending: true });
-  console.log('data', data);
 
   if (error) {
     throw error;

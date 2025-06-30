@@ -19,6 +19,7 @@ import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
 import * as Select from '@/components/ui/select';
 import * as Textarea from '@/components/ui/textarea';
+import { ImageUploader } from '@/components/ui/image-uploader';
 
 interface TokenFormProps {
   token?: Token | null;
@@ -54,6 +55,11 @@ const tierOptions = [
   { value: 3, label: 'B Tier' },
   { value: 4, label: 'C Tier' },
 ];
+
+// Helper function to validate Solana address
+const isValidSolanaAddress = (address: string): boolean => {
+  return /^[A-Za-z0-9]{44}$/.test(address.trim());
+};
 
 export function TokenForm({
   token,
@@ -103,6 +109,11 @@ export function TokenForm({
     }
     if (!formData.address.trim()) {
       toast.error('Token address is required');
+      return false;
+    }
+    // Basic Solana address validation (44 characters, alphanumeric)
+    if (!isValidSolanaAddress(formData.address.trim())) {
+      toast.error('Please enter a valid Solana token address (44 characters)');
       return false;
     }
     if (!formData.tier) {
@@ -189,32 +200,25 @@ export function TokenForm({
         </Modal.Header>
         <form onSubmit={handleSubmit}>
           <Modal.Body className='space-y-6'>
-            {/* Token Image */}
-            <div className='flex items-center gap-4'>
-              {formData.image ? (
-                <Avatar.Root size='64'>
-                  <Avatar.Image src={formData.image} />
-                </Avatar.Root>
-              ) : (
-                <div className='flex size-16 shrink-0 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
-                  <RiCoinLine className='size-8 text-text-sub-600' />
-                </div>
+            {/* Token Image Upload */}
+            <div className='flex flex-col gap-1'>
+              <Label.Root>Token Image</Label.Root>
+              <ImageUploader
+                tokenAddress={formData.address}
+                currentImageUrl={formData.image}
+                onImageUploaded={(imageUrl) => handleInputChange('image', imageUrl)}
+                disabled={!formData.address.trim() || !isValidSolanaAddress(formData.address.trim())}
+              />
+              {!formData.address.trim() && (
+                <p className='text-xs text-text-sub-600'>
+                  Enter the token address first to enable image upload
+                </p>
               )}
-              <div className='flex w-full flex-col gap-1'>
-                <Label.Root htmlFor='image'>Image URL</Label.Root>
-                <Input.Root>
-                  <Input.Wrapper>
-                    <Input.Input
-                      type='url'
-                      placeholder='https://example.com/token-image.png'
-                      value={formData.image}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleInputChange('image', e.target.value)
-                      }
-                    />
-                  </Input.Wrapper>
-                </Input.Root>
-              </div>
+              {formData.address.trim() && !isValidSolanaAddress(formData.address.trim()) && (
+                <p className='text-xs text-text-sub-600'>
+                  Please enter a valid Solana token address (44 characters) to enable image upload
+                </p>
+              )}
             </div>
 
             {/* Token Name and Label */}

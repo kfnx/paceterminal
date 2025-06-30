@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      flywheels: {
+        Row: {
+          address: string
+          image: string | null
+        }
+        Insert: {
+          address: string
+          image?: string | null
+        }
+        Update: {
+          address?: string
+          image?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flywheels_address_fkey"
+            columns: ["address"]
+            isOneToOne: true
+            referencedRelation: "tokens"
+            referencedColumns: ["address"]
+          },
+          {
+            foreignKeyName: "flywheels_address_fkey1"
+            columns: ["address"]
+            isOneToOne: true
+            referencedRelation: "tokens"
+            referencedColumns: ["address"]
+          },
+        ]
+      }
       logs: {
         Row: {
           created_at: string

@@ -6,7 +6,6 @@ import { supabase } from '@/lib/supabase';
 import type { Token } from '@/hooks/use-tokens';
 
 export function useToken(address: string) {
-  console.log('useToken', address);
   return useQuery({
     queryKey: ['token', address],
     queryFn: async (): Promise<Token | null> => {
@@ -15,7 +14,6 @@ export function useToken(address: string) {
         .select('*')
         .eq('address', address)
         .single();
-      console.log('data', data);
 
       if (error) {
         if (error.code === 'PGRST116') {

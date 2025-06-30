@@ -18,7 +18,6 @@ interface TokenDetailPageProps {
 }
 
 export function TokenDetailPage({ address }: TokenDetailPageProps) {
-  console.log("TokenDetailPage", address);
   const { data: token, isLoading, error, refetch } = useToken(address);
   const { teams, loading: teamsLoading, error: teamsError } = useTeams(address);
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
@@ -229,9 +228,19 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         </div>
 
         <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
-            Team
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
+              Team
+            </h3>
+            <Button.Root
+              variant="neutral"
+              mode="stroke"
+              onClick={() => setIsEditModalOpen(true)}
+            >
+              <RiEditLine className="size-4" />
+              Edit Team Members
+            </Button.Root>
+          </div>
           {teamsLoading ? (
             <div className="text-paragraph-sm text-text-sub-600">Loading team...</div>
           ) : teamsError ? (

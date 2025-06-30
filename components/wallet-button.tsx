@@ -20,12 +20,10 @@ export function WalletButton() {
   // }> | null>(null);
   const { buttonState, onConnect, onDisconnect, onSelectWallet, walletIcon } = useWalletMultiButton({
     onSelectWallet: (wallet) => {
-      // console.log('wallet', wallet);
       wallet.onSelectWallet(wallet.wallets[0].adapter.name);
       // setWalletModalConfig(wallet);
       // if (Array.isArray(wallet.wallets) && wallet.wallets.length > 0) {
       //   const walletAdapter = wallet.wallets[0].adapter.name;
-      //   console.log('wallet.wallets', walletAdapter);
       //   // setWalletModalConfig(null);
       //   return walletAdapter;
       // }
@@ -110,7 +108,6 @@ export function WalletButton() {
             <Button.Root
               key={wallet.adapter.name}
               onClick={() => {
-                console.log('wallet.adapter.name', wallet.adapter.name);
                 walletModalConfig.onSelectWallet(wallet.adapter.name);
                 setWalletModalConfig(null);
               }}
