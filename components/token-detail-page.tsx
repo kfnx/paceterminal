@@ -1,19 +1,25 @@
 'use client';
 
 import * as React from 'react';
-import { RiAddLine, RiCoinLine, RiEditLine, RiTwitterLine } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiCoinLine,
+  RiEditLine,
+  RiTwitterLine,
+} from '@remixicon/react';
 import { toast } from 'sonner';
 
-import { useToken } from '@/hooks/use-token';
-import { useTeams, type Team } from '@/hooks/use-teams';
 import { useFlywheel, type Flywheel } from '@/hooks/use-flywheel';
+import { useTeams, type Team } from '@/hooks/use-teams';
+import { useToken } from '@/hooks/use-token';
 import type { Token } from '@/hooks/use-tokens';
 import * as Avatar from '@/components/ui/avatar';
-import * as Button from '@/components/ui/button';
 import * as Badge from '@/components/ui/badge';
+import * as Button from '@/components/ui/button';
 
-import { TokenForm } from './token-form';
 import { FlywheelForm } from './flywheel-form';
+import { TeamForm } from './team-form';
+import { TokenForm } from './token-form';
 
 interface TokenDetailPageProps {
   address: string;
@@ -22,10 +28,17 @@ interface TokenDetailPageProps {
 export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const { data: token, isLoading, error, refetch } = useToken(address);
   const { teams, loading: teamsLoading, error: teamsError } = useTeams(address);
-  const { flywheel, loading: flywheelLoading, error: flywheelError, refetch: refetchFlywheel } = useFlywheel(address);
+  const {
+    flywheel,
+    loading: flywheelLoading,
+    error: flywheelError,
+    refetch: refetchFlywheel,
+  } = useFlywheel(address);
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
-  const [isEditFlywheelModalOpen, setIsEditFlywheelModalOpen] = React.useState(false);
+  const [isEditFlywheelModalOpen, setIsEditFlywheelModalOpen] =
+    React.useState(false);
+  const [isEditTeamModalOpen, setIsEditTeamModalOpen] = React.useState(false);
 
   const handleSuccess = () => {
     refetch();
@@ -37,18 +50,25 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
     toast.success('Flywheel updated successfully!');
   };
 
+  const handleTeamSuccess = () => {
+    refetch();
+    toast.success('Team updated successfully!');
+  };
+
   if (isLoading) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <div className="text-paragraph-md text-text-sub-600">Loading token...</div>
+      <div className='flex min-h-[400px] items-center justify-center'>
+        <div className='text-paragraph-md text-text-sub-600'>
+          Loading token...
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <div className="text-paragraph-md text-red-600">
+      <div className='flex min-h-[400px] items-center justify-center'>
+        <div className='text-paragraph-md text-red-600'>
           Error loading token: {error.message}
         </div>
       </div>
@@ -57,24 +77,28 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
 
   if (!token) {
     return (
-      <div className="space-y-6">
-        <div className="flex min-h-[400px] flex-col items-center justify-center space-y-4">
-          <div className="flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200">
-            <RiCoinLine className="size-8 text-text-sub-600" />
+      <div className='space-y-6'>
+        <div className='flex min-h-[400px] flex-col items-center justify-center space-y-4'>
+          <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+            <RiCoinLine className='size-8 text-text-sub-600' />
           </div>
-          <div className="text-center">
-            <h2 className="text-heading-md font-semibold text-text-strong-950">
+          <div className='text-center'>
+            <h2 className='text-heading-md font-semibold text-text-strong-950'>
               Token Not Found
             </h2>
-            <p className="mt-2 text-paragraph-sm text-text-sub-600">
-              The token with address <code className="bg-bg-soft-100 rounded px-1 py-0.5 text-paragraph-xs">{address}</code> does not exist in the database.
+            <p className='mt-2 text-paragraph-sm text-text-sub-600'>
+              The token with address{' '}
+              <code className='bg-bg-soft-100 rounded px-1 py-0.5 text-paragraph-xs'>
+                {address}
+              </code>{' '}
+              does not exist in the database.
             </p>
           </div>
           <Button.Root
             onClick={() => setIsCreateModalOpen(true)}
-            className="mt-4"
+            className='mt-4'
           >
-            <RiAddLine className="size-4" />
+            <RiAddLine className='size-4' />
             Create Token
           </Button.Root>
         </div>
@@ -108,33 +132,33 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const tierInfo = getTierLabel(token.tier || 0);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+    <div className='space-y-6'>
+      <div className='flex items-center justify-between'>
+        <div className='flex items-center gap-4'>
           {token.image ? (
-            <Avatar.Root size="64">
+            <Avatar.Root size='64'>
               <Avatar.Image src={token.image} />
             </Avatar.Root>
           ) : (
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200">
-              <RiCoinLine className="size-8 text-text-sub-600" />
+            <div className='flex size-16 shrink-0 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+              <RiCoinLine className='size-8 text-text-sub-600' />
             </div>
           )}
           <div>
-            <h1 className="text-heading-lg font-semibold text-text-strong-950">
+            <h1 className='text-heading-lg font-semibold text-text-strong-950'>
               {token.name}
             </h1>
             {token.label && (
-              <p className="mt-1 text-paragraph-sm text-text-sub-600">
+              <p className='mt-1 text-paragraph-sm text-text-sub-600'>
                 {token.label}
               </p>
             )}
-            <div className="mt-2 flex items-center gap-2">
-              <Badge.Root variant="filled" color={tierInfo.color}>
+            <div className='mt-2 flex items-center gap-2'>
+              <Badge.Root variant='filled' color={tierInfo.color}>
                 {tierInfo.label}
               </Badge.Root>
               {token.ordering !== null && (
-                <Badge.Root variant="stroke" color="gray">
+                <Badge.Root variant='stroke' color='gray'>
                   Order: {token.ordering}
                 </Badge.Root>
               )}
@@ -143,64 +167,64 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
+      <div className='grid gap-6 md:grid-cols-2'>
+        <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
+          <div className='mb-4 flex items-center justify-between'>
+            <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
               Token Information
             </h3>
             <Button.Root
-              variant="neutral"
-              mode="stroke"
+              variant='neutral'
+              mode='stroke'
               onClick={() => setIsEditModalOpen(true)}
-              size="xsmall"
+              size='xsmall'
             >
-              <RiEditLine className="size-4" />
+              <RiEditLine className='size-4' />
             </Button.Root>
           </div>
-          <div className="space-y-4">
+          <div className='space-y-4'>
             <div>
-              <label className="text-paragraph-sm font-medium text-text-sub-600">
+              <label className='text-paragraph-sm font-medium text-text-sub-600'>
                 Address
               </label>
-              <p className="mt-1 break-all font-mono text-paragraph-sm text-text-strong-950">
+              <p className='mt-1 break-all font-mono text-paragraph-sm text-text-strong-950'>
                 {token.address}
               </p>
             </div>
             {token.description && (
               <div>
-                <label className="text-paragraph-sm font-medium text-text-sub-600">
+                <label className='text-paragraph-sm font-medium text-text-sub-600'>
                   Description
                 </label>
-                <p className="mt-1 text-paragraph-sm text-text-strong-950">
+                <p className='mt-1 text-paragraph-sm text-text-strong-950'>
                   {token.description}
                 </p>
               </div>
             )}
             <div>
-              <label className="text-paragraph-sm font-medium text-text-sub-600">
+              <label className='text-paragraph-sm font-medium text-text-sub-600'>
                 Tier
               </label>
-              <p className="mt-1 text-paragraph-sm text-text-strong-950">
+              <p className='mt-1 text-paragraph-sm text-text-strong-950'>
                 {tierInfo.label}
               </p>
             </div>
             {token.ordering !== null && (
               <div>
-                <label className="text-paragraph-sm font-medium text-text-sub-600">
+                <label className='text-paragraph-sm font-medium text-text-sub-600'>
                   Ordering
                 </label>
-                <p className="mt-1 text-paragraph-sm text-text-strong-950">
+                <p className='mt-1 text-paragraph-sm text-text-strong-950'>
                   {token.ordering}
                 </p>
               </div>
             )}
             {token.image && (
               <div>
-                <label className="text-paragraph-sm font-medium text-text-sub-600">
+                <label className='text-paragraph-sm font-medium text-text-sub-600'>
                   Image URL
                 </label>
-                <p className="mt-1 break-all text-paragraph-sm text-text-strong-950">
+                <p className='mt-1 break-all text-paragraph-sm text-text-strong-950'>
                   {token.image}
                 </p>
               </div>
@@ -208,77 +232,91 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
           </div>
         </div>
 
-        <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
+        <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
+          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
             Metrics
           </h3>
         </div>
 
-        <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
+        <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
+          <div className='mb-4 flex items-center justify-between'>
+            <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
               Team
             </h3>
             <Button.Root
-              variant="neutral"
-              mode="stroke"
-              // onClick={() => setIsEditTeamModalOpen(true)}
-              size="xsmall"
+              variant='neutral'
+              mode='stroke'
+              onClick={() => setIsEditTeamModalOpen(true)}
+              size='xsmall'
             >
-              <RiEditLine className="size-4" />
+              <RiEditLine className='size-4' />
             </Button.Root>
           </div>
           {teamsLoading ? (
-            <div className="text-paragraph-sm text-text-sub-600">Loading team...</div>
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Loading team...
+            </div>
           ) : teamsError ? (
-            <div className="text-paragraph-sm text-red-600">
+            <div className='text-paragraph-sm text-red-600'>
               Error loading team: {teamsError}
             </div>
           ) : teams.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
               {teams.map((team: Team) => (
-                <div key={team.id} className="flex flex-col items-center gap-3 text-center">
-                  <div className="flex items-center gap-1">
+                <div
+                  key={team.id}
+                  className='flex flex-col items-center gap-3 text-center'
+                >
+                  <div className='flex items-center gap-1'>
                     {team.image ? (
-                      <Avatar.Root size="64">
-                        <Avatar.Image src={team.image} alt={team.name || 'Team member'} />
+                      <Avatar.Root size='64'>
+                        <Avatar.Image
+                          src={team.image}
+                          alt={team.name || 'Team member'}
+                        />
                       </Avatar.Root>
                     ) : (
-                      <Avatar.Root size="64" placeholderType="user" />
+                      <Avatar.Root size='64' placeholderType='user' />
                     )}
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <div className="text-label-sm text-text-strong-950">{team.name}</div>
+                  <div className='flex flex-col gap-1'>
+                    <div className='text-label-sm text-text-strong-950'>
+                      {team.name}
+                    </div>
                     {team.role && (
-                      <div className="text-paragraph-xs text-text-sub-600">{team.role}</div>
+                      <div className='text-paragraph-xs text-text-sub-600'>
+                        {team.role}
+                      </div>
                     )}
                   </div>
                   {team.x_account && (
-                    <div className="flex flex-row items-center gap-1 text-paragraph-xs text-text-sub-600">
+                    <div className='flex flex-row items-center gap-1 text-paragraph-xs text-text-sub-600'>
                       <RiTwitterLine />
                       <a
                         href={`https://x.com/${team.x_account}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-text-strong-950"
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='hover:text-text-strong-950'
                       >
                         @{team.x_account}
                       </a>
                     </div>
                   )}
                   {team.description && (
-                    <div className="text-paragraph-xs text-text-sub-600">{team.description}</div>
+                    <div className='text-paragraph-xs text-text-sub-600'>
+                      {team.description}
+                    </div>
                   )}
                 </div>
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center gap-4 py-8">
-              <div className="flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200">
-                <RiCoinLine className="size-8 text-text-sub-600" />
+            <div className='flex flex-col items-center justify-center gap-4 py-8'>
+              <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+                <RiCoinLine className='size-8 text-text-sub-600' />
               </div>
-              <div className="text-center">
-                <p className="text-paragraph-sm text-text-sub-600">
+              <div className='text-center'>
+                <p className='text-paragraph-sm text-text-sub-600'>
                   No team members found for this token.
                 </p>
               </div>
@@ -286,41 +324,43 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
           )}
         </div>
 
-        <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
+        <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
+          <div className='mb-4 flex items-center justify-between'>
+            <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
               Flywheel
             </h3>
             <Button.Root
-              variant="neutral"
-              mode="stroke"
+              variant='neutral'
+              mode='stroke'
               onClick={() => setIsEditFlywheelModalOpen(true)}
-              size="xsmall"
+              size='xsmall'
             >
-              <RiEditLine className="size-4" />
+              <RiEditLine className='size-4' />
             </Button.Root>
           </div>
           {flywheelLoading ? (
-            <div className="text-paragraph-sm text-text-sub-600">Loading flywheel...</div>
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Loading flywheel...
+            </div>
           ) : flywheelError ? (
-            <div className="text-paragraph-sm text-red-600">
+            <div className='text-paragraph-sm text-red-600'>
               Error loading flywheel: {flywheelError}
             </div>
           ) : flywheel && flywheel.image ? (
-            <div className="w-full">
+            <div className='w-full'>
               <img
                 src={flywheel.image}
-                alt="Flywheel"
-                className="h-full w-full rounded-lg object-cover"
+                alt='Flywheel'
+                className='h-full w-full rounded-lg object-cover'
               />
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center gap-4 py-8">
-              <div className="flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200">
-                <RiCoinLine className="size-8 text-text-sub-600" />
+            <div className='flex flex-col items-center justify-center gap-4 py-8'>
+              <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+                <RiCoinLine className='size-8 text-text-sub-600' />
               </div>
-              <div className="text-center">
-                <p className="text-paragraph-sm text-text-sub-600">
+              <div className='text-center'>
+                <p className='text-paragraph-sm text-text-sub-600'>
                   No flywheel found for this token.
                 </p>
               </div>
@@ -328,20 +368,20 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
           )}
         </div>
 
-        <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
+        <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
+          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
             Technical Analysis
           </h3>
         </div>
 
-        <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
+        <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
+          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
             Alpha
           </h3>
         </div>
 
-        <div className="rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs">
-          <h3 className="text-heading-sm mb-4 font-semibold text-text-strong-950">
+        <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
+          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
             Updates
           </h3>
         </div>
@@ -361,6 +401,14 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         onClose={() => setIsEditFlywheelModalOpen(false)}
         onSuccess={handleFlywheelSuccess}
       />
+
+      <TeamForm
+        teams={teams}
+        tokenAddress={address}
+        isOpen={isEditTeamModalOpen}
+        onClose={() => setIsEditTeamModalOpen(false)}
+        onSuccess={handleTeamSuccess}
+      />
     </div>
   );
-} 
+}

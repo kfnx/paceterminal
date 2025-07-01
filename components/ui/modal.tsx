@@ -145,7 +145,10 @@ const ModalDescription = React.forwardRef<
   return (
     <DialogPrimitive.Description
       ref={forwardedRef}
-      className={cnExt('text-paragraph-xs text-text-sub-600', className)}
+      className={cnExt(
+        'self-center text-paragraph-xs text-text-sub-600',
+        className,
+      )}
       {...rest}
     />
   );
