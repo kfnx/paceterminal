@@ -1,8 +1,8 @@
 'use client';
 
 import {
+  RiBarChartLine,
   RiFlashlightLine,
-  RiTeamLine,
 } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
@@ -16,7 +16,7 @@ export default function WidgetTechnicalAnalysis({
   return (
     <WidgetBox.Root {...rest} id='technical-analysis'>
       <WidgetBox.Header>
-        <WidgetBox.HeaderIcon as={RiTeamLine} />
+        <WidgetBox.HeaderIcon as={RiBarChartLine} />
         Technical Analysis
       </WidgetBox.Header>
 
