@@ -81,6 +81,47 @@ export type Database = {
         }
         Relationships: []
       }
+      metrics_static: {
+        Row: {
+          address: string
+          created_at: string
+          description: string | null
+          id: number
+          label: string
+          source: string | null
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          description?: string | null
+          id?: number
+          label: string
+          source?: string | null
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          description?: string | null
+          id?: number
+          label?: string
+          source?: string | null
+          updated_at?: string
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metrics_static_address_fkey"
+            columns: ["address"]
+            isOneToOne: false
+            referencedRelation: "tokens"
+            referencedColumns: ["address"]
+          },
+        ]
+      }
       teams: {
         Row: {
           address: string | null
@@ -112,6 +153,38 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "teams_address_fkey"
+            columns: ["address"]
+            isOneToOne: false
+            referencedRelation: "tokens"
+            referencedColumns: ["address"]
+          },
+        ]
+      }
+      technical_analysis: {
+        Row: {
+          address: string
+          created_at: string
+          description: string | null
+          id: number
+          image: string | null
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          description?: string | null
+          id?: number
+          image?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          description?: string | null
+          id?: number
+          image?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "technical_analysis_address_fkey"
             columns: ["address"]
             isOneToOne: false
             referencedRelation: "tokens"
