@@ -1,8 +1,9 @@
 'use client';
 
-import { RiNewsLine, RiVipDiamondLine } from '@remixicon/react';
+import { RiNewsLine, RiVipDiamondLine, RiLockLine } from '@remixicon/react';
 
 import type { Token } from '@/hooks/use-tokens';
+import { useMemberStatus } from '@/hooks/use-member-status';
 import AdModal from '@/components/ad-modal';
 import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
 import { RightSideAd } from '@/components/RightSideAd';
@@ -17,7 +18,29 @@ interface ContentProps {
   token: Token;
 }
 
+function MemberOnlyPlaceholder({ title, icon }: { title: string; icon: React.ComponentType<any> }) {
+  return (
+    <WidgetPlaceholder title={title} icon={icon}>
+      <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
+        <div className='flex size-16 items-center justify-center rounded-full bg-primary-base/10'>
+          <RiLockLine className='size-8 text-primary-base' />
+        </div>
+        <div className='text-center'>
+          <div className='text-paragraph-sm font-medium text-text-strong-950'>
+            Members Only Content
+          </div>
+          <div className='mt-1 text-paragraph-xs text-text-sub-600'>
+            Unlock premium {title.toLowerCase()} insights with a membership
+          </div>
+        </div>
+      </div>
+    </WidgetPlaceholder>
+  );
+}
+
 export function Content({ token }: ContentProps) {
+  const { isMember } = useMemberStatus();
+
   return (
     <div className='flex flex-row gap-6 px-4 pb-6 lg:px-8 lg:pt-1' id='top'>
       <div className='flex flex-1 flex-col gap-6'>
@@ -26,22 +49,35 @@ export function Content({ token }: ContentProps) {
         <WidgetTeam />
         <WidgetFlywheel />
         <WidgetTechnicalAnalysis />
-        <WidgetPlaceholder title='Alpha' icon={RiVipDiamondLine}>
-          <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
-            <IllustrationEmptySavedActions className='size-[108px]' />
-            <div className='text-center text-paragraph-sm text-text-soft-400'>
-              Alpha empty.
+        
+        {/* Alpha Section - Members Only */}
+        {isMember ? (
+          <WidgetPlaceholder title='Alpha' icon={RiVipDiamondLine}>
+            <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
+              <IllustrationEmptySavedActions className='size-[108px]' />
+              <div className='text-center text-paragraph-sm text-text-soft-400'>
+                Alpha empty.
+              </div>
             </div>
-          </div>
-        </WidgetPlaceholder>
-        <WidgetPlaceholder title='Updates' icon={RiNewsLine}>
-          <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
-            <IllustrationEmptySavedActions className='size-[108px]' />
-            <div className='text-center text-paragraph-sm text-text-soft-400'>
-              Updates empty.
+          </WidgetPlaceholder>
+        ) : (
+          <MemberOnlyPlaceholder title='Alpha' icon={RiVipDiamondLine} />
+        )}
+
+        {/* Updates Section - Members Only */}
+        {isMember ? (
+          <WidgetPlaceholder title='Updates' icon={RiNewsLine}>
+            <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
+              <IllustrationEmptySavedActions className='size-[108px]' />
+              <div className='text-center text-paragraph-sm text-text-soft-400'>
+                Updates empty.
+              </div>
             </div>
-          </div>
-        </WidgetPlaceholder>
+          </WidgetPlaceholder>
+        ) : (
+          <MemberOnlyPlaceholder title='Updates' icon={RiNewsLine} />
+        )}
+
         <AdModal />
       </div>
       <RightSideAd />

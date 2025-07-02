@@ -102,7 +102,7 @@ export default function AdModal() {
                 ? `Please wait ${timeToClose / 1000} seconds to close the Sponsored Ad`
                 : 'Sponsored Ad'}
             </span>
-            <WalletButton />
+            <WalletButton connectText='Connect to Remove Ads' />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className='flex items-start gap-4'>
