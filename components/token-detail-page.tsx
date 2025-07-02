@@ -27,7 +27,12 @@ interface TokenDetailPageProps {
 
 export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const { data: token, isLoading, error, refetch } = useToken(address);
-  const { teams, loading: teamsLoading, error: teamsError } = useTeams(address);
+  const {
+    teams,
+    loading: teamsLoading,
+    error: teamsError,
+    refetch: refetchTeams,
+  } = useTeams(address);
   const {
     flywheel,
     loading: flywheelLoading,
@@ -40,6 +45,8 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
     React.useState(false);
   const [isEditTeamModalOpen, setIsEditTeamModalOpen] = React.useState(false);
 
+  console.log(teams);
+
   const handleSuccess = () => {
     refetch();
     toast.success('Token updated successfully!');
@@ -51,7 +58,7 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
   };
 
   const handleTeamSuccess = () => {
-    refetch();
+    refetchTeams();
     toast.success('Team updated successfully!');
   };
 
