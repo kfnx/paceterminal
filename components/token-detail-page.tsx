@@ -11,6 +11,7 @@ import {
 import { toast } from 'sonner';
 
 import { useFlywheel, type Flywheel } from '@/hooks/use-flywheel';
+import { useMetrics, type Metric } from '@/hooks/use-metrics';
 import { useTeams, type Team } from '@/hooks/use-teams';
 import {
   useTechnicalAnalysis,
@@ -23,6 +24,7 @@ import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
 
 import { FlywheelForm } from './flywheel-form';
+import { MetricsForm } from './metrics-form';
 import { TeamForm } from './team-form';
 import { TechnicalAnalysisForm } from './technical-analysis-form';
 import { TokenForm } from './token-form';
@@ -51,6 +53,12 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
     error: technicalAnalysisError,
     refetch: refetchTechnicalAnalysis,
   } = useTechnicalAnalysis(address);
+  const {
+    metrics,
+    loading: metricsLoading,
+    error: metricsError,
+    refetch: refetchMetrics,
+  } = useMetrics(address);
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [isEditFlywheelModalOpen, setIsEditFlywheelModalOpen] =
@@ -62,6 +70,11 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
   ] = React.useState(false);
   const [selectedTechnicalAnalysis, setSelectedTechnicalAnalysis] =
     React.useState<TechnicalAnalysis | null>(null);
+  const [isEditMetricsModalOpen, setIsEditMetricsModalOpen] =
+    React.useState(false);
+  const [selectedMetric, setSelectedMetric] = React.useState<Metric | null>(
+    null,
+  );
 
   const handleSuccess = () => {
     refetch();
@@ -102,6 +115,33 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
     } catch (error) {
       console.error('Error deleting technical analysis:', error);
       toast.error('Failed to delete technical analysis');
+    }
+  };
+
+  const handleMetricsSuccess = () => {
+    refetchMetrics();
+    toast.success('Metric updated successfully!');
+  };
+
+  const handleDeleteMetric = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this metric?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/metrics/delete?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete metric');
+      }
+
+      refetchMetrics();
+      toast.success('Metric deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting metric:', error);
+      toast.error('Failed to delete metric');
     }
   };
 
@@ -283,9 +323,96 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         </div>
 
         <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
-          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
-            Metrics
-          </h3>
+          <div className='mb-4 flex items-center justify-between'>
+            <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
+              Metrics
+            </h3>
+            <Button.Root
+              variant='neutral'
+              mode='stroke'
+              onClick={() => {
+                setSelectedMetric(null);
+                setIsEditMetricsModalOpen(true);
+              }}
+              size='xsmall'
+            >
+              <RiAddLine className='size-4' />
+            </Button.Root>
+          </div>
+          {metricsLoading ? (
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Loading metrics...
+            </div>
+          ) : metricsError ? (
+            <div className='text-paragraph-sm text-red-600'>
+              Error loading metrics: {metricsError}
+            </div>
+          ) : metrics.length > 0 ? (
+            <div className='grid gap-4 md:grid-cols-2'>
+              {metrics.map((metric: Metric) => (
+                <div
+                  key={metric.id}
+                  className='bg-bg-soft-100 relative rounded-lg p-4'
+                >
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1'>
+                      <div className='mb-2 flex items-center justify-between'>
+                        <h4 className='text-label-sm font-medium text-text-strong-950'>
+                          {metric.label}
+                        </h4>
+                      </div>
+                      <div className='mb-2 text-paragraph-lg font-semibold text-text-strong-950'>
+                        {metric.value}
+                      </div>
+                      {metric.description && (
+                        <div className='mb-2 text-paragraph-xs text-text-sub-600'>
+                          {metric.description}
+                        </div>
+                      )}
+                      <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
+                        <span>
+                          {new Date(metric.created_at).toLocaleDateString()}
+                        </span>
+                        {metric.source && <span>Source: {metric.source}</span>}
+                      </div>
+                    </div>
+                    <div className='ml-3 flex flex-col gap-2'>
+                      <Button.Root
+                        variant='neutral'
+                        mode='stroke'
+                        onClick={() => {
+                          setSelectedMetric(metric);
+                          setIsEditMetricsModalOpen(true);
+                        }}
+                        size='xsmall'
+                      >
+                        <RiEditLine className='size-4' />
+                      </Button.Root>
+                      <Button.Root
+                        variant='error'
+                        mode='stroke'
+                        onClick={() => handleDeleteMetric(metric.id)}
+                        size='xsmall'
+                      >
+                        <RiDeleteBinLine className='size-4' />
+                      </Button.Root>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className='flex flex-col items-center justify-center gap-4 py-8'>
+              <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+                <RiCoinLine className='size-8 text-text-sub-600' />
+              </div>
+              <div className='text-center'>
+                <p className='text-paragraph-sm text-text-sub-600'>
+                  No metrics found for this token.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
@@ -479,7 +606,7 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
                         <RiEditLine className='size-4' />
                       </Button.Root>
                       <Button.Root
-                        variant='destructive'
+                        variant='error'
                         mode='stroke'
                         onClick={() => handleDeleteTechnicalAnalysis(analysis.id)}
                         size='xsmall'
@@ -550,6 +677,17 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
           setSelectedTechnicalAnalysis(null);
         }}
         onSuccess={handleTechnicalAnalysisSuccess}
+      />
+
+      <MetricsForm
+        metric={selectedMetric || undefined}
+        tokenAddress={address}
+        isOpen={isEditMetricsModalOpen}
+        onClose={() => {
+          setIsEditMetricsModalOpen(false);
+          setSelectedMetric(null);
+        }}
+        onSuccess={handleMetricsSuccess}
       />
     </div>
   );

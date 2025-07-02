@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useParams } from 'next/navigation';
 import {
   RiAddLine,
   RiArrowLeftDownFill,
@@ -11,6 +12,7 @@ import {
 
 import { cnExt } from '@/utils/cn';
 import { useCurrentToken } from '@/hooks/use-current-token';
+import { useMetrics } from '@/hooks/use-metrics';
 import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
@@ -22,12 +24,15 @@ import * as WidgetBox from '@/components/widget-box';
 export default function WidgetMetrics({
   ...rest
 }: React.ComponentPropsWithoutRef<typeof WidgetBox.Root>) {
-  const { data: token, isLoading } = useCurrentToken();
+  const params = useParams();
+  const address = params.address as string;
+  const { metrics, loading } = useMetrics(address);
 
-  // const metrics = [];
-  // for (let i = 0; i < (token?.metrics?.length ?? 0); i += 3) {
-  //   metrics.push(token?.metrics?.slice(i, i + 3) ?? []);
-  // }
+  // Group metrics into rows of 3 for display
+  const metricRows = [];
+  for (let i = 0; i < metrics.length; i += 3) {
+    metricRows.push(metrics.slice(i, i + 3));
+  }
 
   return (
     <WidgetBox.Root {...rest} id='metrics'>
@@ -48,14 +53,52 @@ export default function WidgetMetrics({
 
       <div className='flex flex-col gap-4'>
         <Divider.Root />
-        <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
-          <IllustrationEmptyBudgetOverview className='size-[108px]' />
-          <div className='text-center text-paragraph-sm text-text-soft-400'>
-            {isLoading
-              ? 'Loading metrics...'
-              : 'Metrics will be available when database schema is updated.'}
+        
+        {!loading && metrics && metrics.length > 0 ? (
+          <div className='space-y-4 p-4'>
+            {metricRows.map((row, rowIndex) => (
+              <div key={rowIndex} className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+                {row.map((metric) => (
+                  <div
+                    key={metric.id}
+                    className='bg-bg-soft-100 rounded-lg p-4'
+                  >
+                    <div className='mb-2'>
+                      <h4 className='text-label-sm font-medium text-text-strong-950'>
+                        {metric.label}
+                      </h4>
+                    </div>
+                    <div className='mb-2 text-paragraph-lg font-semibold text-text-strong-950'>
+                      {metric.value}
+                    </div>
+                    {metric.description && (
+                      <div className='mb-2 text-paragraph-xs text-text-sub-600'>
+                        {metric.description}
+                      </div>
+                    )}
+                    <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
+                      <span>
+                        {new Date(metric.created_at).toLocaleDateString()}
+                      </span>
+                      {metric.source && (
+                        <span className='text-right'>
+                          Source: {metric.source}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
-        </div>
+        ) : (
+          <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
+            <IllustrationEmptyBudgetOverview className='size-[108px]' />
+            <div className='text-center text-paragraph-sm text-text-soft-400'>
+              {loading ? 'Loading metrics...' : 'Metrics empty.'}
+            </div>
+          </div>
+        )}
       </div>
     </WidgetBox.Root>
   );
