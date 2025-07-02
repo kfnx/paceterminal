@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
+
 import { useAnalytics } from '@/hooks/use-analytics';
 
 function AnalyticsPageTrackerInner() {
@@ -28,4 +29,4 @@ export function AnalyticsPageTracker() {
       <AnalyticsPageTrackerInner />
     </Suspense>
   );
-} 
+}

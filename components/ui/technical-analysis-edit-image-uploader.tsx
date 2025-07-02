@@ -4,7 +4,6 @@ import { useCallback, useState, type ChangeEvent } from 'react';
 import {
   RiCheckLine,
   RiCloseLine,
-  RiErrorWarningLine,
   RiImageLine,
   RiUploadLine,
 } from '@remixicon/react';
@@ -13,8 +12,8 @@ import { toast } from 'sonner';
 import * as Button from '@/components/ui/button';
 import { S3Image } from '@/components/ui/s3-image';
 
-interface FlywheelImageUploaderProps {
-  tokenAddress: string;
+interface TechnicalAnalysisEditImageUploaderProps {
+  technicalAnalysisId: string;
   currentImageUrl?: string;
   onImageUploaded: (imageUrl: string) => void;
   disabled?: boolean;
@@ -29,12 +28,12 @@ interface UploadedImage {
   uploadedAt: string;
 }
 
-export function FlywheelImageUploader({
-  tokenAddress,
+export function TechnicalAnalysisEditImageUploader({
+  technicalAnalysisId,
   currentImageUrl,
   onImageUploaded,
   disabled = false,
-}: FlywheelImageUploaderProps) {
+}: TechnicalAnalysisEditImageUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<UploadedImage | null>(
@@ -70,8 +69,10 @@ export function FlywheelImageUploader({
   }, []);
 
   const handleUpload = async () => {
-    if (!file || !tokenAddress) {
-      toast.error('Please select a file and ensure token address is provided.');
+    if (!file || !technicalAnalysisId) {
+      toast.error(
+        'Please select a file and ensure technical analysis ID is provided.',
+      );
       return;
     }
 
@@ -79,11 +80,11 @@ export function FlywheelImageUploader({
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('tokenAddress', tokenAddress);
+    formData.append('id', technicalAnalysisId);
 
     try {
-      const response = await fetch('/api/upload/flywheel-image', {
-        method: 'POST',
+      const response = await fetch('/api/technical-analysis/update-image', {
+        method: 'PUT',
         body: formData,
       });
 
@@ -97,8 +98,8 @@ export function FlywheelImageUploader({
       onImageUploaded(data.url);
 
       const message = data.replaced
-        ? 'Flywheel image replaced successfully!'
-        : 'Flywheel image uploaded successfully!';
+        ? 'Technical analysis image updated successfully!'
+        : 'Technical analysis image uploaded successfully!';
       toast.success(message);
 
       // Clear the file after successful upload
@@ -135,7 +136,7 @@ export function FlywheelImageUploader({
           <div className='relative h-32 w-32 overflow-hidden rounded-lg'>
             <S3Image
               src={displayImage}
-              alt='Flywheel'
+              alt='Technical Analysis'
               width={128}
               height={128}
               className='h-full w-full object-cover'
@@ -150,14 +151,12 @@ export function FlywheelImageUploader({
         <div className='flex flex-col gap-2'>
           <div className='text-sm text-text-sub-600'>
             {displayImage
-              ? 'Current flywheel image'
-              : 'No flywheel image uploaded'}
+              ? 'Current technical analysis image'
+              : 'No technical analysis image uploaded'}
           </div>
           {uploadedImage && (
             <div className='text-xs text-text-sub-600'>
-              {uploadedImage.replaced
-                ? 'Replaced existing image'
-                : 'New image uploaded'}
+              {uploadedImage.replaced ? 'Image updated' : 'New image uploaded'}
             </div>
           )}
         </div>
@@ -174,115 +173,74 @@ export function FlywheelImageUploader({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <RiUploadLine className='mx-auto h-8 w-8 text-text-soft-400' />
-        <div className='mt-2 space-y-1'>
-          <p className='text-sm font-medium text-text-strong-950'>
-            {isDragOver
-              ? 'Drop your flywheel image here'
-              : 'Drag and drop a flywheel image here'}
-          </p>
-          <p className='text-xs text-text-sub-600'>
-            or click to browse (JPEG, PNG, GIF, WebP up to 5MB)
-          </p>
-        </div>
         <input
-          id='flywheel-image-upload'
           type='file'
-          accept='image/jpeg,image/png,image/gif,image/webp'
+          id='technical-analysis-edit-image-upload'
+          className='absolute inset-0 cursor-pointer opacity-0'
           onChange={handleFileChange}
+          accept='image/*'
           disabled={disabled || isUploading}
-          className='absolute inset-0 cursor-pointer opacity-0 disabled:cursor-not-allowed'
         />
+
+        <div className='flex flex-col items-center gap-2'>
+          <RiImageLine className='size-8 text-text-sub-600' />
+          <div className='text-sm font-medium text-text-strong-950'>
+            Click to upload or drag and drop
+          </div>
+          <div className='text-xs text-text-sub-600'>
+            PNG, JPG, GIF up to 5MB
+          </div>
+        </div>
       </div>
 
       {/* File Preview */}
       {file && (
-        <div className='rounded-lg border border-stroke-soft-200 bg-bg-weak-50 p-4'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center space-x-3'>
-              <span className='text-2xl'>🖼️</span>
-              <div>
-                <p className='font-medium text-text-strong-950'>{file.name}</p>
-                <p className='text-sm text-text-sub-600'>
-                  {formatFileSize(file.size)}
-                </p>
+        <div className='flex items-center justify-between rounded-lg bg-bg-soft-100 p-3'>
+          <div className='flex items-center gap-3'>
+            <RiImageLine className='size-5 text-text-sub-600' />
+            <div>
+              <div className='text-sm font-medium text-text-strong-950'>
+                {file.name}
+              </div>
+              <div className='text-xs text-text-sub-600'>
+                {formatFileSize(file.size)}
               </div>
             </div>
-            <div className='flex items-center gap-2'>
-              <Button.Root
-                type='button'
-                size='small'
-                onClick={handleUpload}
-                disabled={isUploading}
-              >
-                {isUploading ? (
-                  <>
-                    <div className='mr-2 h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent' />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Button.Icon as={RiUploadLine} />
-                    Upload
-                  </>
-                )}
-              </Button.Root>
-              <Button.Root
-                type='button'
-                size='small'
-                variant='neutral'
-                mode='stroke'
-                onClick={clearFile}
-                disabled={isUploading}
-              >
-                <Button.Icon as={RiCloseLine} />
-              </Button.Root>
-            </div>
+          </div>
+
+          <div className='flex items-center gap-2'>
+            <Button.Root
+              size='xsmall'
+              variant='neutral'
+              mode='stroke'
+              onClick={clearFile}
+              disabled={isUploading}
+            >
+              <Button.Icon as={RiCloseLine} />
+            </Button.Root>
+            <Button.Root
+              size='xsmall'
+              onClick={handleUpload}
+              disabled={isUploading}
+            >
+              <Button.Icon as={isUploading ? undefined : RiUploadLine} />
+              {isUploading ? 'Uploading...' : 'Upload'}
+            </Button.Root>
           </div>
         </div>
       )}
 
-      {/* Upload Success */}
+      {/* Success State */}
       {uploadedImage && (
-        <div className='space-y-4 rounded-lg border border-success-light bg-success-lighter p-4'>
-          <div className='flex items-center space-x-2'>
-            <RiCheckLine className='h-5 w-5 text-success-base' />
-            <p className='font-medium text-success-dark'>
-              Flywheel image uploaded successfully!
-            </p>
-          </div>
-
-          <div className='space-y-2'>
-            <div className='flex items-center space-x-2'>
-              <span className='text-sm font-medium text-text-strong-950'>
-                File:
-              </span>
-              <span className='text-sm text-text-sub-600'>
-                {uploadedImage.fileName}
-              </span>
+        <div className='flex items-center gap-3 rounded-lg bg-green-50 p-3'>
+          <RiCheckLine className='size-5 text-green-600' />
+          <div className='flex-1'>
+            <div className='text-sm font-medium text-green-900'>
+              Technical Analysis Image Updated Successfully
             </div>
-
-            <div className='flex items-center space-x-2'>
-              <span className='text-sm font-medium text-text-strong-950'>
-                Size:
-              </span>
-              <span className='text-sm text-text-sub-600'>
-                {formatFileSize(uploadedImage.fileSize)}
-              </span>
-            </div>
-
-            <div className='flex items-center space-x-2'>
-              <span className='text-sm font-medium text-text-strong-950'>
-                URL:
-              </span>
-              <a
-                href={uploadedImage.url}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='text-sm text-primary-base underline hover:text-primary-darker'
-              >
-                View Image
-              </a>
+            <div className='text-xs text-green-700'>
+              {uploadedImage.fileName} •{' '}
+              {formatFileSize(uploadedImage.fileSize)}
             </div>
           </div>
         </div>

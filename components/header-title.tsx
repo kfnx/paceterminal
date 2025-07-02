@@ -1,8 +1,8 @@
 'use client';
 
+import { getTokenImageUrl } from '@/utils/image-url';
 import { useCurrentToken } from '@/hooks/use-current-token';
 import * as Avatar from '@/components/ui/avatar';
-import { getTokenImageUrl } from '@/utils/image-url';
 
 export function HeaderTitle() {
   const { data: token, isLoading } = useCurrentToken();
@@ -26,10 +26,7 @@ export function HeaderTitle() {
   return (
     <div className='flex gap-4 lg:gap-3.5'>
       <Avatar.Root size='48' color='blue'>
-        <Avatar.Image
-          src={getTokenImageUrl(token.image)}
-          alt={token.name}
-        />
+        <Avatar.Image src={getTokenImageUrl(token.image)} alt={token.name} />
       </Avatar.Root>
       <div className='space-y-1'>
         <div className='text-label-md lg:text-label-lg'>{token.name}</div>
@@ -37,4 +34,4 @@ export function HeaderTitle() {
       </div>
     </div>
   );
-} 
+}

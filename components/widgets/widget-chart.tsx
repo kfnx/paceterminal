@@ -1,12 +1,12 @@
 'use client';
 
 import { Suspense } from 'react';
+import { useParams } from 'next/navigation';
 import { RiFileChartLine } from '@remixicon/react';
+import { useTheme } from 'next-themes';
 
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import * as WidgetBox from '@/components/widget-box';
-import { useParams } from 'next/navigation';
-import { useTheme } from 'next-themes';
 
 function DexScreenerFrame() {
   const params = useParams();

@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef } from "react";
-import { useMemberStatus } from "@/hooks/use-member-status";
-import { RiCloseLine } from "@remixicon/react";
+import { useEffect, useRef, useState } from 'react';
+import { RiCloseLine } from '@remixicon/react';
+
+import { useMemberStatus } from '@/hooks/use-member-status';
 
 export function RightSideAd() {
   const { isMember } = useMemberStatus();
@@ -61,10 +62,11 @@ export function RightSideAd() {
 
   return (
     <div
-      className={`relative hidden h-[600px] w-[240px] min-w-0 transform cursor-pointer flex-col gap-2 transition-all duration-300 ease-in-out lg:flex ${isVisible
-        ? 'translate-x-0 scale-100 opacity-100'
-        : 'translate-x-4 scale-95 opacity-0'
-        }`}
+      className={`relative hidden h-[600px] w-[240px] min-w-0 transform cursor-pointer flex-col gap-2 transition-all duration-300 ease-in-out lg:flex ${
+        isVisible
+          ? 'translate-x-0 scale-100 opacity-100'
+          : 'translate-x-4 scale-95 opacity-0'
+      }`}
       onClick={() => {
         window?.open('https://x.com/PaceTerminal', '_blank');
       }}
@@ -87,12 +89,32 @@ export function RightSideAd() {
           </button>
         )}
       </div>
-      <div className="space-y-2">
-        <img src='/images/ads/placeholder.png' alt='ad' className='w-full transition-transform duration-200 hover:scale-105' />
-        <img src='/images/ads/placeholder.png' alt='ad' className='w-full transition-transform duration-200 hover:scale-105' />
-        <img src='/images/ads/placeholder.png' alt='ad' className='w-full transition-transform duration-200 hover:scale-105' />
-        <img src='/images/ads/placeholder.png' alt='ad' className='w-full transition-transform duration-200 hover:scale-105' />
-        <img src='/images/ads/placeholder.png' alt='ad' className='w-full transition-transform duration-200 hover:scale-105' />
+      <div className='space-y-2'>
+        <img
+          src='/images/ads/placeholder.png'
+          alt='ad'
+          className='w-full transition-transform duration-200 hover:scale-105'
+        />
+        <img
+          src='/images/ads/placeholder.png'
+          alt='ad'
+          className='w-full transition-transform duration-200 hover:scale-105'
+        />
+        <img
+          src='/images/ads/placeholder.png'
+          alt='ad'
+          className='w-full transition-transform duration-200 hover:scale-105'
+        />
+        <img
+          src='/images/ads/placeholder.png'
+          alt='ad'
+          className='w-full transition-transform duration-200 hover:scale-105'
+        />
+        <img
+          src='/images/ads/placeholder.png'
+          alt='ad'
+          className='w-full transition-transform duration-200 hover:scale-105'
+        />
       </div>
     </div>
   );

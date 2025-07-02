@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  RiCloseLine,
-  RiLoader4Line,
-  RiWallet3Line,
-} from '@remixicon/react';
+import { RiCloseLine, RiLoader4Line, RiWallet3Line } from '@remixicon/react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 

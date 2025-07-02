@@ -11,6 +11,10 @@ import { toast } from 'sonner';
 
 import { useFlywheel, type Flywheel } from '@/hooks/use-flywheel';
 import { useTeams, type Team } from '@/hooks/use-teams';
+import {
+  useTechnicalAnalysis,
+  type TechnicalAnalysis,
+} from '@/hooks/use-technical-analysis';
 import { useToken } from '@/hooks/use-token';
 import type { Token } from '@/hooks/use-tokens';
 import * as Avatar from '@/components/ui/avatar';
@@ -19,6 +23,7 @@ import * as Button from '@/components/ui/button';
 
 import { FlywheelForm } from './flywheel-form';
 import { TeamForm } from './team-form';
+import { TechnicalAnalysisForm } from './technical-analysis-form';
 import { TokenForm } from './token-form';
 
 interface TokenDetailPageProps {
@@ -27,18 +32,35 @@ interface TokenDetailPageProps {
 
 export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const { data: token, isLoading, error, refetch } = useToken(address);
-  const { teams, loading: teamsLoading, error: teamsError, refetch: refetchTeams } = useTeams(address);
+  const {
+    teams,
+    loading: teamsLoading,
+    error: teamsError,
+    refetch: refetchTeams,
+  } = useTeams(address);
   const {
     flywheel,
     loading: flywheelLoading,
     error: flywheelError,
     refetch: refetchFlywheel,
   } = useFlywheel(address);
+  const {
+    technicalAnalysis,
+    loading: technicalAnalysisLoading,
+    error: technicalAnalysisError,
+    refetch: refetchTechnicalAnalysis,
+  } = useTechnicalAnalysis(address);
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [isEditFlywheelModalOpen, setIsEditFlywheelModalOpen] =
     React.useState(false);
   const [isEditTeamModalOpen, setIsEditTeamModalOpen] = React.useState(false);
+  const [
+    isEditTechnicalAnalysisModalOpen,
+    setIsEditTechnicalAnalysisModalOpen,
+  ] = React.useState(false);
+  const [selectedTechnicalAnalysis, setSelectedTechnicalAnalysis] =
+    React.useState<TechnicalAnalysis | null>(null);
 
   const handleSuccess = () => {
     refetch();
@@ -53,6 +75,11 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const handleTeamSuccess = () => {
     refetchTeams();
     toast.success('Team updated successfully!');
+  };
+
+  const handleTechnicalAnalysisSuccess = () => {
+    refetchTechnicalAnalysis();
+    toast.success('Technical analysis updated successfully!');
   };
 
   if (isLoading) {
@@ -369,9 +396,83 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         </div>
 
         <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
-          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
-            Technical Analysis
-          </h3>
+          <div className='mb-4 flex items-center justify-between'>
+            <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
+              Technical Analysis
+            </h3>
+            <Button.Root
+              variant='neutral'
+              mode='stroke'
+              onClick={() => {
+                setSelectedTechnicalAnalysis(null);
+                setIsEditTechnicalAnalysisModalOpen(true);
+              }}
+              size='xsmall'
+            >
+              <RiAddLine className='size-4' />
+            </Button.Root>
+          </div>
+          {technicalAnalysisLoading ? (
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Loading technical analysis...
+            </div>
+          ) : technicalAnalysisError ? (
+            <div className='text-paragraph-sm text-red-600'>
+              Error loading technical analysis: {technicalAnalysisError}
+            </div>
+          ) : technicalAnalysis.length > 0 ? (
+            <div className='space-y-6'>
+              {technicalAnalysis.map((analysis: TechnicalAnalysis) => (
+                <div key={analysis.id} className='space-y-3'>
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1 space-y-3'>
+                      {analysis.image && (
+                        <div className='w-full'>
+                          <img
+                            src={analysis.image}
+                            alt='Technical Analysis Chart'
+                            className='h-full w-full rounded-lg object-cover'
+                          />
+                        </div>
+                      )}
+                      {analysis.description && (
+                        <p className='whitespace-pre-wrap break-words text-paragraph-sm text-text-strong-950'>
+                          {analysis.description}
+                        </p>
+                      )}
+                      <div className='text-paragraph-xs text-text-sub-600'>
+                        Created:{' '}
+                        {new Date(analysis.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <Button.Root
+                      variant='neutral'
+                      mode='stroke'
+                      onClick={() => {
+                        setSelectedTechnicalAnalysis(analysis);
+                        setIsEditTechnicalAnalysisModalOpen(true);
+                      }}
+                      size='xsmall'
+                      className='ml-3'
+                    >
+                      <RiEditLine className='size-4' />
+                    </Button.Root>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className='flex flex-col items-center justify-center gap-4 py-8'>
+              <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+                <RiCoinLine className='size-8 text-text-sub-600' />
+              </div>
+              <div className='text-center'>
+                <p className='text-paragraph-sm text-text-sub-600'>
+                  No technical analysis found for this token.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
@@ -408,6 +509,17 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         isOpen={isEditTeamModalOpen}
         onClose={() => setIsEditTeamModalOpen(false)}
         onSuccess={handleTeamSuccess}
+      />
+
+      <TechnicalAnalysisForm
+        technicalAnalysis={selectedTechnicalAnalysis || undefined}
+        tokenAddress={address}
+        isOpen={isEditTechnicalAnalysisModalOpen}
+        onClose={() => {
+          setIsEditTechnicalAnalysisModalOpen(false);
+          setSelectedTechnicalAnalysis(null);
+        }}
+        onSuccess={handleTechnicalAnalysisSuccess}
       />
     </div>
   );

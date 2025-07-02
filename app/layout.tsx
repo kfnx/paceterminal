@@ -6,12 +6,13 @@ import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { ThemeProvider } from 'next-themes';
-import { WalletConnectionProviders } from '@/app/wallet-providers';
-import { Providers } from '@/app/providers';
-import { GoogleAnalyticsWrapper } from '@/components/google-analytics';
-import { AnalyticsPageTracker } from '@/components/analytics-page-tracker';
-import { PaymentModal } from '@/components/payment-modal';
 import { Toaster } from 'sonner';
+
+import { AnalyticsPageTracker } from '@/components/analytics-page-tracker';
+import { GoogleAnalyticsWrapper } from '@/components/google-analytics';
+import { PaymentModal } from '@/components/payment-modal';
+import { Providers } from '@/app/providers';
+import { WalletConnectionProviders } from '@/app/wallet-providers';
 
 const fontInter = FontSans({
   subsets: ['latin'],
@@ -37,7 +38,11 @@ export default function RootLayout({
       <body className='bg-bg-white-0'>
         <Providers>
           <WalletConnectionProviders>
-            <ThemeProvider attribute='class' enableSystem disableTransitionOnChange>
+            <ThemeProvider
+              attribute='class'
+              enableSystem
+              disableTransitionOnChange
+            >
               <TooltipProvider
                 delayDuration={100}
                 skipDelayDuration={300}

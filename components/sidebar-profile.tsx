@@ -12,30 +12,29 @@ import {
   RiStarLine,
   RiWalletLine,
 } from '@remixicon/react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useAtom } from 'jotai';
 import { useTheme } from 'next-themes';
 
 import { cn, cnExt } from '@/utils/cn';
+import { useMemberStatus } from '@/hooks/use-member-status';
+import { useWalletAddress } from '@/hooks/use-wallet-address';
 import * as Avatar from '@/components/ui/avatar';
+import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
 import * as Dropdown from '@/components/ui/dropdown';
 import * as Switch from '@/components/ui/switch';
-
-import IconVerifiedFill from '~/icons/icon-verified-fill.svg';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useWalletAddress } from '@/hooks/use-wallet-address';
-import { WalletButton } from './wallet';
-import * as Button from '@/components/ui/button';
-import { useAtom } from 'jotai';
 import { paymentModalOpenAtom } from '@/components/payment-modal';
-import { useMemberStatus } from '@/hooks/use-member-status';
+
+import { WalletButton } from './wallet';
+import IconVerifiedFill from '~/icons/icon-verified-fill.svg';
 
 export function SidebarProfile({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme();
   const { connected, formattedAddress, isLoading } = useWalletAddress();
   const { disconnect } = useWallet();
-  const [_paymentModalOpen, setPaymentModalOpen] = useAtom(
-    paymentModalOpenAtom,
-  );
+  const [_paymentModalOpen, setPaymentModalOpen] =
+    useAtom(paymentModalOpenAtom);
   const { isMember, expiredAt, loading } = useMemberStatus();
 
   if (isLoading) {
@@ -91,13 +90,19 @@ export function SidebarProfile({ className }: { className?: string }) {
         </Dropdown.Item>
         <Divider.Root variant='line-spacing' />
         <Dropdown.Group>
-          <Dropdown.Item onClick={() => {
-            if (!isMember) {
-              setPaymentModalOpen(true)
-            }
-          }}>
+          <Dropdown.Item
+            onClick={() => {
+              if (!isMember) {
+                setPaymentModalOpen(true);
+              }
+            }}
+          >
             <Dropdown.ItemIcon as={isMember ? RiStarLine : RiLockUnlockLine} />
-            {loading ? 'Checking status...' : isMember && expiredAt ? `Member until ${expiredAt.toLocaleDateString()}` : 'Remove Ads'}
+            {loading
+              ? 'Checking status...'
+              : isMember && expiredAt
+                ? `Member until ${expiredAt.toLocaleDateString()}`
+                : 'Remove Ads'}
           </Dropdown.Item>
         </Dropdown.Group>
         <Divider.Root variant='line-spacing' />
@@ -172,9 +177,7 @@ export function SidebarProfileMobile({ className }: { className?: string }) {
             Logout
           </Dropdown.Item>
         </Dropdown.Group>
-        <div className='p-2 text-paragraph-sm text-text-soft-400'>
-          v.0.1
-        </div>
+        <div className='p-2 text-paragraph-sm text-text-soft-400'>v.0.1</div>
       </Dropdown.Content>
     </Dropdown.Root>
   );

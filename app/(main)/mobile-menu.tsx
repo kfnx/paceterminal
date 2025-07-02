@@ -12,13 +12,13 @@ import {
 } from '@remixicon/react';
 
 import { cn } from '@/utils/cn';
-import useBreakpoint from '@/hooks/use-breakpoint';
-import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
+import { getTokenImageUrl } from '@/utils/image-url';
 import { useAllTokens } from '@/hooks/use-all-tokens';
-import * as TopbarItemButton from '@/components/topbar-item-button';
+import useBreakpoint from '@/hooks/use-breakpoint';
 import * as Avatar from '@/components/ui/avatar';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { getTokenImageUrl } from '@/utils/image-url';
+import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
+import * as TopbarItemButton from '@/components/topbar-item-button';
 
 export default function MobileMenu() {
   const { lg } = useBreakpoint();
@@ -142,7 +142,9 @@ export default function MobileMenu() {
                           <Link
                             key={token.address}
                             href={href}
-                            aria-current={pathname === href ? 'page' : undefined}
+                            aria-current={
+                              pathname === href ? 'page' : undefined
+                            }
                             className={cn(
                               'group relative flex w-full items-center gap-2.5 whitespace-nowrap px-5 text-text-sub-600',
                             )}
@@ -153,7 +155,9 @@ export default function MobileMenu() {
                                 alt={token.name}
                               />
                             </Avatar.Root>
-                            <div className='flex-1 text-label-md'>{token.name}</div>
+                            <div className='flex-1 text-label-md'>
+                              {token.name}
+                            </div>
                             <div
                               className={cn(
                                 'transition-default absolute left-0 top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',

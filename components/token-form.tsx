@@ -14,12 +14,12 @@ import { supabase } from '@/lib/supabase';
 import type { Token } from '@/hooks/use-tokens';
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/button';
+import { ImageUploader } from '@/components/ui/image-uploader';
 import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
 import * as Select from '@/components/ui/select';
 import * as Textarea from '@/components/ui/textarea';
-import { ImageUploader } from '@/components/ui/image-uploader';
 
 interface TokenFormProps {
   token?: Token | null;
@@ -206,19 +206,26 @@ export function TokenForm({
               <ImageUploader
                 tokenAddress={formData.address}
                 currentImageUrl={formData.image}
-                onImageUploaded={(imageUrl) => handleInputChange('image', imageUrl)}
-                disabled={!formData.address.trim() || !isValidSolanaAddress(formData.address.trim())}
+                onImageUploaded={(imageUrl) =>
+                  handleInputChange('image', imageUrl)
+                }
+                disabled={
+                  !formData.address.trim() ||
+                  !isValidSolanaAddress(formData.address.trim())
+                }
               />
               {!formData.address.trim() && (
                 <p className='text-xs text-text-sub-600'>
                   Enter the token address first to enable image upload
                 </p>
               )}
-              {formData.address.trim() && !isValidSolanaAddress(formData.address.trim()) && (
-                <p className='text-xs text-text-sub-600'>
-                  Please enter a valid Solana token address (44 characters) to enable image upload
-                </p>
-              )}
+              {formData.address.trim() &&
+                !isValidSolanaAddress(formData.address.trim()) && (
+                  <p className='text-xs text-text-sub-600'>
+                    Please enter a valid Solana token address (44 characters) to
+                    enable image upload
+                  </p>
+                )}
             </div>
 
             {/* Token Name and Label */}

@@ -164,23 +164,23 @@ export type Database = {
         Row: {
           address: string
           created_at: string
-          description: string | null
+          description: string
           id: number
-          image: string | null
+          image: string
         }
         Insert: {
           address: string
           created_at?: string
-          description?: string | null
+          description: string
           id?: number
-          image?: string | null
+          image: string
         }
         Update: {
           address?: string
           created_at?: string
-          description?: string | null
+          description?: string
           id?: number
-          image?: string | null
+          image?: string
         }
         Relationships: [
           {

@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 
 import { cnExt } from '@/utils/cn';
 import * as SegmentedControl from '@/components/ui/segmented-control';
-import { useParams } from 'next/navigation';
 
 export function NavigationTabs({
   className,

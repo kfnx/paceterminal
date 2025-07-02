@@ -3,17 +3,16 @@
 import * as React from 'react';
 import {
   RiAddLine,
-  RiMailLine,
-  RiShieldLine,
-  RiUserLine,
-  RiRefreshLine,
   RiDeleteBinLine,
+  RiMailLine,
+  RiRefreshLine,
+  RiUserLine,
 } from '@remixicon/react';
 import { toast } from 'sonner';
 
+import { useDeleteUser } from '@/hooks/use-delete-user';
 import { useInviteUser } from '@/hooks/use-invite-user';
 import { useResendInvitation } from '@/hooks/use-resend-invitation';
-import { useDeleteUser } from '@/hooks/use-delete-user';
 import { useUsers } from '@/hooks/use-users';
 import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
@@ -115,7 +114,6 @@ export default function AdminUsersPage() {
         </Button.Root>
       </div>
 
-
       {loading ? (
         <div className='flex items-center justify-center py-12'>
           <div className='text-paragraph-sm text-text-sub-600'>
@@ -192,7 +190,9 @@ export default function AdminUsersPage() {
                         onClick={() => handleResendInvitation(user.email)}
                         disabled={resending}
                       >
-                        <Button.Icon as={resending ? undefined : RiRefreshLine} />
+                        <Button.Icon
+                          as={resending ? undefined : RiRefreshLine}
+                        />
                         {resending ? 'Sending...' : 'Resend'}
                       </Button.Root>
                     )}
@@ -203,7 +203,9 @@ export default function AdminUsersPage() {
                       onClick={() => openDeleteModal(user)}
                       disabled={deleting}
                     >
-                      <Button.Icon as={deleting ? undefined : RiDeleteBinLine} />
+                      <Button.Icon
+                        as={deleting ? undefined : RiDeleteBinLine}
+                      />
                       {deleting ? 'Deleting...' : 'Delete'}
                     </Button.Root>
                   </div>
@@ -272,7 +274,8 @@ export default function AdminUsersPage() {
           <Modal.Header>
             <Modal.Title>Delete User</Modal.Title>
             <Modal.Description>
-              Are you sure you want to delete this user? This action cannot be undone.
+              Are you sure you want to delete this user? This action cannot be
+              undone.
             </Modal.Description>
           </Modal.Header>
 

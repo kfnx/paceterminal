@@ -1,9 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import * as Modal from '@/components/ui/modal';
-import { WalletButton } from './wallet-button';
+
 import { useMemberStatus } from '@/hooks/use-member-status';
+import * as Modal from '@/components/ui/modal';
+
+import { WalletButton } from './wallet-button';
 
 const TIME_BEFORE_AD_OPEN = 10_000;
 const TIME_TO_CLOSE_AD = 15_000;
@@ -36,7 +38,12 @@ export default function AdModal() {
   }, []);
 
   React.useEffect(() => {
-    if (canShowAd()) console.log('will show ad modal in ', TIME_BEFORE_AD_OPEN / 1000, 'seconds');
+    if (canShowAd())
+      console.log(
+        'will show ad modal in ',
+        TIME_BEFORE_AD_OPEN / 1000,
+        'seconds',
+      );
     const timeout = setTimeout(() => {
       if (canShowAd()) {
         console.log('showing ad modal');
@@ -87,17 +94,24 @@ export default function AdModal() {
 
   return (
     <Modal.Root open={open} onOpenChange={handleOpenChange}>
-      <Modal.Content className='max-w-[880px]' >
+      <Modal.Content className='max-w-[880px]'>
         <Modal.Header>
           <Modal.Title className='flex w-full items-center justify-between'>
-            <span>{timeToClose > 0
-              ? `Please wait ${timeToClose / 1000} seconds to close the Sponsored Ad`
-              : 'Sponsored Ad'}</span>
+            <span>
+              {timeToClose > 0
+                ? `Please wait ${timeToClose / 1000} seconds to close the Sponsored Ad`
+                : 'Sponsored Ad'}
+            </span>
             <WalletButton />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className='flex items-start gap-4'>
-          <img src='/images/ads/placeholder.png' alt='ad' className='w-full cursor-pointer' onClick={handleAdsClick} />
+          <img
+            src='/images/ads/placeholder.png'
+            alt='ad'
+            className='w-full cursor-pointer'
+            onClick={handleAdsClick}
+          />
         </Modal.Body>
       </Modal.Content>
     </Modal.Root>

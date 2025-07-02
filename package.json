@@ -12,7 +12,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
+    "format": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "db:gen:types": "npx supabase gen types typescript --project-id 'jxocsttakwptbsnjjejg' --schema public > lib/database.types.ts"
   },
   "dependencies": {

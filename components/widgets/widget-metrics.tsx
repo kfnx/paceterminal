@@ -10,6 +10,7 @@ import {
 } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
+import { useCurrentToken } from '@/hooks/use-current-token';
 import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
@@ -17,7 +18,6 @@ import * as SegmentedControl from '@/components/ui/segmented-control';
 import * as Select from '@/components/ui/select';
 import IllustrationEmptyBudgetOverview from '@/components/empty-state-illustrations/budget-overview';
 import * as WidgetBox from '@/components/widget-box';
-import { useCurrentToken } from '@/hooks/use-current-token';
 
 export default function WidgetMetrics({
   ...rest
@@ -51,7 +51,9 @@ export default function WidgetMetrics({
         <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
           <IllustrationEmptyBudgetOverview className='size-[108px]' />
           <div className='text-center text-paragraph-sm text-text-soft-400'>
-            {isLoading ? 'Loading metrics...' : 'Metrics will be available when database schema is updated.'}
+            {isLoading
+              ? 'Loading metrics...'
+              : 'Metrics will be available when database schema is updated.'}
           </div>
         </div>
       </div>

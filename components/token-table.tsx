@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import {
   RiArrowDownSFill,
   RiArrowLeftDoubleLine,
@@ -35,7 +36,6 @@ import * as Select from '@/components/ui/select';
 import * as Table from '@/components/ui/table';
 
 import { TokenForm } from './token-form';
-import Link from 'next/link';
 
 export const tokenDetailModalOpenAtom = atom(false);
 export const tokenEditModalOpenAtom = atom(false);
@@ -338,9 +338,9 @@ export function TokensTable({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </Table.Head>
                 );
               })}
@@ -494,7 +494,9 @@ export function TokenTablePagination({
           {pageNumbers.map((page, index) => (
             <React.Fragment key={index}>
               {page === '...' ? (
-                <span className='px-2 text-paragraph-sm text-text-sub-600'>...</span>
+                <span className='px-2 text-paragraph-sm text-text-sub-600'>
+                  ...
+                </span>
               ) : (
                 <Pagination.Item
                   current={page === currentPage}

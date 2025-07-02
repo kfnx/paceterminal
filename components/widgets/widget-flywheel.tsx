@@ -1,17 +1,14 @@
 'use client';
 
-import {
-  RiFlashlightLine,
-  RiOrganizationChart,
-} from '@remixicon/react';
+import { useParams } from 'next/navigation';
+import { RiFlashlightLine, RiOrganizationChart } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
+import { getFlywheelImageUrl } from '@/utils/image-url';
+import { useFlywheel } from '@/hooks/use-flywheel';
 import * as Divider from '@/components/ui/divider';
 import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
 import * as WidgetBox from '@/components/widget-box';
-import { useParams } from 'next/navigation';
-import { useFlywheel } from '@/hooks/use-flywheel';
-import { getFlywheelImageUrl } from '@/utils/image-url';
 
 export default function WidgetFlywheel({
   ...rest
@@ -32,7 +29,11 @@ export default function WidgetFlywheel({
 
         {!loading && flywheel?.image ? (
           <div className='w-full pb-1'>
-            <img src={getFlywheelImageUrl(flywheel.image)} alt={flywheel.image} className='h-full w-full object-cover' />
+            <img
+              src={getFlywheelImageUrl(flywheel.image)}
+              alt={flywheel.image}
+              className='h-full w-full object-cover'
+            />
           </div>
         ) : (
           <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>

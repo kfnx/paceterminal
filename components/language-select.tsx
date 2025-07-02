@@ -3,8 +3,9 @@
 import * as React from 'react';
 import IndonesiaFlag from '~/flags/ID.svg';
 import UnitedStatesFlag from '~/flags/US.svg';
-import * as Select from '@/components/ui/select';
+
 import { cnExt } from '@/utils/cn';
+import * as Select from '@/components/ui/select';
 
 const languages = [
   {

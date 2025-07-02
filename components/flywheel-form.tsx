@@ -3,11 +3,11 @@
 import * as React from 'react';
 import { RiCloseLine, RiSaveLine } from '@remixicon/react';
 
-import * as Modal from '@/components/ui/modal';
-import * as Label from '@/components/ui/label';
+import type { Flywheel } from '@/hooks/use-flywheel';
 import * as Button from '@/components/ui/button';
 import { FlywheelImageUploader } from '@/components/ui/flywheel-image-uploader';
-import type { Flywheel } from '@/hooks/use-flywheel';
+import * as Label from '@/components/ui/label';
+import * as Modal from '@/components/ui/modal';
 
 interface FlywheelFormProps {
   flywheel: Flywheel | null;
@@ -107,4 +107,4 @@ export function FlywheelForm({
       </Modal.Content>
     </Modal.Root>
   );
-} 
+}
