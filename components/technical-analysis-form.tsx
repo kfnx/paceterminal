@@ -46,12 +46,12 @@ export function TechnicalAnalysisForm({
 
   const handleImageUploaded = (url: string) => {
     setImageUrl(url);
-    // Auto-submit after image upload for new analyses, just update for existing ones
+    // For new entries, auto-submit since both image and description are handled by the uploader
     if (!technicalAnalysis) {
       onSuccess();
       onClose();
     } else {
-      // For existing entries, trigger a refresh
+      // For existing entries, trigger a refresh when image is updated
       onSuccess();
     }
   };
@@ -86,13 +86,14 @@ export function TechnicalAnalysisForm({
         if (!response.ok) {
           throw new Error('Failed to update technical analysis');
         }
-      }
 
-      onSuccess();
-      onClose();
-      // Reset form
-      setImageUrl('');
-      setDescription('');
+        onSuccess();
+        onClose();
+        // Reset form
+        setImageUrl('');
+        setDescription('');
+      }
+      // For new entries, submission is handled by the image uploader
     } catch (error) {
       console.error('Error updating technical analysis:', error);
     } finally {
@@ -117,14 +118,39 @@ export function TechnicalAnalysisForm({
         </Modal.Header>
         <form onSubmit={handleSubmit}>
           <Modal.Body className='space-y-6'>
+            {/* Description */}
+            <div className='flex flex-col gap-1'>
+              <Label.Root>
+                Description{' '}
+                {!technicalAnalysis && <span className='text-red-500'>*</span>}
+              </Label.Root>
+              <Textarea.Root
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder='Enter technical analysis description...'
+                rows={4}
+                disabled={isSubmitting}
+              />
+              {!technicalAnalysis && !description.trim() && (
+                <p className='text-xs text-text-sub-600'>
+                  Description is required for uploading technical analysis
+                  charts.
+                </p>
+              )}
+            </div>
+
             {/* Technical Analysis Image Upload for new entries */}
             {!technicalAnalysis && (
               <div className='flex flex-col gap-1'>
-                <Label.Root>Technical Analysis Chart</Label.Root>
+                <Label.Root>
+                  Technical Analysis Chart{' '}
+                  <span className='text-red-500'>*</span>
+                </Label.Root>
                 <TechnicalAnalysisImageUploader
                   tokenAddress={tokenAddress}
+                  description={description}
                   onImageUploaded={handleImageUploaded}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !description.trim()}
                 />
               </div>
             )}
@@ -135,24 +161,12 @@ export function TechnicalAnalysisForm({
                 <Label.Root>Technical Analysis Chart</Label.Root>
                 <TechnicalAnalysisEditImageUploader
                   technicalAnalysisId={technicalAnalysis.id.toString()}
-                  currentImageUrl={technicalAnalysis.image || undefined}
+                  currentImageUrl={technicalAnalysis.image}
                   onImageUploaded={handleImageUploaded}
                   disabled={isSubmitting}
                 />
               </div>
             )}
-
-            {/* Description */}
-            <div className='flex flex-col gap-1'>
-              <Label.Root>Description</Label.Root>
-              <Textarea.Root
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder='Enter technical analysis description...'
-                rows={4}
-                disabled={isSubmitting}
-              />
-            </div>
           </Modal.Body>
           <Modal.Footer>
             <Button.Root

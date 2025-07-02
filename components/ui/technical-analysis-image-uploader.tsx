@@ -15,6 +15,7 @@ import { S3Image } from '@/components/ui/s3-image';
 
 interface TechnicalAnalysisImageUploaderProps {
   tokenAddress: string;
+  description: string;
   currentImageUrl?: string;
   onImageUploaded: (imageUrl: string) => void;
   disabled?: boolean;
@@ -31,6 +32,7 @@ interface UploadedImage {
 
 export function TechnicalAnalysisImageUploader({
   tokenAddress,
+  description,
   currentImageUrl,
   onImageUploaded,
   disabled = false,
@@ -75,11 +77,17 @@ export function TechnicalAnalysisImageUploader({
       return;
     }
 
+    if (!description.trim()) {
+      toast.error('Please provide a description for the technical analysis.');
+      return;
+    }
+
     setIsUploading(true);
 
     const formData = new FormData();
     formData.append('file', file);
     formData.append('tokenAddress', tokenAddress);
+    formData.append('description', description.trim());
 
     try {
       const response = await fetch('/api/upload/technical-analysis-image', {

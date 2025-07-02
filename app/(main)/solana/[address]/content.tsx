@@ -1,19 +1,17 @@
 'use client';
 
-import {
-  RiNewsLine,
-  RiVipDiamondLine,
-} from '@remixicon/react';
+import { RiNewsLine, RiVipDiamondLine } from '@remixicon/react';
+
+import type { Token } from '@/hooks/use-tokens';
+import AdModal from '@/components/ad-modal';
+import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
+import { RightSideAd } from '@/components/RightSideAd';
 import WidgetChart from '@/components/widgets/widget-chart';
+import WidgetFlywheel from '@/components/widgets/widget-flywheel';
 import WidgetMetrics from '@/components/widgets/widget-metrics';
 import { WidgetPlaceholder } from '@/components/widgets/widget-placeholder';
 import WidgetTeam from '@/components/widgets/widget-team';
-import WidgetFlywheel from '@/components/widgets/widget-flywheel';
 import WidgetTechnicalAnalysis from '@/components/widgets/widget-technical-analysis';
-import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
-import AdModal from '@/components/ad-modal';
-import { RightSideAd } from '@/components/RightSideAd';
-import type { Token } from '@/hooks/use-tokens';
 
 interface ContentProps {
   token: Token;
@@ -49,4 +47,4 @@ export function Content({ token }: ContentProps) {
       <RightSideAd />
     </div>
   );
-} 
+}

@@ -1,8 +1,8 @@
 'use client';
 
+import React from 'react';
 import { RiFilter3Fill, RiSearch2Line, RiSortDesc } from '@remixicon/react';
 import { atom, useAtom } from 'jotai';
-import React from 'react';
 
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';

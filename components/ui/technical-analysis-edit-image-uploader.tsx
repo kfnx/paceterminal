@@ -195,7 +195,7 @@ export function TechnicalAnalysisEditImageUploader({
 
       {/* File Preview */}
       {file && (
-        <div className='flex items-center justify-between rounded-lg bg-bg-soft-100 p-3'>
+        <div className='bg-bg-soft-100 flex items-center justify-between rounded-lg p-3'>
           <div className='flex items-center gap-3'>
             <RiImageLine className='size-5 text-text-sub-600' />
             <div>

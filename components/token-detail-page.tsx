@@ -4,6 +4,7 @@ import * as React from 'react';
 import {
   RiAddLine,
   RiCoinLine,
+  RiDeleteBinLine,
   RiEditLine,
   RiTwitterLine,
 } from '@remixicon/react';
@@ -80,6 +81,28 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const handleTechnicalAnalysisSuccess = () => {
     refetchTechnicalAnalysis();
     toast.success('Technical analysis updated successfully!');
+  };
+
+  const handleDeleteTechnicalAnalysis = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this technical analysis?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/technical-analysis/delete?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete technical analysis');
+      }
+
+      refetchTechnicalAnalysis();
+      toast.success('Technical analysis deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting technical analysis:', error);
+      toast.error('Failed to delete technical analysis');
+    }
   };
 
   if (isLoading) {
@@ -426,37 +449,44 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
                 <div key={analysis.id} className='space-y-3'>
                   <div className='flex items-start justify-between'>
                     <div className='flex-1 space-y-3'>
-                      {analysis.image && (
-                        <div className='w-full'>
-                          <img
-                            src={analysis.image}
-                            alt='Technical Analysis Chart'
-                            className='h-full w-full rounded-lg object-cover'
-                          />
-                        </div>
-                      )}
-                      {analysis.description && (
+                      <div className='w-full'>
+                        <img
+                          src={analysis.image}
+                          alt='Technical Analysis Chart'
+                          className='h-full w-full rounded-lg object-cover'
+                        />
+                      </div>
+                      <div className='bg-bg-soft-100 rounded-lg p-4'>
                         <p className='whitespace-pre-wrap break-words text-paragraph-sm text-text-strong-950'>
                           {analysis.description}
                         </p>
-                      )}
+                      </div>
                       <div className='text-paragraph-xs text-text-sub-600'>
                         Created:{' '}
                         {new Date(analysis.created_at).toLocaleDateString()}
                       </div>
                     </div>
-                    <Button.Root
-                      variant='neutral'
-                      mode='stroke'
-                      onClick={() => {
-                        setSelectedTechnicalAnalysis(analysis);
-                        setIsEditTechnicalAnalysisModalOpen(true);
-                      }}
-                      size='xsmall'
-                      className='ml-3'
-                    >
-                      <RiEditLine className='size-4' />
-                    </Button.Root>
+                    <div className='ml-3 flex flex-col gap-2'>
+                      <Button.Root
+                        variant='neutral'
+                        mode='stroke'
+                        onClick={() => {
+                          setSelectedTechnicalAnalysis(analysis);
+                          setIsEditTechnicalAnalysisModalOpen(true);
+                        }}
+                        size='xsmall'
+                      >
+                        <RiEditLine className='size-4' />
+                      </Button.Root>
+                      <Button.Root
+                        variant='destructive'
+                        mode='stroke'
+                        onClick={() => handleDeleteTechnicalAnalysis(analysis.id)}
+                        size='xsmall'
+                      >
+                        <RiDeleteBinLine className='size-4' />
+                      </Button.Root>
+                    </div>
                   </div>
                 </div>
               ))}

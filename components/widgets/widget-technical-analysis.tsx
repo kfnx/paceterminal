@@ -41,22 +41,18 @@ export default function WidgetTechnicalAnalysis({
             <div className='w-full space-y-4'>
               {technicalAnalysis.map((analysis) => (
                 <div key={analysis.id} className='w-full space-y-3'>
-                  {analysis.image && (
-                    <div className='w-full'>
-                      <img
-                        src={getTechnicalAnalysisImageUrl(analysis.image)}
-                        alt='Technical Analysis Chart'
-                        className='h-full w-full rounded-lg object-cover'
-                      />
-                    </div>
-                  )}
-                  {analysis.description && (
-                    <div className='bg-bg-soft-100 rounded-lg p-3'>
-                      <p className='whitespace-pre-wrap break-words text-paragraph-sm text-text-strong-950'>
-                        {analysis.description}
-                      </p>
-                    </div>
-                  )}
+                  <div className='w-full'>
+                    <img
+                      src={getTechnicalAnalysisImageUrl(analysis.image)}
+                      alt='Technical Analysis Chart'
+                      className='h-full w-full rounded-lg object-cover'
+                    />
+                  </div>
+                  <div className='bg-bg-soft-100 rounded-lg p-3'>
+                    <p className='whitespace-pre-wrap break-words text-paragraph-sm text-text-strong-950'>
+                      {analysis.description}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
