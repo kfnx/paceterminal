@@ -29,8 +29,7 @@ export function NavigationTabs({
     <SegmentedControl.Root
       value={selectedTab}
       onValueChange={handleValueChange}
-      // className='lg:w-80'
-      className={cnExt(className)}
+      className={cnExt('w-full', className)}
     >
       <SegmentedControl.List>
         <SegmentedControl.Trigger value='top'>Chart</SegmentedControl.Trigger>

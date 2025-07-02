@@ -2,7 +2,7 @@
 
 import { cnExt } from '@/utils/cn';
 import { HeaderTitle } from '@/components/header-title';
-import { NavigationTabs } from '@/components/navigation-tabs';
+import { NavigationTabWrapper } from '@/components/navigation-tab-wrapper';
 import { ThemeToggler } from '@/components/theme-toggler';
 import { WalletButton } from '@/components/wallet-button';
 
@@ -29,13 +29,14 @@ export default function Header({
       {...rest}
     >
       <HeaderTitle />
-      <NavigationTabs className='hidden lg:flex' />
+      <NavigationTabWrapper className='hidden lg:flex' />
+
       <div className={cnExt('flex items-center gap-3', contentClassName)}>
         {/* <SearchMenuButton className='hidden lg:flex' /> */}
         {/* <NotificationButton className='hidden lg:flex' /> */}
         {/* <LanguageSelect className='hidden lg:flex' /> */}
         <ThemeToggler className='hidden lg:flex' />
-        <WalletButton />
+        <WalletButton className='hidden lg:flex' />
       </div>
     </header>
   );

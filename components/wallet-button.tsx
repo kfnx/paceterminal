@@ -20,7 +20,7 @@ import * as Dropdown from '@/components/ui/dropdown';
 
 import { paymentModalOpenAtom } from './payment-modal';
 
-export function WalletButton({ connectText }: { connectText?: string }) {
+export function WalletButton({ connectText, className }: { connectText?: string, className?: string }) {
   // const [walletModalConfig, setWalletModalConfig] = useState<Readonly<{
   //   onSelectWallet(walletName: WalletName): void;
   //   wallets: Wallet[];
@@ -116,6 +116,7 @@ export function WalletButton({ connectText }: { connectText?: string }) {
               break;
           }
         }}
+        className={className}
       >
         <Button.Icon as={RiWalletLine} /> {label}{' '}
         {connected && <Button.Icon as={RiCloseLine} onClick={disconnect} />}
