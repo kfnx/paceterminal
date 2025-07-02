@@ -2,7 +2,7 @@
 
 import {
   RiFlashlightLine,
-  RiTeamLine,
+  RiOrganizationChart,
 } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
@@ -23,7 +23,7 @@ export default function WidgetFlywheel({
   return (
     <WidgetBox.Root {...rest} id='flywheels'>
       <WidgetBox.Header>
-        <WidgetBox.HeaderIcon as={RiTeamLine} />
+        <WidgetBox.HeaderIcon as={RiOrganizationChart} />
         Flywheel
       </WidgetBox.Header>
 
