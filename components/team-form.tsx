@@ -136,7 +136,7 @@ export function TeamForm({
       if (teamsToUpsert.length > 0) {
         const { data, error: upsertError } = await supabase
           .from('teams')
-          .upsert(teamsToUpsert);
+          .upsert(teamsToUpsert, { onConflict: 'id' });
 
         console.log(data);
 
