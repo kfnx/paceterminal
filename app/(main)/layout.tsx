@@ -1,6 +1,5 @@
 import Header from '@/components/header';
 import HeaderMobile from '@/components/header-mobile';
-import { LeftSideAd } from '@/components/LeftSideAd';
 import Sidebar from '@/components/sidebar';
 
 export default function Layout({
