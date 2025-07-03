@@ -51,7 +51,7 @@ export default function RootLayout({
                 {children}
               </TooltipProvider>
               <PaymentModal />
-              <Toaster richColors closeButton />
+              <Toaster richColors closeButton position="top-center" />
             </ThemeProvider>
           </WalletConnectionProviders>
         </Providers>

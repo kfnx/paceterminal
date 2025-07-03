@@ -24,6 +24,7 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 import { atom, useSetAtom } from 'jotai';
+import { toast } from 'sonner';
 
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/utils/cn';
@@ -169,9 +170,10 @@ const columns: ColumnDef<Token>[] = [
       const handleCopyAddress = async () => {
         try {
           await navigator.clipboard.writeText(row.original.address);
-          // You could add a toast notification here if desired
+          toast.success('Token address copied to clipboard!');
         } catch (err) {
           console.error('Failed to copy address:', err);
+          toast.error('Failed to copy address to clipboard');
         }
       };
 

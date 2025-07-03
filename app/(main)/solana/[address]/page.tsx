@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 
 import { supabase } from '@/lib/supabase';
-import type { Token } from '@/hooks/use-tokens';
 
 import { Content } from './content';
 
@@ -38,5 +37,5 @@ export default async function SolanaTokenPage({
     notFound();
   }
 
-  return <Content token={token} />;
+  return <Content />;
 }

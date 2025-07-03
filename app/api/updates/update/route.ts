@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest) {
         description,
         link,
         image: image || null,
-        date: date || null,
+        date: date,
       })
       .eq('id', id)
       .select()
