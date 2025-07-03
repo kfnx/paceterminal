@@ -27,9 +27,9 @@ export function UpdatesForm({
 }: UpdatesFormProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [title, setTitle] = React.useState(update?.title || '');
-  const [createdAt, setCreatedAt] = React.useState(
-    update?.created_at 
-      ? new Date(update.created_at).toISOString().split('T')[0]
+  const [date, setDate] = React.useState(
+    update?.date 
+      ? new Date(update.date).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0],
   );
   const [description, setDescription] = React.useState(
@@ -41,9 +41,9 @@ export function UpdatesForm({
   // Reset form when update changes
   React.useEffect(() => {
     setTitle(update?.title || '');
-    setCreatedAt(
-      update?.created_at 
-        ? new Date(update.created_at).toISOString().split('T')[0]
+    setDate(
+      update?.date 
+        ? new Date(update.date).toISOString().split('T')[0]
         : new Date().toISOString().split('T')[0],
     );
     setDescription(update?.description || '');
@@ -62,7 +62,7 @@ export function UpdatesForm({
     onClose();
     // Reset form
     setTitle('');
-    setCreatedAt(new Date().toISOString().split('T')[0]);
+    setDate(new Date().toISOString().split('T')[0]);
     setDescription('');
     setLink('');
     setImage('');
@@ -71,7 +71,7 @@ export function UpdatesForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title.trim() || !createdAt.trim() || !description.trim() || !link.trim()) {
+    if (!title.trim() || !date.trim() || !description.trim() || !link.trim()) {
       return;
     }
 
@@ -88,7 +88,7 @@ export function UpdatesForm({
           body: JSON.stringify({
             id: update.id,
             title: title.trim(),
-            created_at: new Date(createdAt).toISOString(),
+            date: date,
             description: description.trim(),
             link: link.trim(),
             image: image.trim() || null,
@@ -108,7 +108,7 @@ export function UpdatesForm({
           body: JSON.stringify({
             address: tokenAddress,
             title: title.trim(),
-            created_at: new Date(createdAt).toISOString(),
+            date: date,
             description: description.trim(),
             link: link.trim(),
             image: image.trim() || null,
@@ -167,8 +167,8 @@ export function UpdatesForm({
                 <Input.Wrapper>
                   <Input.Input
                     type='date'
-                    value={createdAt}
-                    onChange={(e) => setCreatedAt(e.target.value)}
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
                     disabled={isSubmitting}
                   />
                 </Input.Wrapper>
@@ -239,7 +239,7 @@ export function UpdatesForm({
               disabled={
                 isSubmitting ||
                 !title.trim() ||
-                !createdAt.trim() ||
+                !date.trim() ||
                 !description.trim() ||
                 !link.trim()
               }

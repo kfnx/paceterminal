@@ -7,10 +7,10 @@ import * as LinkButton from '@/components/ui/link-button';
 
 const actions = {
   '/login': {
-    text: "Don't have an account?",
+    text: 'Hong Wilaheng',
     link: {
-      label: 'Register',
-      href: '/register',
+      label: '',
+      href: '/',
     },
   },
   '/reset-password': {
@@ -31,11 +31,7 @@ export default function AuthHeader() {
 
   return (
     <div className='mx-auto flex w-full max-w-[1400px] items-center justify-between p-6'>
-      <img
-        src='/images/placeholder/apex.svg'
-        alt=''
-        className='size-10 shrink-0'
-      />
+      <img src='/images/semar.png' alt='' className='size-10 shrink-0' />
 
       <div className='flex items-center gap-1.5'>
         <div className='text-paragraph-sm text-text-sub-600'>{action.text}</div>

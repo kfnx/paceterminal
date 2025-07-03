@@ -260,7 +260,7 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
   };
 
   const tierInfo = getTierLabel(token.tier || 0);
-
+  console.log('🚀 ~ TokenDetailPage ~ updates:', updates);
   return (
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
@@ -707,7 +707,7 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
             </div>
           ) : updates.length > 0 ? (
             <div className='space-y-4'>
-              {updates.map((update: Update) => (
+              {updates.map((update) => (
                 <div
                   key={update.id}
                   className='bg-bg-soft-100 relative rounded-lg'
@@ -738,7 +738,7 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
 
                       <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
                         <span>
-                          {new Date(update.created_at).toLocaleDateString()}
+                          {new Date(update.date).toLocaleDateString()}
                         </span>
                         <a
                           href={update.link}

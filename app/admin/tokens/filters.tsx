@@ -13,13 +13,13 @@ import * as Select from '@/components/ui/select';
 import IconCmd from '~/icons/icon-cmd.svg';
 
 type TokenTier = 'all' | 's' | 'a' | 'b' | 'c';
-type SortField = 'name' | 'created_at' | 'tier';
+type SortField = 'name' | 'created_at' | 'tier' | 'ordering';
 type SortOrder = 'asc' | 'desc';
 
 export const tokenSearchAtom = atom<string>('');
 export const tokenTierFilterAtom = atom<TokenTier>('all');
-export const tokenSortFieldAtom = atom<SortField>('created_at');
-export const tokenSortOrderAtom = atom<SortOrder>('desc');
+export const tokenSortFieldAtom = atom<SortField>('ordering');
+export const tokenSortOrderAtom = atom<SortOrder>('asc');
 
 export function Filters() {
   const [search, setSearch] = useAtom(tokenSearchAtom);
@@ -41,8 +41,8 @@ export function Filters() {
     setLocalSearch('');
     setSearch('');
     setTierFilter('all');
-    setSortField('created_at');
-    setSortOrder('desc');
+    setSortField('ordering');
+    setSortOrder('asc');
   };
 
   const hasActiveFilters = localSearch || tierFilter !== 'all';
