@@ -11,10 +11,16 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Client-side Supabase client - use for client components and hooks
-export const supabase = createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
+export const supabase = createBrowserClient<Database>(
+  supabaseUrl,
+  supabaseAnonKey,
+);
 
 // Legacy client for backward compatibility
-export const legacySupabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+export const legacySupabase = createClient<Database>(
+  supabaseUrl,
+  supabaseAnonKey,
+);
 
 // Server-side client with service role key for admin operations
 export const createServerSupabaseClient = () => {

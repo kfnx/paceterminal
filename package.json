@@ -12,7 +12,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
+    "format": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "db:gen:types": "npx supabase gen types typescript --project-id 'jxocsttakwptbsnjjejg' --schema public > lib/database.types.ts"
   },
   "dependencies": {
@@ -41,7 +41,7 @@
     "@solana/wallet-adapter-wallets": "^0.19.37",
     "@solana/web3.js": "^1.98.2",
     "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.50.0",
+    "@supabase/supabase-js": "^2.50.1",
     "@tanstack/react-query": "^5.81.5",
     "@tanstack/react-table": "^8.20.1",
     "clsx": "^2.1.1",
@@ -86,7 +86,7 @@
     "eslint-plugin-tailwindcss": "^3.17.5",
     "postcss": "^8",
     "prettier": "^3.3.3",
-    "supabase": "^2.26.9",
+    "supabase": "^2.30.4",
     "tailwindcss": "^3.4.14",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5"

@@ -9,13 +9,14 @@ import * as Alert from '@/components/ui/alert';
 import * as Button from '@/components/ui/button';
 import { TokenForm } from '@/components/token-form';
 import { TokensTable, TokenTablePagination } from '@/components/token-table';
+
 import {
+  Filters,
   tokenSearchAtom,
-  tokenTierFilterAtom,
   tokenSortFieldAtom,
-  tokenSortOrderAtom
+  tokenSortOrderAtom,
+  tokenTierFilterAtom,
 } from './filters';
-import { Filters } from './filters';
 
 export default function AdminTokensPage() {
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -27,7 +28,8 @@ export default function AdminTokensPage() {
   const sortField = useAtomValue(tokenSortFieldAtom);
   const sortOrder = useAtomValue(tokenSortOrderAtom);
 
-  const { tokens, total, page, totalPages, loading, error, refetch } = useTokens(currentPage, pageSize);
+  const { tokens, total, page, totalPages, loading, error, refetch } =
+    useTokens(currentPage, pageSize);
   const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
 
   // Reset to page 1 when filters change
@@ -74,9 +76,7 @@ export default function AdminTokensPage() {
     <div className='flex flex-1 flex-col p-6'>
       <div className='mb-6 flex items-center justify-between'>
         <div>
-          <h1 className='text-text-strong-950'>
-            Token Management
-          </h1>
+          <h1 className='text-text-strong-950'>Token Management</h1>
           <p className='mt-1 text-paragraph-sm text-text-sub-600'>
             Manage and organize your token collection
           </p>
@@ -89,10 +89,7 @@ export default function AdminTokensPage() {
 
       <div className='flex-1 space-y-4'>
         <Filters />
-        <TokensTable
-          data={tokens}
-          onRefetch={refetch}
-        />
+        <TokensTable data={tokens} onRefetch={refetch} />
         <TokenTablePagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -102,7 +99,6 @@ export default function AdminTokensPage() {
           onPageSizeChange={handlePageSizeChange}
         />
       </div>
-
 
       <TokenForm
         isOpen={isAddModalOpen}

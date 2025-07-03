@@ -1,8 +1,8 @@
 'use client';
 
+import React from 'react';
 import { RiFilter3Fill, RiSearch2Line, RiSortDesc } from '@remixicon/react';
 import { atom, useAtom } from 'jotai';
-import React from 'react';
 
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
@@ -13,13 +13,13 @@ import * as Select from '@/components/ui/select';
 import IconCmd from '~/icons/icon-cmd.svg';
 
 type TokenTier = 'all' | 's' | 'a' | 'b' | 'c';
-type SortField = 'name' | 'created_at' | 'tier';
+type SortField = 'name' | 'created_at' | 'tier' | 'ordering';
 type SortOrder = 'asc' | 'desc';
 
 export const tokenSearchAtom = atom<string>('');
 export const tokenTierFilterAtom = atom<TokenTier>('all');
-export const tokenSortFieldAtom = atom<SortField>('created_at');
-export const tokenSortOrderAtom = atom<SortOrder>('desc');
+export const tokenSortFieldAtom = atom<SortField>('ordering');
+export const tokenSortOrderAtom = atom<SortOrder>('asc');
 
 export function Filters() {
   const [search, setSearch] = useAtom(tokenSearchAtom);
@@ -41,8 +41,8 @@ export function Filters() {
     setLocalSearch('');
     setSearch('');
     setTierFilter('all');
-    setSortField('created_at');
-    setSortOrder('desc');
+    setSortField('ordering');
+    setSortOrder('asc');
   };
 
   const hasActiveFilters = localSearch || tierFilter !== 'all';
@@ -109,36 +109,6 @@ export function Filters() {
           <Button.Icon as={RiFilter3Fill} />
           Clear Filters
         </Button.Root>
-
-        <Select.Root
-          size='small'
-          value={sortField}
-          onValueChange={(value) => setSortField(value as SortField)}
-        >
-          <Select.Trigger className='w-auto flex-1 min-[560px]:flex-none'>
-            <Select.TriggerIcon as={RiSortDesc} />
-            <Select.Value placeholder='Sort by' />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Item value='name'>Name</Select.Item>
-            <Select.Item value='created_at'>Created Date</Select.Item>
-            <Select.Item value='tier'>Tier</Select.Item>
-          </Select.Content>
-        </Select.Root>
-
-        <Select.Root
-          size='small'
-          value={sortOrder}
-          onValueChange={(value) => setSortOrder(value as SortOrder)}
-        >
-          <Select.Trigger className='w-auto flex-1 min-[560px]:flex-none'>
-            <Select.Value placeholder='Order' />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Item value='asc'>Ascending</Select.Item>
-            <Select.Item value='desc'>Descending</Select.Item>
-          </Select.Content>
-        </Select.Root>
       </div>
     </div>
   );

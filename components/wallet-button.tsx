@@ -1,40 +1,53 @@
 'use client';
 
 // https://github.com/anza-xyz/wallet-adapter/tree/master/packages/core/react#creating-a-custom-connect-button
-import { useWalletMultiButton } from "@solana/wallet-adapter-base-ui";
-import * as Button from "@/components/ui/button";
-import { RiCloseLine, RiWalletLine, RiArrowDownSLine, RiLockUnlockLine, RiStarLine } from "@remixicon/react";
-import { RiLogoutBoxRLine } from "@remixicon/react";
+import { disconnect } from 'process';
+import {
+  RiArrowDownSLine,
+  RiCloseLine,
+  RiLockUnlockLine,
+  RiLogoutBoxRLine,
+  RiStarLine,
+  RiWalletLine,
+} from '@remixicon/react';
+import { useWalletMultiButton } from '@solana/wallet-adapter-base-ui';
+import { useAtom } from 'jotai';
+
+import { useMemberStatus } from '@/hooks/use-member-status';
 import { useWalletAddress } from '@/hooks/use-wallet-address';
-import { disconnect } from "process";
-import * as Dropdown from "@/components/ui/dropdown";
-import { useAtom } from "jotai";
-import { paymentModalOpenAtom } from "./payment-modal";
-import { useMemberStatus } from "@/hooks/use-member-status";
+import * as Button from '@/components/ui/button';
+import * as Dropdown from '@/components/ui/dropdown';
 
+import { paymentModalOpenAtom } from './payment-modal';
 
-export function WalletButton() {
+export function WalletButton({
+  connectText,
+  className,
+}: {
+  connectText?: string;
+  className?: string;
+}) {
   // const [walletModalConfig, setWalletModalConfig] = useState<Readonly<{
   //   onSelectWallet(walletName: WalletName): void;
   //   wallets: Wallet[];
   // }> | null>(null);
-  const { buttonState, onConnect, onDisconnect, onSelectWallet, walletIcon } = useWalletMultiButton({
-    onSelectWallet: (wallet) => {
-      wallet.onSelectWallet(wallet.wallets[0].adapter.name);
-      // setWalletModalConfig(wallet);
-      // if (Array.isArray(wallet.wallets) && wallet.wallets.length > 0) {
-      //   const walletAdapter = wallet.wallets[0].adapter.name;
-      //   // setWalletModalConfig(null);
-      //   return walletAdapter;
-      // }
-    },
-  });
+  const { buttonState, onConnect, onDisconnect, onSelectWallet, walletIcon } =
+    useWalletMultiButton({
+      onSelectWallet: (wallet) => {
+        wallet.onSelectWallet(wallet.wallets[0].adapter.name);
+        // setWalletModalConfig(wallet);
+        // if (Array.isArray(wallet.wallets) && wallet.wallets.length > 0) {
+        //   const walletAdapter = wallet.wallets[0].adapter.name;
+        //   // setWalletModalConfig(null);
+        //   return walletAdapter;
+        // }
+      },
+    });
   const { connected, formattedAddress } = useWalletAddress();
   const { isMember, expiredAt, loading } = useMemberStatus();
 
-  const [_paymentModalOpen, setPaymentModalOpen] = useAtom(
-    paymentModalOpenAtom,
-  );
+  const [_paymentModalOpen, setPaymentModalOpen] =
+    useAtom(paymentModalOpenAtom);
 
   let label;
   switch (buttonState) {
@@ -49,40 +62,50 @@ export function WalletButton() {
       break;
     case 'has-wallet':
     case 'no-wallet':
-      label = 'Connect Wallet';
+      label = connectText || 'Connect Wallet';
       break;
   }
 
   if (connected) {
-    return <Dropdown.Root>
-      <Dropdown.Trigger asChild>
-        <Button.Root variant='neutral' mode='stroke'>
-          <img src={walletIcon} alt='wallet icon' className='h-4 w-4' />
-          {label} {connected && <Button.Icon as={RiArrowDownSLine} />}
-        </Button.Root>
-      </Dropdown.Trigger>
-      <Dropdown.Content align='end' className='w-56'>
-        <Dropdown.Item onClick={() => {
-          if (!isMember) {
-            setPaymentModalOpen(true)
-          }
-        }}>
-          <Dropdown.ItemIcon as={isMember ? RiStarLine : RiLockUnlockLine} />
-          {loading ? 'Checking status...' : isMember && expiredAt ? `Member until ${expiredAt.toLocaleDateString()}` : 'Remove Ads'}
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => onDisconnect?.()}>
-          <Dropdown.ItemIcon as={RiLogoutBoxRLine} />
-          Disconnect Wallet
-        </Dropdown.Item>
-      </Dropdown.Content>
-    </Dropdown.Root>
+    return (
+      <Dropdown.Root>
+        <Dropdown.Trigger asChild>
+          <Button.Root variant='neutral' mode='stroke'>
+            <img src={walletIcon} alt='wallet icon' className='h-4 w-4' />
+            {label} {connected && <Button.Icon as={RiArrowDownSLine} />}
+          </Button.Root>
+        </Dropdown.Trigger>
+        <Dropdown.Content align='end' className='w-56'>
+          <Dropdown.Item
+            onClick={() => {
+              if (!isMember) {
+                setPaymentModalOpen(true);
+              }
+            }}
+          >
+            <Dropdown.ItemIcon as={isMember ? RiStarLine : RiLockUnlockLine} />
+            {loading
+              ? 'Checking status...'
+              : isMember && expiredAt
+                ? `Member until ${expiredAt.toLocaleDateString()}`
+                : 'Remove Ads'}
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => onDisconnect?.()}>
+            <Dropdown.ItemIcon as={RiLogoutBoxRLine} />
+            Disconnect Wallet
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown.Root>
+    );
   }
   return (
     <>
       <Button.Root
         variant='neutral'
         mode='stroke'
-        disabled={buttonState === 'connecting' || buttonState === 'disconnecting'}
+        disabled={
+          buttonState === 'connecting' || buttonState === 'disconnecting'
+        }
         onClick={() => {
           switch (buttonState) {
             case 'connected':
@@ -99,8 +122,10 @@ export function WalletButton() {
               break;
           }
         }}
+        className={className}
       >
-        <Button.Icon as={RiWalletLine} /> {label} {connected && <Button.Icon as={RiCloseLine} onClick={disconnect} />}
+        <Button.Icon as={RiWalletLine} /> {label}{' '}
+        {connected && <Button.Icon as={RiCloseLine} onClick={disconnect} />}
       </Button.Root>
       {/* {walletModalConfig ? (
         <Modal.Root>

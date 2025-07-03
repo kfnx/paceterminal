@@ -1,20 +1,23 @@
 'use client';
 
 import * as React from 'react';
-import * as Modal from '@/components/ui/modal';
-import * as Button from '@/components/ui/button';
-import { atom, useAtom } from 'jotai';
-import * as Badge from '@/components/ui/badge';
-import { useWalletTransaction } from '@/hooks/use-wallet-transaction';
-import { useMemberStatus } from '@/hooks/use-member-status';
-import { toast } from 'sonner';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { atom, useAtom } from 'jotai';
+import { toast } from 'sonner';
+
+import { useMemberStatus } from '@/hooks/use-member-status';
+import { useWalletTransaction } from '@/hooks/use-wallet-transaction';
+import * as Badge from '@/components/ui/badge';
+import * as Button from '@/components/ui/button';
+import * as Modal from '@/components/ui/modal';
 
 export const paymentModalOpenAtom = atom(false);
 
 export function PaymentModal() {
   const [open, setOpen] = useAtom(paymentModalOpenAtom);
-  const [paymentType, setPaymentType] = React.useState<'ONE_MONTH' | 'ONE_YEAR' | null>(null);
+  const [paymentType, setPaymentType] = React.useState<
+    'ONE_MONTH' | 'ONE_YEAR' | null
+  >(null);
   const { publicKey } = useWallet();
   const { refetch: refetchMemberStatus } = useMemberStatus();
 
@@ -99,7 +102,14 @@ export function PaymentModal() {
     };
 
     verifyPayment();
-  }, [success, signature, publicKey, paymentType, setOpen, refetchMemberStatus]);
+  }, [
+    success,
+    signature,
+    publicKey,
+    paymentType,
+    setOpen,
+    refetchMemberStatus,
+  ]);
 
   React.useEffect(() => {
     // When the modal closes, reset the transaction state

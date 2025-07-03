@@ -1,25 +1,39 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import {
   RiAddLine,
+  RiArrowLeftLine,
   RiCoinLine,
+  RiDeleteBinLine,
   RiEditLine,
   RiTwitterLine,
 } from '@remixicon/react';
 import { toast } from 'sonner';
 
+import { useAlpha, type Alpha } from '@/hooks/use-alpha';
 import { useFlywheel, type Flywheel } from '@/hooks/use-flywheel';
+import { useMetrics, type Metric } from '@/hooks/use-metrics';
 import { useTeams, type Team } from '@/hooks/use-teams';
+import {
+  useTechnicalAnalysis,
+  type TechnicalAnalysis,
+} from '@/hooks/use-technical-analysis';
 import { useToken } from '@/hooks/use-token';
 import type { Token } from '@/hooks/use-tokens';
+import { useUpdates, type Update } from '@/hooks/use-updates';
 import * as Avatar from '@/components/ui/avatar';
 import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
 
+import { AlphaForm } from './alpha-form';
 import { FlywheelForm } from './flywheel-form';
+import { MetricsForm } from './metrics-form';
 import { TeamForm } from './team-form';
+import { TechnicalAnalysisForm } from './technical-analysis-form';
 import { TokenForm } from './token-form';
+import { UpdatesForm } from './updates-form';
 
 interface TokenDetailPageProps {
   address: string;
@@ -27,6 +41,12 @@ interface TokenDetailPageProps {
 
 export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const { data: token, isLoading, error, refetch } = useToken(address);
+  const {
+    alpha,
+    loading: alphaLoading,
+    error: alphaError,
+    refetch: refetchAlpha,
+  } = useAlpha(address);
   const {
     teams,
     loading: teamsLoading,
@@ -39,11 +59,47 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
     error: flywheelError,
     refetch: refetchFlywheel,
   } = useFlywheel(address);
+  const {
+    technicalAnalysis,
+    loading: technicalAnalysisLoading,
+    error: technicalAnalysisError,
+    refetch: refetchTechnicalAnalysis,
+  } = useTechnicalAnalysis(address);
+  const {
+    metrics,
+    loading: metricsLoading,
+    error: metricsError,
+    refetch: refetchMetrics,
+  } = useMetrics(address);
+  const {
+    updates,
+    loading: updatesLoading,
+    error: updatesError,
+    refetch: refetchUpdates,
+  } = useUpdates(address);
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [isEditFlywheelModalOpen, setIsEditFlywheelModalOpen] =
     React.useState(false);
   const [isEditTeamModalOpen, setIsEditTeamModalOpen] = React.useState(false);
+  const [
+    isEditTechnicalAnalysisModalOpen,
+    setIsEditTechnicalAnalysisModalOpen,
+  ] = React.useState(false);
+  const [selectedTechnicalAnalysis, setSelectedTechnicalAnalysis] =
+    React.useState<TechnicalAnalysis | null>(null);
+  const [isEditMetricsModalOpen, setIsEditMetricsModalOpen] =
+    React.useState(false);
+  const [selectedMetric, setSelectedMetric] = React.useState<Metric | null>(
+    null,
+  );
+  const [isEditUpdatesModalOpen, setIsEditUpdatesModalOpen] =
+    React.useState(false);
+  const [selectedUpdate, setSelectedUpdate] = React.useState<Update | null>(
+    null,
+  );
+  const [isEditAlphaModalOpen, setIsEditAlphaModalOpen] = React.useState(false);
+  const [selectedAlpha, setSelectedAlpha] = React.useState<Alpha | null>(null);
 
   console.log(teams);
 
@@ -60,6 +116,114 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const handleTeamSuccess = () => {
     refetchTeams();
     toast.success('Team updated successfully!');
+  };
+
+  const handleTechnicalAnalysisSuccess = () => {
+    refetchTechnicalAnalysis();
+    toast.success('Technical analysis updated successfully!');
+  };
+
+  const handleDeleteTechnicalAnalysis = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this technical analysis?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/technical-analysis/delete?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete technical analysis');
+      }
+
+      refetchTechnicalAnalysis();
+      toast.success('Technical analysis deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting technical analysis:', error);
+      toast.error('Failed to delete technical analysis');
+    }
+  };
+
+  const handleMetricsSuccess = () => {
+    refetchMetrics();
+    toast.success('Metric updated successfully!');
+  };
+
+  const handleDeleteMetric = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this metric?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/metrics/delete?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete metric');
+      }
+
+      refetchMetrics();
+      toast.success('Metric deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting metric:', error);
+      toast.error('Failed to delete metric');
+    }
+  };
+
+  const handleUpdatesSuccess = () => {
+    refetchUpdates();
+    toast.success('Update updated successfully!');
+  };
+
+  const handleDeleteUpdate = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this update?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/updates/delete?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete update');
+      }
+
+      refetchUpdates();
+      toast.success('Update deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting update:', error);
+      toast.error('Failed to delete update');
+    }
+  };
+
+  const handleAlphaSuccess = () => {
+    refetchAlpha();
+    toast.success('Alpha updated successfully!');
+  };
+
+  const handleDeleteAlpha = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this alpha?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/alpha/delete?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete alpha');
+      }
+
+      refetchAlpha();
+      toast.success('Alpha deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting alpha:', error);
+      toast.error('Failed to delete alpha');
+    }
   };
 
   if (isLoading) {
@@ -172,6 +336,14 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
             </div>
           </div>
         </div>
+
+        <Link
+          href='/admin/tokens'
+          className='flex items-center gap-2 text-text-sub-600 hover:text-text-strong-950 transition-colors p-6'
+        >
+          <RiArrowLeftLine className='size-4' />
+          Back to Manage Token
+        </Link>
       </div>
 
       <div className='grid gap-6 md:grid-cols-2'>
@@ -240,9 +412,96 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         </div>
 
         <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
-          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
-            Metrics
-          </h3>
+          <div className='mb-4 flex items-center justify-between'>
+            <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
+              Metrics
+            </h3>
+            <Button.Root
+              variant='neutral'
+              mode='stroke'
+              onClick={() => {
+                setSelectedMetric(null);
+                setIsEditMetricsModalOpen(true);
+              }}
+              size='xsmall'
+            >
+              <RiAddLine className='size-4' />
+            </Button.Root>
+          </div>
+          {metricsLoading ? (
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Loading metrics...
+            </div>
+          ) : metricsError ? (
+            <div className='text-paragraph-sm text-red-600'>
+              Error loading metrics: {metricsError}
+            </div>
+          ) : metrics.length > 0 ? (
+            <div className='grid gap-4 md:grid-cols-2'>
+              {metrics.map((metric: Metric) => (
+                <div
+                  key={metric.id}
+                  className='bg-bg-soft-100 relative rounded-lg'
+                >
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1'>
+                      <div className='mb-2 flex items-center justify-between'>
+                        <h4 className='text-label-sm font-medium text-text-strong-950'>
+                          {metric.label}
+                        </h4>
+                      </div>
+                      <div className='mb-2 text-paragraph-lg font-semibold text-text-strong-950'>
+                        {metric.value}
+                      </div>
+                      {metric.description && (
+                        <div className='mb-2 text-paragraph-xs text-text-sub-600'>
+                          {metric.description}
+                        </div>
+                      )}
+                      <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
+                        <span>
+                          {new Date(metric.created_at).toLocaleDateString()}
+                        </span>
+                        {metric.source && <span>Source: {metric.source}</span>}
+                      </div>
+                    </div>
+                    <div className='ml-3 flex flex-col gap-2'>
+                      <Button.Root
+                        variant='neutral'
+                        mode='stroke'
+                        onClick={() => {
+                          setSelectedMetric(metric);
+                          setIsEditMetricsModalOpen(true);
+                        }}
+                        size='xsmall'
+                      >
+                        <RiEditLine className='size-4' />
+                      </Button.Root>
+                      <Button.Root
+                        variant='error'
+                        mode='stroke'
+                        onClick={() => handleDeleteMetric(metric.id)}
+                        size='xsmall'
+                      >
+                        <RiDeleteBinLine className='size-4' />
+                      </Button.Root>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className='flex flex-col items-center justify-center gap-4 py-8'>
+              <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+                <RiCoinLine className='size-8 text-text-sub-600' />
+              </div>
+              <div className='text-center'>
+                <p className='text-paragraph-sm text-text-sub-600'>
+                  No metrics found for this token.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
@@ -376,21 +635,291 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         </div>
 
         <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
-          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
-            Technical Analysis
-          </h3>
+          <div className='mb-4 flex items-center justify-between'>
+            <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
+              Technical Analysis
+            </h3>
+            <Button.Root
+              variant='neutral'
+              mode='stroke'
+              onClick={() => {
+                setSelectedTechnicalAnalysis(null);
+                setIsEditTechnicalAnalysisModalOpen(true);
+              }}
+              size='xsmall'
+            >
+              <RiAddLine className='size-4' />
+            </Button.Root>
+          </div>
+          {technicalAnalysisLoading ? (
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Loading technical analysis...
+            </div>
+          ) : technicalAnalysisError ? (
+            <div className='text-paragraph-sm text-red-600'>
+              Error loading technical analysis: {technicalAnalysisError}
+            </div>
+          ) : technicalAnalysis.length > 0 ? (
+            <div className='space-y-6'>
+              {technicalAnalysis.map((analysis: TechnicalAnalysis) => (
+                <div key={analysis.id} className='space-y-3'>
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1 space-y-3'>
+                      <div className='w-full'>
+                        <img
+                          src={analysis.image}
+                          alt='Technical Analysis Chart'
+                          className='h-full w-full rounded-lg object-cover'
+                        />
+                      </div>
+                      <div className='bg-bg-soft-100 rounded-lg'>
+                        <p className='whitespace-pre-wrap break-words text-paragraph-sm text-text-strong-950'>
+                          {analysis.description}
+                        </p>
+                      </div>
+                      <div className='text-paragraph-xs text-text-sub-600'>
+                        Created:{' '}
+                        {new Date(analysis.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <div className='ml-3 flex flex-col gap-2'>
+                      <Button.Root
+                        variant='neutral'
+                        mode='stroke'
+                        onClick={() => {
+                          setSelectedTechnicalAnalysis(analysis);
+                          setIsEditTechnicalAnalysisModalOpen(true);
+                        }}
+                        size='xsmall'
+                      >
+                        <RiEditLine className='size-4' />
+                      </Button.Root>
+                      <Button.Root
+                        variant='error'
+                        mode='stroke'
+                        onClick={() =>
+                          handleDeleteTechnicalAnalysis(analysis.id)
+                        }
+                        size='xsmall'
+                      >
+                        <RiDeleteBinLine className='size-4' />
+                      </Button.Root>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className='flex flex-col items-center justify-center gap-4 py-8'>
+              <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+                <RiCoinLine className='size-8 text-text-sub-600' />
+              </div>
+              <div className='text-center'>
+                <p className='text-paragraph-sm text-text-sub-600'>
+                  No technical analysis found for this token.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
-          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
-            Alpha
-          </h3>
+          <div className='mb-4 flex items-center justify-between'>
+            <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
+              Alpha
+            </h3>
+            <Button.Root
+              variant='neutral'
+              mode='stroke'
+              onClick={() => {
+                setSelectedAlpha(null);
+                setIsEditAlphaModalOpen(true);
+              }}
+              size='xsmall'
+            >
+              <RiAddLine className='size-4' />
+            </Button.Root>
+          </div>
+          {alphaLoading ? (
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Loading alpha...
+            </div>
+          ) : alphaError ? (
+            <div className='text-paragraph-sm text-red-600'>
+              Error loading alpha: {alphaError}
+            </div>
+          ) : alpha.length > 0 ? (
+            <div className='space-y-4'>
+              {alpha.map((alphaItem) => (
+                <div
+                  key={alphaItem.id}
+                  className='bg-bg-soft-100 relative rounded-lg'
+                >
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1'>
+                      <div className='mb-2 flex items-center justify-between'>
+                        <h4 className='text-label-sm font-medium text-text-strong-950'>
+                          {alphaItem.title}
+                        </h4>
+                      </div>
+                      {alphaItem.text && (
+                        <div className='mb-2 whitespace-pre-wrap text-paragraph-sm text-text-strong-950'>
+                          {alphaItem.text}
+                        </div>
+                      )}
+                      <div className='text-paragraph-xs text-text-sub-600'>
+                        Created:{' '}
+                        {new Date(alphaItem.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <div className='ml-3 flex flex-col gap-2'>
+                      <Button.Root
+                        variant='neutral'
+                        mode='stroke'
+                        onClick={() => {
+                          setSelectedAlpha(alphaItem);
+                          setIsEditAlphaModalOpen(true);
+                        }}
+                        size='xsmall'
+                      >
+                        <RiEditLine className='size-4' />
+                      </Button.Root>
+                      <Button.Root
+                        variant='error'
+                        mode='stroke'
+                        onClick={() => handleDeleteAlpha(alphaItem.id)}
+                        size='xsmall'
+                      >
+                        <RiDeleteBinLine className='size-4' />
+                      </Button.Root>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className='flex flex-col items-center justify-center gap-4 py-8'>
+              <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+                <RiCoinLine className='size-8 text-text-sub-600' />
+              </div>
+              <div className='text-center'>
+                <p className='text-paragraph-sm text-text-sub-600'>
+                  No alpha found for this token.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
-          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
-            Updates
-          </h3>
+          <div className='mb-4 flex items-center justify-between'>
+            <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
+              Updates
+            </h3>
+            <Button.Root
+              variant='neutral'
+              mode='stroke'
+              onClick={() => {
+                setSelectedUpdate(null);
+                setIsEditUpdatesModalOpen(true);
+              }}
+              size='xsmall'
+            >
+              <RiAddLine className='size-4' />
+            </Button.Root>
+          </div>
+          {updatesLoading ? (
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Loading updates...
+            </div>
+          ) : updatesError ? (
+            <div className='text-paragraph-sm text-red-600'>
+              Error loading updates: {updatesError}
+            </div>
+          ) : updates.length > 0 ? (
+            <div className='space-y-4'>
+              {updates.map((update) => (
+                <div
+                  key={update.id}
+                  className='bg-bg-soft-100 relative rounded-lg'
+                >
+                  <div className='flex gap-4'>
+                    {update.image ? (
+                      <div className='flex-shrink-0'>
+                        <img
+                          src={update.image}
+                          alt={update.title}
+                          className='h-20 w-20 rounded-lg object-cover'
+                        />
+                      </div>
+                    ) : (
+                      <div className='size-20 flex-shrink-0 rounded-lg border border-stroke-soft-200 text-center text-label-xs'>
+                        no image
+                      </div>
+                    )}
+
+                    <div className='flex flex-1 flex-col gap-3'>
+                      <h4 className='text-label-sm font-medium text-text-strong-950'>
+                        {update.title}
+                      </h4>
+
+                      <div className='text-paragraph-sm text-text-strong-950'>
+                        {update.description}
+                      </div>
+
+                      <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
+                        <span>
+                          {new Date(update.date).toLocaleDateString()}
+                        </span>
+                        <a
+                          href={update.link}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='hover:text-primary-600 max-w-[280px] truncate text-primary-base'
+                          title={update.link}
+                        >
+                          {update.link}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className='flex flex-col gap-2'>
+                      <Button.Root
+                        variant='neutral'
+                        mode='stroke'
+                        onClick={() => {
+                          setSelectedUpdate(update);
+                          setIsEditUpdatesModalOpen(true);
+                        }}
+                        size='xsmall'
+                      >
+                        <RiEditLine className='size-4' />
+                      </Button.Root>
+                      <Button.Root
+                        variant='error'
+                        mode='stroke'
+                        onClick={() => handleDeleteUpdate(update.id)}
+                        size='xsmall'
+                      >
+                        <RiDeleteBinLine className='size-4' />
+                      </Button.Root>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className='flex flex-col items-center justify-center gap-4 py-8'>
+              <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+                <RiCoinLine className='size-8 text-text-sub-600' />
+              </div>
+              <div className='text-center'>
+                <p className='text-paragraph-sm text-text-sub-600'>
+                  No updates found for this token.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -415,6 +944,50 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         isOpen={isEditTeamModalOpen}
         onClose={() => setIsEditTeamModalOpen(false)}
         onSuccess={handleTeamSuccess}
+      />
+
+      <TechnicalAnalysisForm
+        technicalAnalysis={selectedTechnicalAnalysis || undefined}
+        tokenAddress={address}
+        isOpen={isEditTechnicalAnalysisModalOpen}
+        onClose={() => {
+          setIsEditTechnicalAnalysisModalOpen(false);
+          setSelectedTechnicalAnalysis(null);
+        }}
+        onSuccess={handleTechnicalAnalysisSuccess}
+      />
+
+      <MetricsForm
+        metric={selectedMetric || undefined}
+        tokenAddress={address}
+        isOpen={isEditMetricsModalOpen}
+        onClose={() => {
+          setIsEditMetricsModalOpen(false);
+          setSelectedMetric(null);
+        }}
+        onSuccess={handleMetricsSuccess}
+      />
+
+      <UpdatesForm
+        update={selectedUpdate || undefined}
+        tokenAddress={address}
+        isOpen={isEditUpdatesModalOpen}
+        onClose={() => {
+          setIsEditUpdatesModalOpen(false);
+          setSelectedUpdate(null);
+        }}
+        onSuccess={handleUpdatesSuccess}
+      />
+
+      <AlphaForm
+        alpha={selectedAlpha || undefined}
+        tokenAddress={address}
+        isOpen={isEditAlphaModalOpen}
+        onClose={() => {
+          setIsEditAlphaModalOpen(false);
+          setSelectedAlpha(null);
+        }}
+        onSuccess={handleAlphaSuccess}
       />
     </div>
   );

@@ -230,7 +230,7 @@ export default function PageLogin() {
                 <Input.Input
                   id='email'
                   type='email'
-                  placeholder='hello@alignui.com'
+                  placeholder='intern@paceterminal.com'
                   required
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}

@@ -7,3 +7,4 @@ use pnpm for any package manager usage
 use @remixicon/react when using icon in react file
 use next 14 and app router
 use @tanstack/react-query to fetch
+use zod for validation in API

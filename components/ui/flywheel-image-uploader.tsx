@@ -37,7 +37,9 @@ export function FlywheelImageUploader({
 }: FlywheelImageUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadedImage, setUploadedImage] = useState<UploadedImage | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<UploadedImage | null>(
+    null,
+  );
   const [isDragOver, setIsDragOver] = useState(false);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -133,10 +135,10 @@ export function FlywheelImageUploader({
           <div className='relative h-32 w-32 overflow-hidden rounded-lg'>
             <S3Image
               src={displayImage}
-              alt="Flywheel"
+              alt='Flywheel'
               width={128}
               height={128}
-              className="h-full w-full object-cover"
+              className='h-full w-full object-cover'
             />
           </div>
         ) : (
@@ -147,11 +149,15 @@ export function FlywheelImageUploader({
 
         <div className='flex flex-col gap-2'>
           <div className='text-sm text-text-sub-600'>
-            {displayImage ? 'Current flywheel image' : 'No flywheel image uploaded'}
+            {displayImage
+              ? 'Current flywheel image'
+              : 'No flywheel image uploaded'}
           </div>
           {uploadedImage && (
             <div className='text-xs text-text-sub-600'>
-              {uploadedImage.replaced ? 'Replaced existing image' : 'New image uploaded'}
+              {uploadedImage.replaced
+                ? 'Replaced existing image'
+                : 'New image uploaded'}
             </div>
           )}
         </div>
@@ -159,10 +165,11 @@ export function FlywheelImageUploader({
 
       {/* Upload Area */}
       <div
-        className={`relative rounded-lg border-2 border-dashed p-6 text-center transition-colors ${isDragOver
-          ? 'bg-primary-lighter border-primary-base'
-          : 'border-stroke-soft-200'
-          } ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+        className={`relative rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
+          isDragOver
+            ? 'bg-primary-lighter border-primary-base'
+            : 'border-stroke-soft-200'
+        } ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -195,9 +202,7 @@ export function FlywheelImageUploader({
             <div className='flex items-center space-x-3'>
               <span className='text-2xl'>🖼️</span>
               <div>
-                <p className='font-medium text-text-strong-950'>
-                  {file.name}
-                </p>
+                <p className='font-medium text-text-strong-950'>{file.name}</p>
                 <p className='text-sm text-text-sub-600'>
                   {formatFileSize(file.size)}
                 </p>
@@ -284,4 +289,4 @@ export function FlywheelImageUploader({
       )}
     </div>
   );
-} 
+}

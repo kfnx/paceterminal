@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+
 import { useToken } from './use-token';
 
 /**
@@ -10,6 +11,6 @@ import { useToken } from './use-token';
 export function useCurrentToken() {
   const params = useParams();
   const address = params.address as string;
-  
+
   return useToken(address);
 }

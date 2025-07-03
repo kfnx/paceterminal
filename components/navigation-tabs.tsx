@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 
 import { cnExt } from '@/utils/cn';
 import * as SegmentedControl from '@/components/ui/segmented-control';
-import { useParams } from 'next/navigation';
 
 export function NavigationTabs({
   className,
@@ -29,8 +29,7 @@ export function NavigationTabs({
     <SegmentedControl.Root
       value={selectedTab}
       onValueChange={handleValueChange}
-      // className='lg:w-80'
-      className={cnExt(className)}
+      className={cnExt('w-full', className)}
     >
       <SegmentedControl.List>
         <SegmentedControl.Trigger value='top'>Chart</SegmentedControl.Trigger>

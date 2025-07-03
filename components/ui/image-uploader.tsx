@@ -38,7 +38,9 @@ export function ImageUploader({
 }: ImageUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadedImage, setUploadedImage] = useState<UploadedImage | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<UploadedImage | null>(
+    null,
+  );
   const [isDragOver, setIsDragOver] = useState(false);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -146,7 +148,9 @@ export function ImageUploader({
           </div>
           {uploadedImage && (
             <div className='text-xs text-text-sub-600'>
-              {uploadedImage.replaced ? 'Replaced existing image' : 'New image uploaded'}
+              {uploadedImage.replaced
+                ? 'Replaced existing image'
+                : 'New image uploaded'}
             </div>
           )}
         </div>
@@ -154,10 +158,11 @@ export function ImageUploader({
 
       {/* Upload Area */}
       <div
-        className={`relative rounded-lg border-2 border-dashed p-6 text-center transition-colors ${isDragOver
-          ? 'bg-primary-lighter border-primary-base'
-          : 'border-stroke-soft-200'
-          } ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+        className={`relative rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
+          isDragOver
+            ? 'bg-primary-lighter border-primary-base'
+            : 'border-stroke-soft-200'
+        } ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -190,9 +195,7 @@ export function ImageUploader({
             <div className='flex items-center space-x-3'>
               <span className='text-2xl'>🖼️</span>
               <div>
-                <p className='font-medium text-text-strong-950'>
-                  {file.name}
-                </p>
+                <p className='font-medium text-text-strong-950'>{file.name}</p>
                 <p className='text-sm text-text-sub-600'>
                   {formatFileSize(file.size)}
                 </p>
@@ -237,10 +240,11 @@ export function ImageUploader({
         <div className='flex items-center space-x-2 rounded-lg border border-success-light bg-success-lighter p-3'>
           <RiCheckLine className='h-4 w-4 text-success-base' />
           <p className='text-sm text-success-dark'>
-            Image {uploadedImage.replaced ? 'replaced' : 'uploaded'} successfully!
+            Image {uploadedImage.replaced ? 'replaced' : 'uploaded'}{' '}
+            successfully!
           </p>
         </div>
       )}
     </div>
   );
-} 
+}

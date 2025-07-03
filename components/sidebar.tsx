@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import {
   RiArrowRightSLine,
   RiSkipLeftLine,
@@ -10,15 +11,14 @@ import {
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import { cn, cnExt } from '@/utils/cn';
+import { getTokenImageUrl } from '@/utils/image-url';
+import { useAllTokens } from '@/hooks/use-all-tokens';
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/compact-button';
 import * as Divider from '@/components/ui/divider';
 
-import { LoadingSpinner } from './ui/loading-spinner';
-import { useParams } from 'next/navigation';
 import { SidebarProfile } from './sidebar-profile';
-import { useAllTokens } from '@/hooks/use-all-tokens';
-import { getTokenImageUrl } from '@/utils/image-url';
+import { LoadingSpinner } from './ui/loading-spinner';
 
 type CuratedTokens = {
   address: string;
@@ -112,9 +112,7 @@ export function SidebarHeader({
           </h1>
         </Link>
         {!collapsed && (
-          <p className='text-paragraph-sm text-text-sub-600'>
-            Hong Wilaheng
-          </p>
+          <p className='text-paragraph-sm text-text-sub-600'>Hong Wilaheng</p>
         )}
       </div>
       <Button.Root className='mt-5'>
@@ -157,7 +155,7 @@ function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
       {tokens.map((token) => {
         const selected = currentTokenAddress === token.address;
         const href = `/solana/${token.address}`;
-        
+
         return (
           <Link
             key={token.address}
@@ -233,7 +231,6 @@ function SidebarDivider({ collapsed }: { collapsed: boolean }) {
     </div>
   );
 }
-
 
 function UserProfile({ collapsed }: { collapsed: boolean }) {
   return (

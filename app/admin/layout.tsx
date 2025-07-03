@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
-import HeaderMobile from '@/components/header-mobile';
+
 import { createClient } from '@/lib/supabase-server';
+import HeaderMobile from '@/components/header-mobile';
 
 import { AuthProvider } from '../auth-provider';
 import Header from './header';
@@ -12,7 +13,7 @@ export default async function Layout({
   children: React.ReactNode;
 }>) {
   const supabase = createClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();

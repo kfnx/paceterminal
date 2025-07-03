@@ -8,6 +8,7 @@ import { SearchMenuButton } from '@/components/search';
 import MobileMenu from '@/app/(main)/mobile-menu';
 
 import { LanguageSelect } from './language-select';
+import { ThemeToggler } from './theme-toggler';
 import { WalletButton } from './wallet';
 
 export default function HeaderMobile() {
@@ -20,7 +21,8 @@ export default function HeaderMobile() {
       <div className='flex items-center gap-3'>
         {/* <SearchMenuButton /> */}
         <LanguageSelect />
-        <WalletButton />
+        <ThemeToggler />
+        {/* <WalletButton /> */}
         {/* <NotificationButton /> */}
 
         <div className='flex w-1 shrink-0 items-center before:h-full before:w-px before:bg-stroke-soft-200' />

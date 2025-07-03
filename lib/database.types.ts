@@ -9,6 +9,38 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      alpha: {
+        Row: {
+          address: string
+          created_at: string
+          id: number
+          text: string | null
+          title: string | null
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          id?: number
+          text?: string | null
+          title?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          id?: number
+          text?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alpha_address_fkey"
+            columns: ["address"]
+            isOneToOne: false
+            referencedRelation: "tokens"
+            referencedColumns: ["address"]
+          },
+        ]
+      }
       flywheels: {
         Row: {
           address: string
@@ -81,6 +113,50 @@ export type Database = {
         }
         Relationships: []
       }
+      metrics_static: {
+        Row: {
+          address: string
+          created_at: string
+          description: string | null
+          id: number
+          label: string
+          ordering: number | null
+          source: string | null
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          description?: string | null
+          id?: number
+          label: string
+          ordering?: number | null
+          source?: string | null
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          description?: string | null
+          id?: number
+          label?: string
+          ordering?: number | null
+          source?: string | null
+          updated_at?: string
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metrics_static_address_fkey"
+            columns: ["address"]
+            isOneToOne: false
+            referencedRelation: "tokens"
+            referencedColumns: ["address"]
+          },
+        ]
+      }
       teams: {
         Row: {
           address: string | null
@@ -112,6 +188,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "teams_address_fkey"
+            columns: ["address"]
+            isOneToOne: false
+            referencedRelation: "tokens"
+            referencedColumns: ["address"]
+          },
+        ]
+      }
+      technical_analysis: {
+        Row: {
+          address: string
+          created_at: string
+          description: string
+          id: number
+          image: string
+          updated_at: string | null
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          description: string
+          id?: number
+          image: string
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          description?: string
+          id?: number
+          image?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "technical_analysis_address_fkey"
             columns: ["address"]
             isOneToOne: false
             referencedRelation: "tokens"
@@ -187,6 +298,47 @@ export type Database = {
           verified?: boolean
         }
         Relationships: []
+      }
+      updates: {
+        Row: {
+          address: string
+          created_at: string
+          date: string
+          description: string
+          id: number
+          image: string | null
+          link: string
+          title: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          date?: string
+          description: string
+          id?: number
+          image?: string | null
+          link: string
+          title: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          date?: string
+          description?: string
+          id?: number
+          image?: string | null
+          link?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "updates_address_fkey"
+            columns: ["address"]
+            isOneToOne: false
+            referencedRelation: "tokens"
+            referencedColumns: ["address"]
+          },
+        ]
       }
     }
     Views: {

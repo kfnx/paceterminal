@@ -1,7 +1,7 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 import { RiMoonLine, RiSunLine } from '@remixicon/react';
+import { useTheme } from 'next-themes';
 
 import * as Button from '@/components/ui/button';
 
@@ -22,4 +22,4 @@ export function ThemeToggler({ className }: { className?: string }) {
       )}
     </Button.Root>
   );
-} 
+}

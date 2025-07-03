@@ -1,7 +1,8 @@
-import { Content } from './content';
 import { notFound } from 'next/navigation';
+
 import { supabase } from '@/lib/supabase';
-import type { Token } from '@/hooks/use-tokens';
+
+import { Content } from './content';
 
 export async function generateStaticParams() {
   try {
@@ -9,17 +10,23 @@ export async function generateStaticParams() {
       .from('tokens')
       .select('address')
       .order('ordering', { ascending: true });
-    
-    return tokens?.map((token) => ({
-      address: token.address,
-    })) || [];
+
+    return (
+      tokens?.map((token) => ({
+        address: token.address,
+      })) || []
+    );
   } catch (error) {
     console.error('Error fetching tokens for static params:', error);
     return [];
   }
 }
 
-export default async function SolanaTokenPage({ params }: { params: { address: string } }) {
+export default async function SolanaTokenPage({
+  params,
+}: {
+  params: { address: string };
+}) {
   const { data: token, error } = await supabase
     .from('tokens')
     .select('*')
@@ -30,5 +37,5 @@ export default async function SolanaTokenPage({ params }: { params: { address: s
     notFound();
   }
 
-  return <Content token={token} />;
+  return <Content />;
 }

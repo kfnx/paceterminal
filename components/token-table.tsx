@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import {
   RiArrowDownSFill,
   RiArrowLeftDoubleLine,
@@ -23,6 +24,7 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 import { atom, useSetAtom } from 'jotai';
+import { toast } from 'sonner';
 
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/utils/cn';
@@ -35,7 +37,6 @@ import * as Select from '@/components/ui/select';
 import * as Table from '@/components/ui/table';
 
 import { TokenForm } from './token-form';
-import Link from 'next/link';
 
 export const tokenDetailModalOpenAtom = atom(false);
 export const tokenEditModalOpenAtom = atom(false);
@@ -88,6 +89,26 @@ function ActionCell({
 }
 
 const columns: ColumnDef<Token>[] = [
+  {
+    id: 'ordering',
+    accessorKey: 'ordering',
+    header: ({ column }) => (
+      <div className='flex items-center gap-0.5'>
+        Order
+        <button
+          type='button'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          {getSortingIcon(column.getIsSorted())}
+        </button>
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className='text-paragraph-sm text-text-sub-600'>
+        {row.original.ordering ?? 'N/A'}
+      </div>
+    ),
+  },
   {
     id: 'name',
     accessorKey: 'name',
@@ -145,11 +166,27 @@ const columns: ColumnDef<Token>[] = [
         </button>
       </div>
     ),
-    cell: ({ row }) => (
-      <div className='font-mono text-paragraph-sm text-text-sub-600'>
-        {row.original.address.slice(0, 8)}...{row.original.address.slice(-6)}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const handleCopyAddress = async () => {
+        try {
+          await navigator.clipboard.writeText(row.original.address);
+          toast.success('Token address copied to clipboard!');
+        } catch (err) {
+          console.error('Failed to copy address:', err);
+          toast.error('Failed to copy address to clipboard');
+        }
+      };
+
+      return (
+        <button
+          onClick={handleCopyAddress}
+          className='cursor-pointer font-mono text-paragraph-sm text-text-sub-600 transition-colors hover:text-text-strong-950'
+          title='Click to copy full address'
+        >
+          {row.original.address.slice(0, 8)}...{row.original.address.slice(-6)}
+        </button>
+      );
+    },
   },
   {
     id: 'tier',
@@ -392,7 +429,8 @@ export function TokenTablePagination({
   onPageSizeChange?: (pageSize: number) => void;
 }) {
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages && onPageChange) {
+    const maxPages = totalPages || 1;
+    if (page >= 1 && page <= maxPages && onPageChange) {
       onPageChange(page);
     }
   };
@@ -406,10 +444,11 @@ export function TokenTablePagination({
   const generatePageNumbers = () => {
     const pages: (number | string)[] = [];
     const maxVisiblePages = 7;
+    const maxPages = totalPages || 1;
 
-    if (totalPages <= maxVisiblePages) {
+    if (maxPages <= maxVisiblePages) {
       // Show all pages if total is small
-      for (let i = 1; i <= totalPages; i++) {
+      for (let i = 1; i <= maxPages; i++) {
         pages.push(i);
       }
     } else {
@@ -422,11 +461,11 @@ export function TokenTablePagination({
           pages.push(i);
         }
         pages.push('...');
-        pages.push(totalPages);
-      } else if (currentPage >= totalPages - 3) {
+        pages.push(maxPages);
+      } else if (currentPage >= maxPages - 3) {
         // Show first page, ellipsis, then last 4 pages
         pages.push('...');
-        for (let i = totalPages - 4; i <= totalPages; i++) {
+        for (let i = maxPages - 4; i <= maxPages; i++) {
           pages.push(i);
         }
       } else {
@@ -436,7 +475,7 @@ export function TokenTablePagination({
         pages.push(currentPage);
         pages.push(currentPage + 1);
         pages.push('...');
-        pages.push(totalPages);
+        pages.push(maxPages);
       }
     }
 
@@ -459,14 +498,14 @@ export function TokenTablePagination({
           Previous
         </Button.Root>
         <span className='whitespace-nowrap text-center text-paragraph-sm text-text-sub-600'>
-          Page {currentPage} of {totalPages}
+          Page {currentPage} of {totalPages || 1}
         </span>
         <Button.Root
           variant='neutral'
           mode='stroke'
           size='xsmall'
           className='w-28'
-          disabled={currentPage >= totalPages}
+          disabled={currentPage >= (totalPages || 1)}
           onClick={() => handlePageChange(currentPage + 1)}
         >
           Next
@@ -474,7 +513,7 @@ export function TokenTablePagination({
       </div>
       <div className='mt-10 hidden items-center gap-3 lg:flex'>
         <span className='flex-1 whitespace-nowrap text-paragraph-sm text-text-sub-600'>
-          Page {currentPage} of {totalPages} ({total} total items)
+          Page {currentPage} of {totalPages || 1} ({total} total items)
         </span>
 
         <Pagination.Root>
@@ -494,7 +533,9 @@ export function TokenTablePagination({
           {pageNumbers.map((page, index) => (
             <React.Fragment key={index}>
               {page === '...' ? (
-                <span className='px-2 text-paragraph-sm text-text-sub-600'>...</span>
+                <span className='px-2 text-paragraph-sm text-text-sub-600'>
+                  ...
+                </span>
               ) : (
                 <Pagination.Item
                   current={page === currentPage}
@@ -507,13 +548,13 @@ export function TokenTablePagination({
           ))}
 
           <Pagination.NavButton
-            disabled={currentPage >= totalPages}
-            onClick={() => handlePageChange(totalPages)}
+            disabled={currentPage >= (totalPages || 1)}
+            onClick={() => handlePageChange(totalPages || 1)}
           >
             <Pagination.NavIcon as={RiArrowRightDoubleLine} />
           </Pagination.NavButton>
           <Pagination.NavButton
-            disabled={currentPage >= totalPages}
+            disabled={currentPage >= (totalPages || 1)}
             onClick={() => handlePageChange(currentPage + 1)}
           >
             <Pagination.NavIcon as={RiArrowRightSLine} />
@@ -530,8 +571,9 @@ export function TokenTablePagination({
               <Select.Value />
             </Select.Trigger>
             <Select.Content>
-              <Select.Item value={'7'}>7 / page</Select.Item>
+              <Select.Item value={'10'}>10 / page</Select.Item>
               <Select.Item value={'15'}>15 / page</Select.Item>
+              <Select.Item value={'25'}>25 / page</Select.Item>
               <Select.Item value={'50'}>50 / page</Select.Item>
               <Select.Item value={'100'}>100 / page</Select.Item>
             </Select.Content>
