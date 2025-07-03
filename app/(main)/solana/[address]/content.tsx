@@ -1,9 +1,9 @@
 'use client';
 
-import { RiNewsLine, RiVipDiamondLine, RiLockLine } from '@remixicon/react';
+import { RiLockLine, RiNewsLine, RiVipDiamondLine } from '@remixicon/react';
 
-import type { Token } from '@/hooks/use-tokens';
 import { useMemberStatus } from '@/hooks/use-member-status';
+import type { Token } from '@/hooks/use-tokens';
 import AdModal from '@/components/ad-modal';
 import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
 import { RightSideAd } from '@/components/RightSideAd';
@@ -19,7 +19,13 @@ interface ContentProps {
   token: Token;
 }
 
-function MemberOnlyPlaceholder({ title, icon }: { title: string; icon: React.ComponentType<any> }) {
+function MemberOnlyPlaceholder({
+  title,
+  icon,
+}: {
+  title: string;
+  icon: React.ComponentType<any>;
+}) {
   return (
     <WidgetPlaceholder title={title} icon={icon}>
       <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
@@ -55,7 +61,7 @@ export function Content({ token }: ContentProps) {
         ) : (
           <MemberOnlyPlaceholder title='Technical Analysis' icon={RiNewsLine} />
         )}
-        
+
         {/* Alpha Section - Members Only */}
         {isMember ? (
           <WidgetPlaceholder title='Alpha' icon={RiVipDiamondLine}>

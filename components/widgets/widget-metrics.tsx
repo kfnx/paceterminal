@@ -53,11 +53,14 @@ export default function WidgetMetrics({
 
       <div className='flex flex-col gap-4'>
         <Divider.Root />
-        
+
         {!loading && metrics && metrics.length > 0 ? (
           <div className='space-y-4 p-4'>
             {metricRows.map((row, rowIndex) => (
-              <div key={rowIndex} className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+              <div
+                key={rowIndex}
+                className='grid grid-cols-1 gap-4 md:grid-cols-3'
+              >
                 {row.map((metric) => (
                   <div
                     key={metric.id}

@@ -8,8 +8,8 @@ import { SearchMenuButton } from '@/components/search';
 import MobileMenu from '@/app/(main)/mobile-menu';
 
 import { LanguageSelect } from './language-select';
-import { WalletButton } from './wallet';
 import { ThemeToggler } from './theme-toggler';
+import { WalletButton } from './wallet';
 
 export default function HeaderMobile() {
   return (

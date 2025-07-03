@@ -97,9 +97,7 @@ export function MetricsForm({
     <Modal.Root open={isOpen} onOpenChange={handleClose}>
       <Modal.Content className='max-w-2xl'>
         <Modal.Header>
-          <Modal.Title>
-            {metric ? 'Edit Metric' : 'Add Metric'}
-          </Modal.Title>
+          <Modal.Title>{metric ? 'Edit Metric' : 'Add Metric'}</Modal.Title>
           <Modal.Description>
             {metric
               ? 'Update the metric information for this token.'

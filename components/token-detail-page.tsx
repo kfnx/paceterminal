@@ -648,7 +648,9 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
                       <Button.Root
                         variant='error'
                         mode='stroke'
-                        onClick={() => handleDeleteTechnicalAnalysis(analysis.id)}
+                        onClick={() =>
+                          handleDeleteTechnicalAnalysis(analysis.id)
+                        }
                         size='xsmall'
                       >
                         <RiDeleteBinLine className='size-4' />
@@ -735,7 +737,9 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
                       </div>
 
                       <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
-                        <span>{new Date(update.created_at).toLocaleDateString()}</span>
+                        <span>
+                          {new Date(update.created_at).toLocaleDateString()}
+                        </span>
                         <a
                           href={update.link}
                           target='_blank'

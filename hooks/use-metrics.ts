@@ -2,13 +2,12 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-import { supabase } from '@/lib/supabase';
 import type { Tables } from '@/lib/database.types';
+import { supabase } from '@/lib/supabase';
 
 export type Metric = Tables<'metrics_static'>;
 
 export async function fetchMetrics(address: string): Promise<Metric[]> {
-
   const { data, error } = await supabase
     .from('metrics_static')
     .select('*')

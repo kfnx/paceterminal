@@ -20,7 +20,13 @@ import * as Dropdown from '@/components/ui/dropdown';
 
 import { paymentModalOpenAtom } from './payment-modal';
 
-export function WalletButton({ connectText, className }: { connectText?: string, className?: string }) {
+export function WalletButton({
+  connectText,
+  className,
+}: {
+  connectText?: string;
+  className?: string;
+}) {
   // const [walletModalConfig, setWalletModalConfig] = useState<Readonly<{
   //   onSelectWallet(walletName: WalletName): void;
   //   wallets: Wallet[];

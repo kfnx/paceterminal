@@ -1,0 +1,20 @@
+# Generated database types
+lib/database.types.ts
+
+# Build outputs
+.next/
+out/
+dist/
+
+# Dependencies
+node_modules/
+
+# Environment files
+.env*
+!.env.example
+
+# Logs
+*.log
+
+# Cache
+.cache/ 

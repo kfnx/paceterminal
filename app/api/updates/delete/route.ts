@@ -14,7 +14,10 @@ export async function DELETE(request: NextRequest) {
     // Create server-side Supabase client with service role key
     const supabase = createServerSupabaseClient();
 
-    const { error } = await supabase.from('updates').delete().eq('id', id);
+    const { error } = await supabase
+      .from('updates')
+      .delete()
+      .eq('id', parseInt(id));
 
     if (error) {
       console.error('Error deleting update:', error);

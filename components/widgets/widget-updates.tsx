@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { RiNewsLine, RiExternalLinkLine } from '@remixicon/react';
+import { RiExternalLinkLine, RiNewsLine } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
 import { useUpdates } from '@/hooks/use-updates';
@@ -18,7 +18,13 @@ type UpdateItemProps = {
   createdAt: string;
 };
 
-function UpdateItem({ title, description, link, image, createdAt }: UpdateItemProps) {
+function UpdateItem({
+  title,
+  description,
+  link,
+  image,
+  createdAt,
+}: UpdateItemProps) {
   return (
     <div className='bg-bg-soft-100 rounded-lg p-4'>
       <div className='flex gap-4'>
@@ -31,7 +37,7 @@ function UpdateItem({ title, description, link, image, createdAt }: UpdateItemPr
             />
           </div>
         )}
-        
+
         <div className='flex flex-1 flex-col gap-3'>
           <div className='flex items-start justify-between'>
             <h4 className='text-label-sm font-medium text-text-strong-950'>
@@ -46,11 +52,11 @@ function UpdateItem({ title, description, link, image, createdAt }: UpdateItemPr
               <RiExternalLinkLine className='size-3' />
             </Link>
           </div>
-          
+
           <div className='text-paragraph-sm text-text-strong-950'>
             {description}
           </div>
-          
+
           <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
             <span>{new Date(createdAt).toLocaleDateString()}</span>
             <Link

@@ -119,9 +119,7 @@ export function UpdatesForm({
     <Modal.Root open={isOpen} onOpenChange={handleClose}>
       <Modal.Content className='max-w-2xl'>
         <Modal.Header>
-          <Modal.Title>
-            {update ? 'Edit Update' : 'Add Update'}
-          </Modal.Title>
+          <Modal.Title>{update ? 'Edit Update' : 'Add Update'}</Modal.Title>
           <Modal.Description>
             {update
               ? 'Update the information for this update.'
@@ -208,10 +206,19 @@ export function UpdatesForm({
             </Button.Root>
             <Button.Root
               type='submit'
-              disabled={isSubmitting || !title.trim() || !description.trim() || !link.trim()}
+              disabled={
+                isSubmitting ||
+                !title.trim() ||
+                !description.trim() ||
+                !link.trim()
+              }
             >
               <Button.Icon as={RiSaveLine} />
-              {isSubmitting ? 'Saving...' : update ? 'Save Changes' : 'Add Update'}
+              {isSubmitting
+                ? 'Saving...'
+                : update
+                  ? 'Save Changes'
+                  : 'Add Update'}
             </Button.Root>
           </Modal.Footer>
         </form>
