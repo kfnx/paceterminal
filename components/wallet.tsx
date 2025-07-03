@@ -7,7 +7,13 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useWalletAddress } from '@/hooks/use-wallet-address';
 import * as Button from '@/components/ui/button';
 
-export function WalletButton({ className }: { className?: string }) {
+export function WalletButton({
+  className,
+  collapsed,
+}: {
+  className?: string;
+  collapsed?: boolean;
+}) {
   const { connected, formattedAddress, isLoading } = useWalletAddress();
   const { disconnect } = useWallet();
 
@@ -44,7 +50,7 @@ export function WalletButton({ className }: { className?: string }) {
         </>
       ) : (
         <>
-          Connect Wallet
+          {collapsed ? '' : 'Connect Wallet'}
           <Button.Icon as={RiWallet3Line} />
         </>
       )}

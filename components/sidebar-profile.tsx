@@ -29,7 +29,13 @@ import { paymentModalOpenAtom } from '@/components/payment-modal';
 import { WalletButton } from './wallet';
 import IconVerifiedFill from '~/icons/icon-verified-fill.svg';
 
-export function SidebarProfile({ className }: { className?: string }) {
+export function SidebarProfile({
+  className,
+  collapsed,
+}: {
+  className?: string;
+  collapsed?: boolean;
+}) {
   const { theme, setTheme } = useTheme();
   const { connected, formattedAddress, isLoading } = useWalletAddress();
   const { disconnect } = useWallet();
@@ -49,7 +55,7 @@ export function SidebarProfile({ className }: { className?: string }) {
   if (!connected) {
     return (
       <div className='flex w-full items-center px-4 py-2'>
-        <WalletButton />
+        <WalletButton collapsed={collapsed} />
       </div>
     );
   }

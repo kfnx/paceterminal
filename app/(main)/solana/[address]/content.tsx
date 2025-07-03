@@ -6,6 +6,7 @@ import { useMemberStatus } from '@/hooks/use-member-status';
 import type { Token } from '@/hooks/use-tokens';
 import AdModal from '@/components/ad-modal';
 import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
+import { LeftSideAd } from '@/components/LeftSideAd';
 import { RightSideAd } from '@/components/RightSideAd';
 import WidgetChart from '@/components/widgets/widget-chart';
 import WidgetFlywheel from '@/components/widgets/widget-flywheel';
@@ -50,6 +51,7 @@ export function Content({ token }: ContentProps) {
 
   return (
     <div className='flex flex-row gap-6 px-4 pb-6 lg:px-8 lg:pt-1' id='top'>
+      <LeftSideAd />
       <div className='flex flex-1 flex-col gap-6'>
         <WidgetChart />
         <WidgetMetrics />
