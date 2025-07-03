@@ -23,9 +23,6 @@ function AlphaItem({ title, text, createdAt }: AlphaItemProps) {
           <h4 className='text-label-sm font-medium text-text-strong-950'>
             {title}
           </h4>
-          <div className='text-paragraph-xs text-text-sub-600'>
-            {new Date(createdAt).toLocaleDateString()}
-          </div>
         </div>
 
         {text && (

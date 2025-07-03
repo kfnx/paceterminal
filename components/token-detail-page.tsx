@@ -439,7 +439,7 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
               {metrics.map((metric: Metric) => (
                 <div
                   key={metric.id}
-                  className='bg-bg-soft-100 relative rounded-lg p-4'
+                  className='bg-bg-soft-100 relative rounded-lg'
                 >
                   <div className='flex items-start justify-between'>
                     <div className='flex-1'>
@@ -751,7 +751,7 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
               {alpha.map((alphaItem) => (
                 <div
                   key={alphaItem.id}
-                  className='bg-bg-soft-100 relative rounded-lg p-4'
+                  className='bg-bg-soft-100 relative rounded-lg'
                 >
                   <div className='flex items-start justify-between'>
                     <div className='flex-1'>
@@ -873,7 +873,7 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
                           href={update.link}
                           target='_blank'
                           rel='noopener noreferrer'
-                          className='hover:text-primary-600 max-w-[400px] truncate text-primary-base'
+                          className='hover:text-primary-600 max-w-[280px] truncate text-primary-base'
                           title={update.link}
                         >
                           {update.link}

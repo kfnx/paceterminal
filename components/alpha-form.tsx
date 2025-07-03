@@ -1,12 +1,13 @@
 'use client';
 
 import * as React from 'react';
-import { RiCloseLine } from '@remixicon/react';
+import { RiCloseLine, RiSaveLine } from '@remixicon/react';
 import { toast } from 'sonner';
 
 import type { Alpha } from '@/hooks/use-alpha';
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
+import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
 import * as Textarea from '@/components/ui/textarea';
 
@@ -91,57 +92,46 @@ export function AlphaForm({
   return (
     <Modal.Root open={isOpen} onOpenChange={handleClose}>
       <Modal.Content className='max-w-2xl'>
-        <div className='flex items-center justify-between'>
+        <Modal.Header>
           <Modal.Title>{alpha ? 'Edit Alpha' : 'Add Alpha'}</Modal.Title>
-          <Button.Root
-            variant='neutral'
-            mode='stroke'
-            onClick={handleClose}
-            className='size-8 p-0'
-          >
-            <RiCloseLine className='size-4' />
-          </Button.Root>
-        </div>
+          <Modal.Description>
+            {alpha
+              ? 'Update the alpha information for this token.'
+              : 'Add new alpha content for this token.'}
+          </Modal.Description>
+        </Modal.Header>
+        <form onSubmit={handleSubmit}>
+          <Modal.Body className='space-y-6'>
+            {/* Title */}
+            <div className='flex flex-col gap-2'>
+              <Label.Root>
+                Title <span className='text-red-500'>*</span>
+              </Label.Root>
+              <Input.Root>
+                <Input.Wrapper>
+                  <Input.Input
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder='Enter alpha title...'
+                    disabled={isSubmitting}
+                  />
+                </Input.Wrapper>
+              </Input.Root>
+            </div>
 
-        <form onSubmit={handleSubmit} className='space-y-4'>
-          <div>
-            <label
-              htmlFor='title'
-              className='block text-paragraph-sm font-medium text-text-strong-950'
-            >
-              Title *
-            </label>
-            <Input.Wrapper>
-              <Input.Input
-                id='title'
-                type='text'
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder='Enter alpha title...'
+            {/* Content */}
+            <div className='flex flex-col gap-2'>
+              <Label.Root>Alpha Content</Label.Root>
+              <Textarea.Root
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder='Enter alpha content, insights, analysis...'
+                rows={8}
                 disabled={isSubmitting}
-                required
               />
-            </Input.Wrapper>
-          </div>
-
-          <div>
-            <label
-              htmlFor='text'
-              className='block text-paragraph-sm font-medium text-text-strong-950'
-            >
-              Content
-            </label>
-            <Textarea.Root
-              id='text'
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder='Enter alpha content...'
-              rows={8}
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <div className='flex justify-end gap-3'>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
             <Button.Root
               type='button'
               variant='neutral'
@@ -149,16 +139,22 @@ export function AlphaForm({
               onClick={handleClose}
               disabled={isSubmitting}
             >
+              <RiCloseLine className='size-4' />
               Cancel
             </Button.Root>
-            <Button.Root type='submit' disabled={isSubmitting || !title.trim()}>
+            <Button.Root
+              type='submit'
+              disabled={isSubmitting || !title.trim()}
+              variant='primary'
+            >
+              <RiSaveLine className='size-4' />
               {isSubmitting
                 ? 'Saving...'
                 : alpha
                   ? 'Update Alpha'
                   : 'Create Alpha'}
             </Button.Root>
-          </div>
+          </Modal.Footer>
         </form>
       </Modal.Content>
     </Modal.Root>
