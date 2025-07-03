@@ -109,36 +109,6 @@ export function Filters() {
           <Button.Icon as={RiFilter3Fill} />
           Clear Filters
         </Button.Root>
-
-        <Select.Root
-          size='small'
-          value={sortField}
-          onValueChange={(value) => setSortField(value as SortField)}
-        >
-          <Select.Trigger className='w-auto flex-1 min-[560px]:flex-none'>
-            <Select.TriggerIcon as={RiSortDesc} />
-            <Select.Value placeholder='Sort by' />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Item value='name'>Name</Select.Item>
-            <Select.Item value='created_at'>Created Date</Select.Item>
-            <Select.Item value='tier'>Tier</Select.Item>
-          </Select.Content>
-        </Select.Root>
-
-        <Select.Root
-          size='small'
-          value={sortOrder}
-          onValueChange={(value) => setSortOrder(value as SortOrder)}
-        >
-          <Select.Trigger className='w-auto flex-1 min-[560px]:flex-none'>
-            <Select.Value placeholder='Order' />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Item value='asc'>Ascending</Select.Item>
-            <Select.Item value='desc'>Descending</Select.Item>
-          </Select.Content>
-        </Select.Root>
       </div>
     </div>
   );

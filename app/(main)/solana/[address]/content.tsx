@@ -48,7 +48,12 @@ export function Content({ token }: ContentProps) {
         <WidgetMetrics />
         <WidgetTeam />
         <WidgetFlywheel />
-        <WidgetTechnicalAnalysis />
+        {/* Technical Analysis Section - Members Only */}
+        {isMember ? (
+          <WidgetTechnicalAnalysis />
+        ) : (
+          <MemberOnlyPlaceholder title='Technical Analysis' icon={RiNewsLine} />
+        )}
         
         {/* Alpha Section - Members Only */}
         {isMember ? (
@@ -64,19 +69,15 @@ export function Content({ token }: ContentProps) {
           <MemberOnlyPlaceholder title='Alpha' icon={RiVipDiamondLine} />
         )}
 
-        {/* Updates Section - Members Only */}
-        {isMember ? (
-          <WidgetPlaceholder title='Updates' icon={RiNewsLine}>
-            <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
-              <IllustrationEmptySavedActions className='size-[108px]' />
-              <div className='text-center text-paragraph-sm text-text-soft-400'>
-                Updates empty.
-              </div>
+        {/* Updates Section - Public */}
+        <WidgetPlaceholder title='Updates' icon={RiNewsLine}>
+          <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
+            <IllustrationEmptySavedActions className='size-[108px]' />
+            <div className='text-center text-paragraph-sm text-text-soft-400'>
+              Updates empty.
             </div>
-          </WidgetPlaceholder>
-        ) : (
-          <MemberOnlyPlaceholder title='Updates' icon={RiNewsLine} />
-        )}
+          </div>
+        </WidgetPlaceholder>
 
         <AdModal />
       </div>

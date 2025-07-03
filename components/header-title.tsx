@@ -28,7 +28,7 @@ export function HeaderTitle() {
       <Avatar.Root size='48' color='blue'>
         <Avatar.Image src={getTokenImageUrl(token.image)} alt={token.name} />
       </Avatar.Root>
-      <div className='space-y-1'>
+      <div className='space-y-1 md:hidden xl:block'>
         <div className='text-label-md lg:text-label-lg'>{token.name}</div>
         <div className='text-paragraph-sm text-text-sub-600'>{token.label}</div>
       </div>
