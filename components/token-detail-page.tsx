@@ -101,6 +101,8 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const [isEditAlphaModalOpen, setIsEditAlphaModalOpen] = React.useState(false);
   const [selectedAlpha, setSelectedAlpha] = React.useState<Alpha | null>(null);
 
+  console.log(teams);
+
   const handleSuccess = () => {
     refetch();
     toast.success('Token updated successfully!');

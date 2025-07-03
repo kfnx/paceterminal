@@ -6,6 +6,7 @@ import {
   RiSaveLine,
 } from '@remixicon/react';
 import { toast } from 'sonner';
+import { v4 as uuidv4 } from 'uuid';
 
 import { supabase } from '@/lib/supabase';
 import type { Team } from '@/hooks/use-teams';
@@ -15,6 +16,8 @@ import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
 import * as Textarea from '@/components/ui/textarea';
+
+import { TeamImageUploader } from './ui/team-image-uploader';
 
 interface TeamFormProps {
   teams: Team[];
@@ -44,6 +47,7 @@ export function TeamForm({
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const EmptyTeamForm = (): TeamFormData => ({
+    id: uuidv4(),
     name: '',
     role: '',
     description: '',
@@ -130,9 +134,11 @@ export function TeamForm({
 
       // Upsert teams
       if (teamsToUpsert.length > 0) {
-        const { error: upsertError } = await supabase
+        const { data, error: upsertError } = await supabase
           .from('teams')
           .upsert(teamsToUpsert, { onConflict: 'id' });
+
+        console.log(data);
 
         if (upsertError) throw upsertError;
       }
@@ -181,18 +187,20 @@ export function TeamForm({
                     )}
                   </div>
 
-                  {team.image && (
-                    <div className='flex justify-center'>
-                      <Avatar.Root size='64'>
-                        <Avatar.Image
-                          src={team.image}
-                          alt={team.name || 'Team member'}
-                        />
-                      </Avatar.Root>
-                    </div>
-                  )}
+                  <div className='space-y-2'>
+                    <TeamImageUploader
+                      tokenAddress={tokenAddress}
+                      teamMemberIndex={index}
+                      teamMemberName={team.name}
+                      currentImageUrl={team.image}
+                      onImageUploaded={(imageUrl) =>
+                        handleTeamChange(index, 'image', imageUrl)
+                      }
+                      disabled={isSubmitting}
+                    />
+                  </div>
 
-                  <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+                  <div className='flex flex-col gap-2'>
                     <div className='flex flex-col gap-1'>
                       <Label.Root>Name *</Label.Root>
                       <Input.Root>
@@ -240,23 +248,6 @@ export function TeamForm({
                               )
                             }
                             placeholder='username (without @)'
-                            disabled={isSubmitting}
-                          />
-                        </Input.Wrapper>
-                      </Input.Root>
-                    </div>
-
-                    <div className='flex flex-col gap-1'>
-                      <Label.Root>Image URL</Label.Root>
-                      <Input.Root>
-                        <Input.Wrapper>
-                          <Input.Input
-                            value={team.image}
-                            onChange={(e) =>
-                              handleTeamChange(index, 'image', e.target.value)
-                            }
-                            placeholder='https://example.com/image.jpg'
-                            type='url'
                             disabled={isSubmitting}
                           />
                         </Input.Wrapper>
