@@ -47,7 +47,7 @@ function UpdateItem({
               href={link}
               target='_blank'
               rel='noopener noreferrer'
-              className='flex items-center gap-1 text-paragraph-xs text-primary-base hover:text-primary-600'
+              className='hover:text-primary-600 flex items-center gap-1 text-paragraph-xs text-primary-base'
             >
               <RiExternalLinkLine className='size-3' />
             </Link>
@@ -63,7 +63,7 @@ function UpdateItem({
               href={link}
               target='_blank'
               rel='noopener noreferrer'
-              className='text-primary-base hover:text-primary-600'
+              className='hover:text-primary-600 text-primary-base'
             >
               Read More
             </Link>

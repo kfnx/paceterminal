@@ -9,6 +9,7 @@ import {
   RiSaveLine,
 } from '@remixicon/react';
 import { toast } from 'sonner';
+import { PublicKey } from '@solana/web3.js';
 
 import { supabase } from '@/lib/supabase';
 import type { Token } from '@/hooks/use-tokens';
@@ -56,9 +57,17 @@ const tierOptions = [
   { value: 4, label: 'C Tier' },
 ];
 
-// Helper function to validate Solana address
+// Helper function to validate Solana address using official Solana library
 const isValidSolanaAddress = (address: string): boolean => {
-  return /^[A-Za-z0-9]{44}$/.test(address.trim());
+  try {
+    const trimmedAddress = address.trim();
+    if (!trimmedAddress) return false;
+
+    const publicKey = new PublicKey(trimmedAddress);
+    return PublicKey.isOnCurve(publicKey);
+  } catch {
+    return false;
+  }
 };
 
 export function TokenForm({
@@ -111,9 +120,9 @@ export function TokenForm({
       toast.error('Token address is required');
       return false;
     }
-    // Basic Solana address validation (44 characters, alphanumeric)
+    // Validate Solana address using official library
     if (!isValidSolanaAddress(formData.address.trim())) {
-      toast.error('Please enter a valid Solana token address (44 characters)');
+      toast.error('Please enter a valid Solana token address');
       return false;
     }
     if (!formData.tier) {
@@ -200,8 +209,30 @@ export function TokenForm({
         </Modal.Header>
         <form onSubmit={handleSubmit}>
           <Modal.Body className='space-y-6'>
+            {/* Token Address */}
+            <div className='flex flex-col gap-2'>
+              <Label.Root htmlFor='address'>Address</Label.Root>
+              {isEditing ? (
+                <div className='text-xs text-text-sub-600'>
+                  {formData.address}
+                </div>
+              ) : (
+                <Input.Root>
+                  <Input.Wrapper>
+                    <Input.Input
+                      placeholder='Enter Solana token address'
+                      value={formData.address}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange('address', e.target.value)
+                      }
+                      required
+                    />
+                  </Input.Wrapper>
+                </Input.Root>
+              )}
+            </div>
             {/* Token Image Upload */}
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col gap-2'>
               <Label.Root>Token Image</Label.Root>
               <ImageUploader
                 tokenAddress={formData.address}
@@ -222,15 +253,14 @@ export function TokenForm({
               {formData.address.trim() &&
                 !isValidSolanaAddress(formData.address.trim()) && (
                   <p className='text-xs text-text-sub-600'>
-                    Please enter a valid Solana token address (44 characters) to
-                    enable image upload
+                    Please enter a valid Solana token address to enable image upload
                   </p>
                 )}
             </div>
 
             {/* Token Name and Label */}
             <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
-              <div className='flex flex-col gap-1'>
+              <div className='flex flex-col gap-2'>
                 <Label.Root htmlFor='name'>Name</Label.Root>
                 <Input.Root>
                   <Input.Wrapper>
@@ -246,7 +276,7 @@ export function TokenForm({
                 </Input.Root>
               </div>
 
-              <div className='flex flex-col gap-1'>
+              <div className='flex flex-col gap-2'>
                 <Label.Root htmlFor='label'>Label</Label.Root>
                 <Input.Root>
                   <Input.Wrapper>
@@ -262,26 +292,9 @@ export function TokenForm({
               </div>
             </div>
 
-            {/* Token Address */}
-            <div className='flex flex-col gap-1'>
-              <Label.Root htmlFor='address'>Address</Label.Root>
-              <Input.Root>
-                <Input.Wrapper>
-                  <Input.Input
-                    placeholder='Enter Solana token address'
-                    value={formData.address}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange('address', e.target.value)
-                    }
-                    required
-                  />
-                </Input.Wrapper>
-              </Input.Root>
-            </div>
-
             {/* Tier and Ordering */}
             <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
-              <div className='flex flex-col gap-1'>
+              <div className='flex flex-col gap-2'>
                 <Label.Root>Tier</Label.Root>
                 <Select.Root
                   value={formData.tier?.toString() || ''}
@@ -305,7 +318,7 @@ export function TokenForm({
                 </Select.Root>
               </div>
 
-              <div className='flex flex-col gap-1'>
+              <div className='flex flex-col gap-2'>
                 <Label.Root htmlFor='ordering'>Ordering</Label.Root>
                 <Input.Root>
                   <Input.Wrapper>
@@ -327,7 +340,7 @@ export function TokenForm({
             </div>
 
             {/* Description */}
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col gap-2'>
               <Label.Root htmlFor='description'>Description</Label.Root>
               <Textarea.Root
                 placeholder='Enter token description'

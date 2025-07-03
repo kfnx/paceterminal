@@ -71,6 +71,9 @@ const fetchTokens = async (
   } else if (sortField === 'tier') {
     orderBy = 'tier';
     ascending = sortOrder === 'asc';
+  } else if (sortField === 'ordering') {
+    orderBy = 'ordering';
+    ascending = sortOrder === 'asc';
   }
 
   // Apply ordering
