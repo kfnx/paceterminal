@@ -170,6 +170,7 @@ export type Database = {
           description: string
           id: number
           image: string
+          updated_at: string | null
         }
         Insert: {
           address: string
@@ -177,6 +178,7 @@ export type Database = {
           description: string
           id?: number
           image: string
+          updated_at?: string | null
         }
         Update: {
           address?: string
@@ -184,6 +186,7 @@ export type Database = {
           description?: string
           id?: number
           image?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -263,6 +266,44 @@ export type Database = {
           verified?: boolean
         }
         Relationships: []
+      }
+      updates: {
+        Row: {
+          address: string
+          created_at: string
+          description: string
+          id: number
+          image: string | null
+          link: string
+          title: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          description: string
+          id?: number
+          image?: string | null
+          link: string
+          title: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          description?: string
+          id?: number
+          image?: string | null
+          link?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "updates_address_fkey"
+            columns: ["address"]
+            isOneToOne: false
+            referencedRelation: "tokens"
+            referencedColumns: ["address"]
+          },
+        ]
       }
     }
     Views: {

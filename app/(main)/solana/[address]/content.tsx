@@ -13,6 +13,7 @@ import WidgetMetrics from '@/components/widgets/widget-metrics';
 import { WidgetPlaceholder } from '@/components/widgets/widget-placeholder';
 import WidgetTeam from '@/components/widgets/widget-team';
 import WidgetTechnicalAnalysis from '@/components/widgets/widget-technical-analysis';
+import WidgetUpdates from '@/components/widgets/widget-updates';
 
 interface ContentProps {
   token: Token;
@@ -70,14 +71,7 @@ export function Content({ token }: ContentProps) {
         )}
 
         {/* Updates Section - Public */}
-        <WidgetPlaceholder title='Updates' icon={RiNewsLine}>
-          <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
-            <IllustrationEmptySavedActions className='size-[108px]' />
-            <div className='text-center text-paragraph-sm text-text-soft-400'>
-              Updates empty.
-            </div>
-          </div>
-        </WidgetPlaceholder>
+        <WidgetUpdates />
 
         <AdModal />
       </div>

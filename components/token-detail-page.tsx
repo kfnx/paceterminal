@@ -19,6 +19,7 @@ import {
 } from '@/hooks/use-technical-analysis';
 import { useToken } from '@/hooks/use-token';
 import type { Token } from '@/hooks/use-tokens';
+import { useUpdates, type Update } from '@/hooks/use-updates';
 import * as Avatar from '@/components/ui/avatar';
 import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
@@ -28,6 +29,7 @@ import { MetricsForm } from './metrics-form';
 import { TeamForm } from './team-form';
 import { TechnicalAnalysisForm } from './technical-analysis-form';
 import { TokenForm } from './token-form';
+import { UpdatesForm } from './updates-form';
 
 interface TokenDetailPageProps {
   address: string;
@@ -59,6 +61,12 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
     error: metricsError,
     refetch: refetchMetrics,
   } = useMetrics(address);
+  const {
+    updates,
+    loading: updatesLoading,
+    error: updatesError,
+    refetch: refetchUpdates,
+  } = useUpdates(address);
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [isEditFlywheelModalOpen, setIsEditFlywheelModalOpen] =
@@ -73,6 +81,11 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const [isEditMetricsModalOpen, setIsEditMetricsModalOpen] =
     React.useState(false);
   const [selectedMetric, setSelectedMetric] = React.useState<Metric | null>(
+    null,
+  );
+  const [isEditUpdatesModalOpen, setIsEditUpdatesModalOpen] =
+    React.useState(false);
+  const [selectedUpdate, setSelectedUpdate] = React.useState<Update | null>(
     null,
   );
 
@@ -142,6 +155,33 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
     } catch (error) {
       console.error('Error deleting metric:', error);
       toast.error('Failed to delete metric');
+    }
+  };
+
+  const handleUpdatesSuccess = () => {
+    refetchUpdates();
+    toast.success('Update updated successfully!');
+  };
+
+  const handleDeleteUpdate = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this update?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/updates/delete?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete update');
+      }
+
+      refetchUpdates();
+      toast.success('Update deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting update:', error);
+      toast.error('Failed to delete update');
     }
   };
 
@@ -583,7 +623,7 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
                           className='h-full w-full rounded-lg object-cover'
                         />
                       </div>
-                      <div className='bg-bg-soft-100 rounded-lg p-4'>
+                      <div className='bg-bg-soft-100 rounded-lg'>
                         <p className='whitespace-pre-wrap break-words text-paragraph-sm text-text-strong-950'>
                           {analysis.description}
                         </p>
@@ -639,9 +679,112 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
         </div>
 
         <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
-          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
-            Updates
-          </h3>
+          <div className='mb-4 flex items-center justify-between'>
+            <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
+              Updates
+            </h3>
+            <Button.Root
+              variant='neutral'
+              mode='stroke'
+              onClick={() => {
+                setSelectedUpdate(null);
+                setIsEditUpdatesModalOpen(true);
+              }}
+              size='xsmall'
+            >
+              <RiAddLine className='size-4' />
+            </Button.Root>
+          </div>
+          {updatesLoading ? (
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Loading updates...
+            </div>
+          ) : updatesError ? (
+            <div className='text-paragraph-sm text-red-600'>
+              Error loading updates: {updatesError}
+            </div>
+          ) : updates.length > 0 ? (
+            <div className='space-y-4'>
+              {updates.map((update: Update) => (
+                <div
+                  key={update.id}
+                  className='bg-bg-soft-100 relative rounded-lg'
+                >
+                  <div className='flex gap-4'>
+                    {update.image ? (
+                      <div className='flex-shrink-0'>
+                        <img
+                          src={update.image}
+                          alt={update.title}
+                          className='h-20 w-20 rounded-lg object-cover'
+                        />
+                      </div>
+                    ) : (
+                      <div className='size-20 flex-shrink-0 rounded-lg border border-stroke-soft-200 text-center text-label-xs'>
+                        no image
+                      </div>
+                    )}
+
+                    <div className='flex flex-1 flex-col gap-3'>
+                      <h4 className='text-label-sm font-medium text-text-strong-950'>
+                        {update.title}
+                      </h4>
+
+                      <div className='text-paragraph-sm text-text-strong-950'>
+                        {update.description}
+                      </div>
+
+                      <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
+                        <span>{new Date(update.created_at).toLocaleDateString()}</span>
+                        <a
+                          href={update.link}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='hover:text-primary-600 max-w-[400px] truncate text-primary-base'
+                          title={update.link}
+                        >
+                          {update.link}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className='flex flex-col gap-2'>
+                      <Button.Root
+                        variant='neutral'
+                        mode='stroke'
+                        onClick={() => {
+                          setSelectedUpdate(update);
+                          setIsEditUpdatesModalOpen(true);
+                        }}
+                        size='xsmall'
+                      >
+                        <RiEditLine className='size-4' />
+                      </Button.Root>
+                      <Button.Root
+                        variant='error'
+                        mode='stroke'
+                        onClick={() => handleDeleteUpdate(update.id)}
+                        size='xsmall'
+                      >
+                        <RiDeleteBinLine className='size-4' />
+                      </Button.Root>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className='flex flex-col items-center justify-center gap-4 py-8'>
+              <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+                <RiCoinLine className='size-8 text-text-sub-600' />
+              </div>
+              <div className='text-center'>
+                <p className='text-paragraph-sm text-text-sub-600'>
+                  No updates found for this token.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -688,6 +831,17 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
           setSelectedMetric(null);
         }}
         onSuccess={handleMetricsSuccess}
+      />
+
+      <UpdatesForm
+        update={selectedUpdate || undefined}
+        tokenAddress={address}
+        isOpen={isEditUpdatesModalOpen}
+        onClose={() => {
+          setIsEditUpdatesModalOpen(false);
+          setSelectedUpdate(null);
+        }}
+        onSuccess={handleUpdatesSuccess}
       />
     </div>
   );
