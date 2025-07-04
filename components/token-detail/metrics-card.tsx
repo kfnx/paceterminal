@@ -1,9 +1,15 @@
 import * as React from 'react';
-import { RiAddLine, RiCoinLine, RiDeleteBinLine, RiEditLine } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiCoinLine,
+  RiDeleteBinLine,
+  RiEditLine,
+} from '@remixicon/react';
 import { toast } from 'sonner';
 
 import { useMetrics, type Metric } from '@/hooks/use-metrics';
 import * as Button from '@/components/ui/button';
+
 import { MetricsForm } from '../metrics-form';
 
 interface MetricsCardProps {
@@ -11,14 +17,11 @@ interface MetricsCardProps {
 }
 
 export function MetricsCard({ address }: MetricsCardProps) {
-  const {
-    metrics,
-    loading,
-    error,
-    refetch,
-  } = useMetrics(address);
+  const { metrics, loading, error, refetch } = useMetrics(address);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
-  const [selectedMetric, setSelectedMetric] = React.useState<Metric | null>(null);
+  const [selectedMetric, setSelectedMetric] = React.useState<Metric | null>(
+    null,
+  );
 
   const handleSuccess = () => {
     setIsEditModalOpen(false);

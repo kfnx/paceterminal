@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 
 import { useFlywheel } from '@/hooks/use-flywheel';
 import * as Button from '@/components/ui/button';
+
 import { FlywheelForm } from '../flywheel-form';
 
 interface FlywheelCardProps {
@@ -11,12 +12,7 @@ interface FlywheelCardProps {
 }
 
 export function FlywheelCard({ address }: FlywheelCardProps) {
-  const {
-    flywheel,
-    loading,
-    error,
-    refetch,
-  } = useFlywheel(address);
+  const { flywheel, loading, error, refetch } = useFlywheel(address);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   const handleSuccess = () => {

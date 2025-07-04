@@ -8,8 +8,8 @@ import {
   RiCoinLine,
   RiSaveLine,
 } from '@remixicon/react';
-import { toast } from 'sonner';
 import { PublicKey } from '@solana/web3.js';
+import { toast } from 'sonner';
 
 import { supabase } from '@/lib/supabase';
 import type { Token } from '@/hooks/use-tokens';
@@ -253,7 +253,8 @@ export function TokenForm({
               {formData.address.trim() &&
                 !isValidSolanaAddress(formData.address.trim()) && (
                   <p className='text-xs text-text-sub-600'>
-                    Please enter a valid Solana token address to enable image upload
+                    Please enter a valid Solana token address to enable image
+                    upload
                   </p>
                 )}
             </div>

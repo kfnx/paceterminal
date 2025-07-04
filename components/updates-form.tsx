@@ -28,7 +28,7 @@ export function UpdatesForm({
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [title, setTitle] = React.useState(update?.title || '');
   const [date, setDate] = React.useState(
-    update?.date 
+    update?.date
       ? new Date(update.date).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0],
   );
@@ -42,7 +42,7 @@ export function UpdatesForm({
   React.useEffect(() => {
     setTitle(update?.title || '');
     setDate(
-      update?.date 
+      update?.date
         ? new Date(update.date).toISOString().split('T')[0]
         : new Date().toISOString().split('T')[0],
     );

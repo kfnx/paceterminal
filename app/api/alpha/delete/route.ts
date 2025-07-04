@@ -10,7 +10,7 @@ export async function DELETE(request: NextRequest) {
     if (!id) {
       return NextResponse.json(
         { error: 'ID parameter is required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -25,7 +25,7 @@ export async function DELETE(request: NextRequest) {
       console.error('Error deleting alpha:', error);
       return NextResponse.json(
         { error: 'Failed to delete alpha' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -34,7 +34,7 @@ export async function DELETE(request: NextRequest) {
     console.error('Alpha delete API error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

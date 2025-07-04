@@ -1,9 +1,15 @@
 import * as React from 'react';
-import { RiAddLine, RiCoinLine, RiDeleteBinLine, RiEditLine } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiCoinLine,
+  RiDeleteBinLine,
+  RiEditLine,
+} from '@remixicon/react';
 import { toast } from 'sonner';
 
 import { useAlpha, type Alpha } from '@/hooks/use-alpha';
 import * as Button from '@/components/ui/button';
+
 import { AlphaForm } from '../alpha-form';
 
 interface AlphaCardProps {
@@ -11,12 +17,7 @@ interface AlphaCardProps {
 }
 
 export function AlphaCard({ address }: AlphaCardProps) {
-  const {
-    alpha,
-    loading,
-    error,
-    refetch,
-  } = useAlpha(address);
+  const { alpha, loading, error, refetch } = useAlpha(address);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [selectedAlpha, setSelectedAlpha] = React.useState<Alpha | null>(null);
 

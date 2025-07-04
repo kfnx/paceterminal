@@ -1,4 +1,9 @@
-import { RiAddLine, RiCoinLine, RiDeleteBinLine, RiEditLine } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiCoinLine,
+  RiDeleteBinLine,
+  RiEditLine,
+} from '@remixicon/react';
 
 import type { TechnicalAnalysis } from '@/hooks/use-technical-analysis';
 import * as Button from '@/components/ui/button';

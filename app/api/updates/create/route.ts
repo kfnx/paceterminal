@@ -5,7 +5,8 @@ import { createClient } from '@/lib/supabase-server';
 export async function POST(request: NextRequest) {
   try {
     const supabase = createClient();
-    const { address, title, description, link, image, date } = await request.json();
+    const { address, title, description, link, image, date } =
+      await request.json();
 
     if (!address || !title || !description || !link) {
       return NextResponse.json(

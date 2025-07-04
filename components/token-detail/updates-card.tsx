@@ -1,9 +1,15 @@
 import * as React from 'react';
-import { RiAddLine, RiCoinLine, RiDeleteBinLine, RiEditLine } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiCoinLine,
+  RiDeleteBinLine,
+  RiEditLine,
+} from '@remixicon/react';
 import { toast } from 'sonner';
 
 import { useUpdates, type Update } from '@/hooks/use-updates';
 import * as Button from '@/components/ui/button';
+
 import { UpdatesForm } from '../updates-form';
 
 interface UpdatesCardProps {
@@ -11,14 +17,11 @@ interface UpdatesCardProps {
 }
 
 export function UpdatesCard({ address }: UpdatesCardProps) {
-  const {
-    updates,
-    loading,
-    error,
-    refetch,
-  } = useUpdates(address);
+  const { updates, loading, error, refetch } = useUpdates(address);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
-  const [selectedUpdates, setSelectedUpdates] = React.useState<Update | null>(null);
+  const [selectedUpdates, setSelectedUpdates] = React.useState<Update | null>(
+    null,
+  );
 
   const handleSuccess = () => {
     setIsEditModalOpen(false);
@@ -108,9 +111,7 @@ export function UpdatesCard({ address }: UpdatesCardProps) {
                     </div>
 
                     <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
-                      <span>
-                        {new Date(update.date).toLocaleDateString()}
-                      </span>
+                      <span>{new Date(update.date).toLocaleDateString()}</span>
                       <a
                         href={update.link}
                         target='_blank'

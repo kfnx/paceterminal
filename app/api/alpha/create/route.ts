@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     if (!address || !title) {
       return NextResponse.json(
         { error: 'Address and title are required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       console.error('Error creating alpha:', error);
       return NextResponse.json(
         { error: 'Failed to create alpha' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     console.error('Alpha create API error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

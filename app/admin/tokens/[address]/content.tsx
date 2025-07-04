@@ -5,8 +5,6 @@ import { RiAddLine, RiCoinLine } from '@remixicon/react';
 
 import { useToken } from '@/hooks/use-token';
 import * as Button from '@/components/ui/button';
-
-import { TokenForm } from '@/components/token-form';
 import { AlphaCard } from '@/components/token-detail/alpha-card';
 import { FlywheelCard } from '@/components/token-detail/flywheel-card';
 import { MetricsCard } from '@/components/token-detail/metrics-card';
@@ -14,6 +12,7 @@ import { TeamCard } from '@/components/token-detail/team-card';
 import { TokenHeader } from '@/components/token-detail/token-header';
 import { TokenInfoCard } from '@/components/token-detail/token-info-card';
 import { UpdatesCard } from '@/components/token-detail/updates-card';
+import { TokenForm } from '@/components/token-form';
 
 interface ManageTokenProps {
   address: string;

@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { useTeams } from '@/hooks/use-teams';
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/button';
+
 import { TeamForm } from '../team-form';
 
 interface TeamCardProps {
@@ -12,12 +13,7 @@ interface TeamCardProps {
 }
 
 export function TeamCard({ address }: TeamCardProps) {
-  const {
-    teams,
-    loading,
-    error,
-    refetch,
-  } = useTeams(address);
+  const { teams, loading, error, refetch } = useTeams(address);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   const handleSuccess = () => {
