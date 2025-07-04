@@ -98,7 +98,9 @@ export function ManageToken({ address }: ManageTokenProps) {
         </div>
         <TeamCard address={address} />
         <AlphaCard address={address} />
-        <UpdatesCard address={address} />
+        <div className='md:col-span-2'>
+          <UpdatesCard address={address} />
+        </div>
       </div>
     </div>
   );
