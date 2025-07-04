@@ -109,7 +109,7 @@ export function MetricsForm({
             {/* Label */}
             <div className='flex flex-col gap-1'>
               <Label.Root>
-                Label <span className='text-red-500'>*</span>
+                Label <Label.Asterisk />
               </Label.Root>
               <Input.Root>
                 <Input.Wrapper>
@@ -128,7 +128,7 @@ export function MetricsForm({
             {/* Value */}
             <div className='flex flex-col gap-1'>
               <Label.Root>
-                Value <span className='text-red-500'>*</span>
+                Value <Label.Asterisk />
               </Label.Root>
               <Input.Root>
                 <Input.Wrapper>

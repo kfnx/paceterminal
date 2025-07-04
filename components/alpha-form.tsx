@@ -105,7 +105,7 @@ export function AlphaForm({
             {/* Title */}
             <div className='flex flex-col gap-2'>
               <Label.Root>
-                Title <span className='text-red-500'>*</span>
+                Title <Label.Asterisk />
               </Label.Root>
               <Input.Root>
                 <Input.Wrapper>

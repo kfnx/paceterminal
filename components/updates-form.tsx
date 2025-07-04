@@ -144,7 +144,7 @@ export function UpdatesForm({
             {/* Title */}
             <div className='flex flex-col gap-2'>
               <Label.Root>
-                Title <span className='text-red-500'>*</span>
+                Title <Label.Asterisk />
               </Label.Root>
               <Input.Root>
                 <Input.Wrapper>
@@ -161,7 +161,7 @@ export function UpdatesForm({
             {/* Date */}
             <div className='flex flex-col gap-2'>
               <Label.Root>
-                Date <span className='text-red-500'>*</span>
+                Date <Label.Asterisk />
               </Label.Root>
               <Input.Root>
                 <Input.Wrapper>
@@ -178,7 +178,7 @@ export function UpdatesForm({
             {/* Description */}
             <div className='flex flex-col gap-2'>
               <Label.Root>
-                Description <span className='text-red-500'>*</span>
+                Description <Label.Asterisk />
               </Label.Root>
               <Textarea.Root
                 value={description}
@@ -192,7 +192,7 @@ export function UpdatesForm({
             {/* Link */}
             <div className='flex flex-col gap-2'>
               <Label.Root>
-                Link <span className='text-red-500'>*</span>
+                Link <Label.Asterisk />
               </Label.Root>
               <Input.Root>
                 <Input.Wrapper>
