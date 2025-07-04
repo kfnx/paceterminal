@@ -12,7 +12,7 @@ const fetchUpdates = async (address: string): Promise<Update[]> => {
     .from('updates')
     .select('*')
     .eq('address', address)
-    .order('created_at', { ascending: false });
+    .order('date', { ascending: false });
 
   if (error) {
     throw error;
