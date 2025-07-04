@@ -240,6 +240,7 @@ function UserProfile({ collapsed }: { collapsed: boolean }) {
       })}
     >
       <SidebarProfile
+        collapsed={collapsed}
         className={cn('transition-all-default', {
           'w-auto': collapsed,
         })}
