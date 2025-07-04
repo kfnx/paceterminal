@@ -1,21 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 import { createServerSupabaseClient } from '@/lib/supabase';
 
+// Validation schema for the request body
+const UpdateUpdateSchema = z.object({
+  id: z.number().int('ID must be an integer'),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().min(1, 'Description is required'),
+  link: z.string().url('Link must be a valid URL'),
+  image: z.string().url('Image must be a valid URL').nullable().optional(),
+  date: z.string().min(1, 'Date is required'),
+});
+
 export async function PUT(request: NextRequest) {
   try {
-    const { id, title, description, link, image } = await request.json();
-
-    if (!id) {
-      return NextResponse.json({ error: 'No ID provided' }, { status: 400 });
-    }
-
-    if (!title || !description || !link) {
-      return NextResponse.json(
-        { error: 'Title, description, and link are required' },
-        { status: 400 },
-      );
-    }
+    // Parse and validate the request body
+    const body = await request.json();
+    const { id, title, description, link, image, date } =
+      UpdateUpdateSchema.parse(body);
 
     // Create server-side Supabase client with service role key
     const supabase = createServerSupabaseClient();
@@ -27,6 +30,7 @@ export async function PUT(request: NextRequest) {
         description,
         link,
         image: image || null,
+        date: date,
       })
       .eq('id', id)
       .select()
@@ -46,6 +50,14 @@ export async function PUT(request: NextRequest) {
     });
   } catch (error) {
     console.error('Update API error:', error);
+
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: error.errors[0]?.message || 'Invalid request data' },
+        { status: 400 },
+      );
+    }
+
     const errorMessage =
       error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(

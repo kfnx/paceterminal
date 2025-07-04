@@ -1,13 +1,16 @@
 'use client';
 
 import { RiLockLine, RiNewsLine, RiVipDiamondLine } from '@remixicon/react';
+import { useAtom } from 'jotai';
 
 import { useMemberStatus } from '@/hooks/use-member-status';
-import type { Token } from '@/hooks/use-tokens';
+import * as Button from '@/components/ui/button';
 import AdModal from '@/components/ad-modal';
 import IllustrationEmptySavedActions from '@/components/empty-state-illustrations/saved-actions';
 import { LeftSideAd } from '@/components/LeftSideAd';
+import { paymentModalOpenAtom } from '@/components/payment-modal';
 import { RightSideAd } from '@/components/RightSideAd';
+import WidgetAlpha from '@/components/widgets/widget-alpha';
 import WidgetChart from '@/components/widgets/widget-chart';
 import WidgetFlywheel from '@/components/widgets/widget-flywheel';
 import WidgetMetrics from '@/components/widgets/widget-metrics';
@@ -16,10 +19,6 @@ import WidgetTeam from '@/components/widgets/widget-team';
 import WidgetTechnicalAnalysis from '@/components/widgets/widget-technical-analysis';
 import WidgetUpdates from '@/components/widgets/widget-updates';
 
-interface ContentProps {
-  token: Token;
-}
-
 function MemberOnlyPlaceholder({
   title,
   icon,
@@ -27,6 +26,9 @@ function MemberOnlyPlaceholder({
   title: string;
   icon: React.ComponentType<any>;
 }) {
+  const [_paymentModalOpen, setPaymentModalOpen] =
+    useAtom(paymentModalOpenAtom);
+
   return (
     <WidgetPlaceholder title={title} icon={icon}>
       <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
@@ -35,18 +37,25 @@ function MemberOnlyPlaceholder({
         </div>
         <div className='text-center'>
           <div className='text-paragraph-sm font-medium text-text-strong-950'>
-            Members Only Content
+            Premium Content
           </div>
           <div className='mt-1 text-paragraph-xs text-text-sub-600'>
-            Unlock premium {title.toLowerCase()} insights with a membership
+            Unlock {title.toLowerCase()}
           </div>
         </div>
+        <Button.Root
+          variant='primary'
+          size='small'
+          onClick={() => setPaymentModalOpen(true)}
+        >
+          Upgrade to Premium
+        </Button.Root>
       </div>
     </WidgetPlaceholder>
   );
 }
 
-export function Content({ token }: ContentProps) {
+export function Content() {
   const { isMember } = useMemberStatus();
 
   return (
@@ -66,14 +75,7 @@ export function Content({ token }: ContentProps) {
 
         {/* Alpha Section - Members Only */}
         {isMember ? (
-          <WidgetPlaceholder title='Alpha' icon={RiVipDiamondLine}>
-            <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>
-              <IllustrationEmptySavedActions className='size-[108px]' />
-              <div className='text-center text-paragraph-sm text-text-soft-400'>
-                Alpha empty.
-              </div>
-            </div>
-          </WidgetPlaceholder>
+          <WidgetAlpha />
         ) : (
           <MemberOnlyPlaceholder title='Alpha' icon={RiVipDiamondLine} />
         )}
