@@ -21,6 +21,11 @@ interface TokenDetailPageProps {
 export function TokenDetailPage({ address }: TokenDetailPageProps) {
   const { data: token, isLoading, error } = useToken(address);
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
+  const [isEditUpdatesModalOpen, setIsEditUpdatesModalOpen] =
+    React.useState(false);
+  const [selectedUpdate, setSelectedUpdate] = React.useState<Update | null>(
+    null,
+  );
 
   const handleCreateSuccess = () => {
     setIsCreateModalOpen(false);
