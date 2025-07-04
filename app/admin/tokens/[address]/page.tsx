@@ -1,4 +1,4 @@
-import { TokenDetailPage } from '@/components/token-detail-page';
+import { ManageToken } from './content';
 
 export default async function AdminSolanaTokenPage({
   params,
@@ -9,7 +9,7 @@ export default async function AdminSolanaTokenPage({
 
   return (
     <div className='container mx-auto px-4 py-6'>
-      <TokenDetailPage address={address} />
+      <ManageToken address={address} />
     </div>
   );
 }

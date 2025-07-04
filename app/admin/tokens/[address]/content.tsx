@@ -6,26 +6,22 @@ import { RiAddLine, RiCoinLine } from '@remixicon/react';
 import { useToken } from '@/hooks/use-token';
 import * as Button from '@/components/ui/button';
 
-import { TokenForm } from './token-form';
-import { AlphaCard } from './token-detail/alpha-card';
-import { FlywheelCard } from './token-detail/flywheel-card';
-import { MetricsCard } from './token-detail/metrics-card';
-import { TeamCard } from './token-detail/team-card';
-import { TokenHeader } from './token-detail/token-header';
-import { TokenInfoCard } from './token-detail/token-info-card';
+import { TokenForm } from '@/components/token-form';
+import { AlphaCard } from '@/components/token-detail/alpha-card';
+import { FlywheelCard } from '@/components/token-detail/flywheel-card';
+import { MetricsCard } from '@/components/token-detail/metrics-card';
+import { TeamCard } from '@/components/token-detail/team-card';
+import { TokenHeader } from '@/components/token-detail/token-header';
+import { TokenInfoCard } from '@/components/token-detail/token-info-card';
+import { UpdatesCard } from '@/components/token-detail/updates-card';
 
-interface TokenDetailPageProps {
+interface ManageTokenProps {
   address: string;
 }
 
-export function TokenDetailPage({ address }: TokenDetailPageProps) {
+export function ManageToken({ address }: ManageTokenProps) {
   const { data: token, isLoading, error } = useToken(address);
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
-  const [isEditUpdatesModalOpen, setIsEditUpdatesModalOpen] =
-    React.useState(false);
-  const [selectedUpdate, setSelectedUpdate] = React.useState<Update | null>(
-    null,
-  );
 
   const handleCreateSuccess = () => {
     setIsCreateModalOpen(false);
@@ -97,10 +93,13 @@ export function TokenDetailPage({ address }: TokenDetailPageProps) {
 
       <div className='grid gap-6 md:grid-cols-2'>
         <TokenInfoCard address={address} />
-        <MetricsCard address={address} />
-        <TeamCard address={address} />
         <FlywheelCard address={address} />
+        <div className='md:col-span-2'>
+          <MetricsCard address={address} />
+        </div>
+        <TeamCard address={address} />
         <AlphaCard address={address} />
+        <UpdatesCard address={address} />
       </div>
     </div>
   );
