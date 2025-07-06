@@ -82,7 +82,7 @@ export function AlphaCard({ address }: AlphaCardProps) {
             {alpha.map((alphaItem) => (
               <div
                 key={alphaItem.id}
-                className='bg-bg-soft-100 relative rounded-lg p-4'
+                className='bg-bg-soft-100 relative rounded-lg'
               >
                 <div className='flex items-start justify-between'>
                   <div className='flex-1'>

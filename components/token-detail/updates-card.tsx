@@ -116,7 +116,7 @@ export function UpdatesCard({ address }: UpdatesCardProps) {
                         href={update.link}
                         target='_blank'
                         rel='noopener noreferrer'
-                        className='hover:text-primary-600 max-w-[280px] truncate text-primary-base'
+                        className='hover:text-primary-600 max-w-[340px] truncate text-primary-base'
                         title={update.link}
                       >
                         {update.link}

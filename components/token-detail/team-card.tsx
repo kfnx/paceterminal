@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { RiAddLine, RiCoinLine, RiDeleteBinLine, RiEditLine, RiTwitterLine } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiCoinLine,
+  RiDeleteBinLine,
+  RiEditLine,
+  RiTwitterLine,
+} from '@remixicon/react';
 import { toast } from 'sonner';
 
 import { useTeams, type Team } from '@/hooks/use-teams';
@@ -73,7 +79,7 @@ export function TeamCard({ address }: TeamCardProps) {
             Error loading team: {error}
           </div>
         ) : teams.length > 0 ? (
-          <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+          <div className='grid grid-cols-2 gap-4 lg:grid-cols-4'>
             {teams.map((team) => (
               <div
                 key={team.id}

@@ -80,11 +80,11 @@ export function MetricsCard({ address }: MetricsCardProps) {
             Error loading metrics: {error}
           </div>
         ) : metrics.length > 0 ? (
-          <div className='grid gap-4 md:grid-cols-2'>
+          <div className='grid gap-6 md:grid-cols-2'>
             {metrics.map((metric: Metric) => (
               <div
                 key={metric.id}
-                className='bg-bg-soft-100 relative rounded-lg p-4'
+                className='bg-bg-soft-100 relative rounded-lg'
               >
                 <div className='flex items-start justify-between'>
                   <div className='flex-1'>

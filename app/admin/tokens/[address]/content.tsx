@@ -9,6 +9,7 @@ import { AlphaCard } from '@/components/token-detail/alpha-card';
 import { FlywheelCard } from '@/components/token-detail/flywheel-card';
 import { MetricsCard } from '@/components/token-detail/metrics-card';
 import { TeamCard } from '@/components/token-detail/team-card';
+import { TechnicalAnalysisCard } from '@/components/token-detail/technical-analysis-card';
 import { TokenHeader } from '@/components/token-detail/token-header';
 import { TokenInfoCard } from '@/components/token-detail/token-info-card';
 import { UpdatesCard } from '@/components/token-detail/updates-card';
@@ -90,17 +91,14 @@ export function ManageToken({ address }: ManageTokenProps) {
     <div className='space-y-6'>
       <TokenHeader token={token} />
 
-      <div className='grid gap-6 md:grid-cols-2'>
+      <div className='flex flex-col gap-6'>
         <TokenInfoCard address={address} />
-        <FlywheelCard address={address} />
-        <div className='md:col-span-2'>
-          <MetricsCard address={address} />
-        </div>
+        <MetricsCard address={address} />
         <TeamCard address={address} />
+        <FlywheelCard address={address} />
+        <TechnicalAnalysisCard address={address} />
         <AlphaCard address={address} />
-        <div className='md:col-span-2'>
-          <UpdatesCard address={address} />
-        </div>
+        <UpdatesCard address={address} />
       </div>
     </div>
   );
