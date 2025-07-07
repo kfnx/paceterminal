@@ -13,13 +13,13 @@ interface TokenInfoCardProps {
 const getTierLabel = (tier: number) => {
   switch (tier) {
     case 1:
-      return 'S Tier';
+      return 'S';
     case 2:
-      return 'A Tier';
+      return 'A';
     case 3:
-      return 'B Tier';
+      return 'B';
     case 4:
-      return 'C Tier';
+      return 'C';
     default:
       return 'Unknown';
   }
@@ -70,51 +70,39 @@ export function TokenInfoCard({ address }: TokenInfoCardProps) {
             <RiEditLine className='size-4' />
           </Button.Root>
         </div>
-        <div className='space-y-4'>
+        <div className='space-y-1'>
           <div>
-            <label className='text-paragraph-sm font-medium text-text-sub-600'>
+            <label className='text-paragraph-sm text-text-sub-600'>
               Address
             </label>
-            <p className='mt-1 break-all font-mono text-paragraph-sm text-text-strong-950'>
+            <p className='break-all font-mono text-paragraph-sm text-text-strong-950'>
               {token.address}
             </p>
           </div>
           {token.description && (
             <div>
-              <label className='text-paragraph-sm font-medium text-text-sub-600'>
+              <label className='text-paragraph-sm text-text-sub-600'>
                 Description
               </label>
-              <p className='mt-1 text-paragraph-sm text-text-strong-950'>
+              <p className='text-paragraph-sm text-text-strong-950'>
                 {token.description}
               </p>
             </div>
           )}
           <div>
-            <label className='text-paragraph-sm font-medium text-text-sub-600'>
-              Tier
+            <label className='text-paragraph-sm text-text-sub-600'>
+              Tier:{' '}
+              <span className='text-text-strong-950'>
+                {getTierLabel(token.tier || 0)}
+              </span>
             </label>
-            <p className='mt-1 text-paragraph-sm text-text-strong-950'>
-              {getTierLabel(token.tier || 0)}
-            </p>
           </div>
           {token.ordering !== null && (
             <div>
-              <label className='text-paragraph-sm font-medium text-text-sub-600'>
-                Ordering
+              <label className='text-paragraph-sm text-text-sub-600'>
+                Ordering:{' '}
+                <span className='text-text-strong-950'>{token.ordering}</span>
               </label>
-              <p className='mt-1 text-paragraph-sm text-text-strong-950'>
-                {token.ordering}
-              </p>
-            </div>
-          )}
-          {token.image && (
-            <div>
-              <label className='text-paragraph-sm font-medium text-text-sub-600'>
-                Image URL
-              </label>
-              <p className='mt-1 break-all text-paragraph-sm text-text-strong-950'>
-                {token.image}
-              </p>
             </div>
           )}
         </div>

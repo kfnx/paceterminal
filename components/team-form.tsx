@@ -17,8 +17,6 @@ import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
 import * as Textarea from '@/components/ui/textarea';
 
-
-
 interface TeamFormProps {
   team?: Team;
   tokenAddress: string;
@@ -113,7 +111,11 @@ export function TeamForm({
 
       if (error) throw error;
 
-      toast.success(team ? 'Team member updated successfully' : 'Team member created successfully');
+      toast.success(
+        team
+          ? 'Team member updated successfully'
+          : 'Team member created successfully',
+      );
       onSuccess();
     } catch (error) {
       console.error('Error saving team member:', error);
@@ -127,9 +129,13 @@ export function TeamForm({
     <Modal.Root open={isOpen} onOpenChange={handleClose}>
       <Modal.Content className='max-w-2xl'>
         <Modal.Header>
-          <Modal.Title>{team ? 'Edit Team Member' : 'Add Team Member'}</Modal.Title>
+          <Modal.Title>
+            {team ? 'Edit Team Member' : 'Add Team Member'}
+          </Modal.Title>
           <Modal.Description>
-            {team ? 'Update the team member details.' : 'Add a new team member for this token.'}
+            {team
+              ? 'Update the team member details.'
+              : 'Add a new team member for this token.'}
           </Modal.Description>
         </Modal.Header>
 
@@ -142,9 +148,7 @@ export function TeamForm({
                   <Input.Wrapper>
                     <Input.Input
                       value={formData.image}
-                      onChange={(e) =>
-                        handleChange('image', e.target.value)
-                      }
+                      onChange={(e) => handleChange('image', e.target.value)}
                       placeholder='Enter image URL (e.g., https://example.com/image.jpg)'
                       disabled={isSubmitting}
                     />
@@ -154,14 +158,14 @@ export function TeamForm({
 
               <div className='flex flex-col gap-2'>
                 <div className='flex flex-col gap-1'>
-                  <Label.Root>Name <Label.Asterisk /></Label.Root>
+                  <Label.Root>
+                    Name <Label.Asterisk />
+                  </Label.Root>
                   <Input.Root>
                     <Input.Wrapper>
                       <Input.Input
                         value={formData.name}
-                        onChange={(e) =>
-                          handleChange('name', e.target.value)
-                        }
+                        onChange={(e) => handleChange('name', e.target.value)}
                         placeholder='Enter team member name'
                         required
                         disabled={isSubmitting}
@@ -176,9 +180,7 @@ export function TeamForm({
                     <Input.Wrapper>
                       <Input.Input
                         value={formData.role}
-                        onChange={(e) =>
-                          handleChange('role', e.target.value)
-                        }
+                        onChange={(e) => handleChange('role', e.target.value)}
                         placeholder='e.g., CEO, Developer, Designer'
                         disabled={isSubmitting}
                       />
@@ -207,9 +209,7 @@ export function TeamForm({
                 <Label.Root>Description</Label.Root>
                 <Textarea.Root
                   value={formData.description}
-                  onChange={(e) =>
-                    handleChange('description', e.target.value)
-                  }
+                  onChange={(e) => handleChange('description', e.target.value)}
                   placeholder='Brief description of the team member'
                   rows={2}
                   disabled={isSubmitting}
@@ -231,7 +231,11 @@ export function TeamForm({
             </Button.Root>
             <Button.Root type='submit' disabled={isSubmitting}>
               <Button.Icon as={RiSaveLine} />
-              {isSubmitting ? 'Saving...' : (team ? 'Save Changes' : 'Add Team Member')}
+              {isSubmitting
+                ? 'Saving...'
+                : team
+                  ? 'Save Changes'
+                  : 'Add Team Member'}
             </Button.Root>
           </Modal.Footer>
         </form>

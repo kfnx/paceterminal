@@ -21,10 +21,15 @@ interface TechnicalAnalysisEditImageUploaderProps {
 
 interface UploadedImage {
   url: string;
+  key: string;
+  uuid: string;
+  folder: string;
   fileName: string;
   fileSize: number;
   fileType: string;
   replaced: boolean;
+  oldFileDeleted: boolean;
+  replacedUrl: string | null;
   uploadedAt: string;
 }
 
@@ -41,13 +46,6 @@ export function TechnicalAnalysisEditImageUploader({
   );
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-    }
-  };
-
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(true);
@@ -58,60 +56,107 @@ export function TechnicalAnalysisEditImageUploader({
     setIsDragOver(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile) {
-      setFile(droppedFile);
-    }
-  }, []);
-
-  const handleUpload = async () => {
-    if (!file || !technicalAnalysisId) {
-      toast.error(
-        'Please select a file and ensure technical analysis ID is provided.',
-      );
-      return;
-    }
-
-    setIsUploading(true);
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('id', technicalAnalysisId);
-
-    try {
-      const response = await fetch('/api/technical-analysis/update-image', {
-        method: 'PUT',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Upload failed');
+  const handleUpload = useCallback(
+    async (uploadFile: File) => {
+      if (!uploadFile || !technicalAnalysisId) {
+        toast.error(
+          'Please select a file and ensure technical analysis ID is provided.',
+        );
+        return;
       }
 
-      setUploadedImage(data);
-      onImageUploaded(data.url);
+      setIsUploading(true);
 
-      const message = data.replaced
-        ? 'Technical analysis image updated successfully!'
-        : 'Technical analysis image uploaded successfully!';
-      toast.success(message);
+      const formData = new FormData();
+      formData.append('file', uploadFile);
+      formData.append('folder', 'technical-analysis');
 
-      // Clear the file after successful upload
-      setFile(null);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      toast.error(errorMessage);
-    } finally {
-      setIsUploading(false);
-    }
-  };
+      // If there's a current image, add it as replaceUrl for automatic replacement
+      if (currentImageUrl) {
+        formData.append('replaceUrl', currentImageUrl);
+      }
+
+      try {
+        // Step 1: Upload the image
+        const uploadResponse = await fetch('/api/image-upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const uploadData = await uploadResponse.json();
+
+        if (!uploadResponse.ok || !uploadData.success) {
+          throw new Error(uploadData.error || 'Upload failed');
+        }
+
+        // Step 2: Update the technical analysis record in the database
+        const updateFormData = new FormData();
+        updateFormData.append('id', technicalAnalysisId);
+        updateFormData.append('imageUrl', uploadData.url);
+
+        const updateResponse = await fetch(
+          '/api/technical-analysis/update-image',
+          {
+            method: 'PUT',
+            body: updateFormData,
+          },
+        );
+
+        const updateResult = await updateResponse.json();
+
+        if (!updateResponse.ok || !updateResult.success) {
+          throw new Error(
+            updateResult.error || 'Failed to update technical analysis record',
+          );
+        }
+
+        setUploadedImage(uploadData);
+        onImageUploaded(uploadData.url);
+
+        const message = uploadData.oldFileDeleted
+          ? 'Technical analysis image updated successfully!'
+          : 'Technical analysis image uploaded successfully!';
+        toast.success(message);
+
+        // Clear the file after successful upload
+        setFile(null);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'An unknown error occurred';
+        toast.error(errorMessage);
+        // Clear the file on error too
+        setFile(null);
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [currentImageUrl, technicalAnalysisId, onImageUploaded],
+  );
+
+  const handleFileChange = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const selectedFile = e.target.files?.[0];
+      if (selectedFile) {
+        setFile(selectedFile);
+        await handleUpload(selectedFile);
+      }
+    },
+    [handleUpload],
+  );
+
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragOver(false);
+
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile) {
+        setFile(droppedFile);
+        await handleUpload(droppedFile);
+      }
+    },
+    [handleUpload],
+  );
 
   const clearFile = () => {
     setFile(null);
@@ -130,15 +175,29 @@ export function TechnicalAnalysisEditImageUploader({
 
   return (
     <div className='space-y-4'>
+      <div className='flex flex-col gap-2'>
+        <div className='text-sm text-text-sub-600'>
+          {displayImage
+            ? 'Current technical analysis image'
+            : 'No technical analysis image uploaded'}
+        </div>
+        {uploadedImage && (
+          <div className='text-xs text-text-sub-600'>
+            {uploadedImage.oldFileDeleted
+              ? 'Image updated'
+              : 'New image uploaded'}
+          </div>
+        )}
+      </div>
       {/* Current/Uploaded Image Display */}
       <div className='flex items-center gap-4'>
         {displayImage ? (
-          <div className='relative h-32 w-32 overflow-hidden rounded-lg'>
+          <div className='relative w-full overflow-hidden rounded-lg'>
             <S3Image
               src={displayImage}
               alt='Technical Analysis'
-              width={128}
-              height={128}
+              width={256}
+              height={256}
               className='h-full w-full object-cover'
             />
           </div>
@@ -147,19 +206,6 @@ export function TechnicalAnalysisEditImageUploader({
             <RiImageLine className='size-12 text-text-sub-600' />
           </div>
         )}
-
-        <div className='flex flex-col gap-2'>
-          <div className='text-sm text-text-sub-600'>
-            {displayImage
-              ? 'Current technical analysis image'
-              : 'No technical analysis image uploaded'}
-          </div>
-          {uploadedImage && (
-            <div className='text-xs text-text-sub-600'>
-              {uploadedImage.replaced ? 'Image updated' : 'New image uploaded'}
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Upload Area */}
@@ -168,7 +214,7 @@ export function TechnicalAnalysisEditImageUploader({
           isDragOver
             ? 'bg-primary-lighter border-primary-base'
             : 'border-stroke-soft-200'
-        } ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+        } ${disabled || isUploading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -185,50 +231,17 @@ export function TechnicalAnalysisEditImageUploader({
         <div className='flex flex-col items-center gap-2'>
           <RiImageLine className='size-8 text-text-sub-600' />
           <div className='text-sm font-medium text-text-strong-950'>
-            Click to upload or drag and drop
+            {isUploading
+              ? 'Uploading...'
+              : isDragOver
+                ? 'Drop your image here'
+                : 'Click to upload or drag and drop'}
           </div>
           <div className='text-xs text-text-sub-600'>
             PNG, JPG, GIF up to 5MB
           </div>
         </div>
       </div>
-
-      {/* File Preview */}
-      {file && (
-        <div className='bg-bg-soft-100 flex items-center justify-between rounded-lg p-3'>
-          <div className='flex items-center gap-3'>
-            <RiImageLine className='size-5 text-text-sub-600' />
-            <div>
-              <div className='text-sm font-medium text-text-strong-950'>
-                {file.name}
-              </div>
-              <div className='text-xs text-text-sub-600'>
-                {formatFileSize(file.size)}
-              </div>
-            </div>
-          </div>
-
-          <div className='flex items-center gap-2'>
-            <Button.Root
-              size='xsmall'
-              variant='neutral'
-              mode='stroke'
-              onClick={clearFile}
-              disabled={isUploading}
-            >
-              <Button.Icon as={RiCloseLine} />
-            </Button.Root>
-            <Button.Root
-              size='xsmall'
-              onClick={handleUpload}
-              disabled={isUploading}
-            >
-              <Button.Icon as={isUploading ? undefined : RiUploadLine} />
-              {isUploading ? 'Uploading...' : 'Upload'}
-            </Button.Root>
-          </div>
-        </div>
-      )}
 
       {/* Success State */}
       {uploadedImage && (

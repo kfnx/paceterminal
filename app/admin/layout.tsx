@@ -5,7 +5,7 @@ import HeaderMobile from '@/components/header-mobile';
 
 import { AuthProvider } from '../auth-provider';
 import Header from './header';
-import Sidebar from './sidebar-admin';
+import Sidebar from './sidebar';
 
 export default async function Layout({
   children,

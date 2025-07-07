@@ -152,18 +152,17 @@ function MenuItems({ collapsed }: { collapsed: boolean }) {
             )}
           />
           {/* {Icon} */}
-          {/* <RiToken2Line
+          <RiCoinLine
             className={cn(
               'transition-default size-5 shrink-0 text-text-sub-600',
               'group-aria-[current=page]:text-primary-base',
             )}
-          /> */}
+          />
 
           <div
             className='flex w-[180px] shrink-0 items-center gap-2'
             data-hide-collapsed
           >
-            <Button.Icon as={RiCoinLine} />
             <div className='flex-1 text-label-sm'>Manage Tokens</div>
             {selected && (
               <RiArrowRightSLine className='size-5 text-text-sub-600' />
@@ -197,18 +196,17 @@ function MenuItems({ collapsed }: { collapsed: boolean }) {
             )}
           />
           {/* {Icon} */}
-          {/* <RiToken2Line
+          <RiMoneyDollarCircleLine
             className={cn(
               'transition-default size-5 shrink-0 text-text-sub-600',
               'group-aria-[current=page]:text-primary-base',
             )}
-          /> */}
+          />
 
           <div
             className='flex w-[180px] shrink-0 items-center gap-2'
             data-hide-collapsed
           >
-            <Button.Icon as={RiMoneyDollarCircleLine} />
             <div className='flex-1 text-label-sm'>Manage Ads</div>
             {selected && (
               <RiArrowRightSLine className='size-5 text-text-sub-600' />

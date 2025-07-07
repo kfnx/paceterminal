@@ -2,37 +2,42 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase';
 
 /**
- * Updates technical analysis record with new image URL
+ * Updates or creates flywheel record in database
  */
-async function updateTechnicalAnalysisImage(id: number, imageUrl: string) {
+async function updateFlywheelRecord(tokenAddress: string, imageUrl: string) {
   const supabase = createServerSupabaseClient();
 
   const { data, error } = await supabase
-    .from('technical_analysis')
-    .update({
-      image: imageUrl,
-    })
-    .eq('id', id)
+    .from('flywheels')
+    .upsert(
+      {
+        address: tokenAddress,
+        image: imageUrl,
+      },
+      {
+        onConflict: 'address',
+      },
+    )
     .select()
     .single();
 
   if (error) {
-    console.error('Error updating technical analysis image:', error);
-    throw new Error('Failed to update technical analysis image in database.');
+    console.error('Error updating flywheel record:', error);
+    throw new Error('Failed to update flywheel record in database.');
   }
 
   return data;
 }
 
-export async function PUT(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const id = formData.get('id') as string | null;
+    const tokenAddress = formData.get('tokenAddress') as string | null;
     const imageUrl = formData.get('imageUrl') as string | null;
 
-    if (!id) {
+    if (!tokenAddress) {
       return NextResponse.json(
-        { error: 'Technical analysis ID is required' },
+        { error: 'Token address is required' },
         { status: 400 },
       );
     }
@@ -45,18 +50,15 @@ export async function PUT(request: NextRequest) {
     }
 
     // Update database record
-    const technicalAnalysisRecord = await updateTechnicalAnalysisImage(
-      Number(id),
-      imageUrl,
-    );
+    const flywheelRecord = await updateFlywheelRecord(tokenAddress, imageUrl);
 
     return NextResponse.json({
       success: true,
-      technicalAnalysis: technicalAnalysisRecord,
+      flywheel: flywheelRecord,
       updatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Technical analysis image update API error:', error);
+    console.error('Flywheel update API error:', error);
     const errorMessage =
       error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(

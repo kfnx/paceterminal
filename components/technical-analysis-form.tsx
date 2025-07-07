@@ -121,8 +121,7 @@ export function TechnicalAnalysisForm({
             {/* Description */}
             <div className='flex flex-col gap-1'>
               <Label.Root>
-                Description{' '}
-                {!technicalAnalysis && <Label.Asterisk />}
+                Description {!technicalAnalysis && <Label.Asterisk />}
               </Label.Root>
               <Textarea.Root
                 value={description}
@@ -143,8 +142,7 @@ export function TechnicalAnalysisForm({
             {!technicalAnalysis && (
               <div className='flex flex-col gap-1'>
                 <Label.Root>
-                  Technical Analysis Chart{' '}
-                  <Label.Asterisk />
+                  Technical Analysis Chart <Label.Asterisk />
                 </Label.Root>
                 <TechnicalAnalysisImageUploader
                   tokenAddress={tokenAddress}

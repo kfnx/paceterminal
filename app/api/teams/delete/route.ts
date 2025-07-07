@@ -15,10 +15,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const { error } = await supabase
-      .from('teams')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from('teams').delete().eq('id', id);
 
     if (error) {
       console.error('Error deleting team member:', error);

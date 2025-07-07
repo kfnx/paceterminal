@@ -22,10 +22,15 @@ interface FlywheelImageUploaderProps {
 
 interface UploadedImage {
   url: string;
+  key: string;
+  uuid: string;
+  folder: string;
   fileName: string;
   fileSize: number;
   fileType: string;
   replaced: boolean;
+  oldFileDeleted: boolean;
+  replacedUrl: string | null;
   uploadedAt: string;
 }
 
@@ -42,13 +47,6 @@ export function FlywheelImageUploader({
   );
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-    }
-  };
-
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(true);
@@ -59,44 +57,60 @@ export function FlywheelImageUploader({
     setIsDragOver(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile) {
-      setFile(droppedFile);
-    }
-  }, []);
-
-  const handleUpload = async () => {
-    if (!file || !tokenAddress) {
-      toast.error('Please select a file and ensure token address is provided.');
+  const handleUpload = useCallback(async (uploadFile: File) => {
+    if (!uploadFile) {
+      toast.error('Please select a file.');
       return;
     }
 
     setIsUploading(true);
 
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('tokenAddress', tokenAddress);
+    formData.append('file', uploadFile);
+    formData.append('folder', 'flywheels');
+
+    // If there's a current image, add it as replaceUrl for automatic replacement
+    if (currentImageUrl) {
+      formData.append('replaceUrl', currentImageUrl);
+    }
 
     try {
-      const response = await fetch('/api/upload/flywheel-image', {
+      // Step 1: Upload the image
+      const uploadResponse = await fetch('/api/image-upload', {
         method: 'POST',
         body: formData,
       });
 
-      const data = await response.json();
+      const uploadData = await uploadResponse.json();
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Upload failed');
+      if (!uploadResponse.ok || !uploadData.success) {
+        throw new Error(uploadData.error || 'Upload failed');
       }
 
-      setUploadedImage(data);
-      onImageUploaded(data.url);
+      // Step 2: Update the flywheel record in the database
+      const updateFormData = new FormData();
+      updateFormData.append('tokenAddress', tokenAddress);
+      updateFormData.append('imageUrl', uploadData.url);
 
-      const message = data.replaced
+      const updateResponse = await fetch('/api/flywheel/update-image', {
+        method: 'POST',
+        body: updateFormData,
+      });
+
+      const updateResult = await updateResponse.json();
+
+      if (!updateResponse.ok || !updateResult.success) {
+        // If database update fails, we should probably delete the uploaded image
+        // For now, just show an error
+        throw new Error(
+          updateResult.error || 'Failed to update flywheel record',
+        );
+      }
+
+      setUploadedImage(uploadData);
+      onImageUploaded(uploadData.url);
+
+      const message = uploadData.oldFileDeleted
         ? 'Flywheel image replaced successfully!'
         : 'Flywheel image uploaded successfully!';
       toast.success(message);
@@ -107,10 +121,31 @@ export function FlywheelImageUploader({
       const errorMessage =
         err instanceof Error ? err.message : 'An unknown error occurred';
       toast.error(errorMessage);
+      // Clear the file on error too
+      setFile(null);
     } finally {
       setIsUploading(false);
     }
-  };
+  }, [currentImageUrl, tokenAddress, onImageUploaded]);
+
+  const handleFileChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      await handleUpload(selectedFile);
+    }
+  }, [handleUpload]);
+
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile) {
+      setFile(droppedFile);
+      await handleUpload(droppedFile);
+    }
+  }, [handleUpload]);
 
   const clearFile = () => {
     setFile(null);
@@ -130,14 +165,14 @@ export function FlywheelImageUploader({
   return (
     <div className='space-y-4'>
       {/* Current/Uploaded Image Display */}
-      <div className='flex items-center gap-4'>
+      <div className='flex w-full items-center gap-4'>
         {displayImage ? (
-          <div className='relative h-32 w-32 overflow-hidden rounded-lg'>
+          <div className='relative w-full overflow-hidden rounded-lg'>
             <S3Image
               src={displayImage}
               alt='Flywheel'
-              width={128}
-              height={128}
+              width={256}
+              height={256}
               className='h-full w-full object-cover'
             />
           </div>
@@ -146,22 +181,14 @@ export function FlywheelImageUploader({
             <RiImageLine className='size-12 text-text-sub-600' />
           </div>
         )}
-
-        <div className='flex flex-col gap-2'>
-          <div className='text-sm text-text-sub-600'>
-            {displayImage
-              ? 'Current flywheel image'
-              : 'No flywheel image uploaded'}
-          </div>
-          {uploadedImage && (
-            <div className='text-xs text-text-sub-600'>
-              {uploadedImage.replaced
-                ? 'Replaced existing image'
-                : 'New image uploaded'}
-            </div>
-          )}
-        </div>
       </div>
+      {uploadedImage && (
+        <div className='text-xs text-text-sub-600'>
+          {uploadedImage.oldFileDeleted
+            ? 'Replaced existing image'
+            : 'New image uploaded'}
+        </div>
+      )}
 
       {/* Upload Area */}
       <div
@@ -169,7 +196,7 @@ export function FlywheelImageUploader({
           isDragOver
             ? 'bg-primary-lighter border-primary-base'
             : 'border-stroke-soft-200'
-        } ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+        } ${disabled || isUploading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -177,7 +204,9 @@ export function FlywheelImageUploader({
         <RiUploadLine className='mx-auto h-8 w-8 text-text-soft-400' />
         <div className='mt-2 space-y-1'>
           <p className='text-sm font-medium text-text-strong-950'>
-            {isDragOver
+            {isUploading
+              ? 'Uploading...'
+              : isDragOver
               ? 'Drop your flywheel image here'
               : 'Drag and drop a flywheel image here'}
           </p>
@@ -194,53 +223,6 @@ export function FlywheelImageUploader({
           className='absolute inset-0 cursor-pointer opacity-0 disabled:cursor-not-allowed'
         />
       </div>
-
-      {/* File Preview */}
-      {file && (
-        <div className='rounded-lg border border-stroke-soft-200 bg-bg-weak-50 p-4'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center space-x-3'>
-              <span className='text-2xl'>🖼️</span>
-              <div>
-                <p className='font-medium text-text-strong-950'>{file.name}</p>
-                <p className='text-sm text-text-sub-600'>
-                  {formatFileSize(file.size)}
-                </p>
-              </div>
-            </div>
-            <div className='flex items-center gap-2'>
-              <Button.Root
-                type='button'
-                size='small'
-                onClick={handleUpload}
-                disabled={isUploading}
-              >
-                {isUploading ? (
-                  <>
-                    <div className='mr-2 h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent' />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Button.Icon as={RiUploadLine} />
-                    Upload
-                  </>
-                )}
-              </Button.Root>
-              <Button.Root
-                type='button'
-                size='small'
-                variant='neutral'
-                mode='stroke'
-                onClick={clearFile}
-                disabled={isUploading}
-              >
-                <Button.Icon as={RiCloseLine} />
-              </Button.Root>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Upload Success */}
       {uploadedImage && (

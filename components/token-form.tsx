@@ -240,23 +240,8 @@ export function TokenForm({
                 onImageUploaded={(imageUrl) =>
                   handleInputChange('image', imageUrl)
                 }
-                disabled={
-                  !formData.address.trim() ||
-                  !isValidSolanaAddress(formData.address.trim())
-                }
+                disabled={isSubmitting}
               />
-              {!formData.address.trim() && (
-                <p className='text-xs text-text-sub-600'>
-                  Enter the token address first to enable image upload
-                </p>
-              )}
-              {formData.address.trim() &&
-                !isValidSolanaAddress(formData.address.trim()) && (
-                  <p className='text-xs text-text-sub-600'>
-                    Please enter a valid Solana token address to enable image
-                    upload
-                  </p>
-                )}
             </div>
 
             {/* Token Name and Label */}

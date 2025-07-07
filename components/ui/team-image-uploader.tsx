@@ -168,10 +168,11 @@ export function TeamImageUploader({
 
       {/* Upload Area */}
       <div
-        className={`relative rounded-lg border-2 border-dashed p-6 text-center transition-colors ${isDragOver
+        className={`relative rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
+          isDragOver
             ? 'bg-primary-lighter border-primary-base'
             : 'border-stroke-soft-200'
-          } ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+        } ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}

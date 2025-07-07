@@ -75,7 +75,7 @@ export function FlywheelForm({
           <Modal.Body className='space-y-6'>
             {/* Flywheel Image Upload */}
             <div className='flex flex-col gap-1'>
-              <Label.Root>Flywheel Image</Label.Root>
+              <Label.Root>Image Preview</Label.Root>
               <FlywheelImageUploader
                 tokenAddress={tokenAddress}
                 currentImageUrl={flywheel?.image || undefined}
@@ -84,7 +84,7 @@ export function FlywheelForm({
               />
             </div>
           </Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer className='flex justify-end'>
             <Button.Root
               type='button'
               variant='neutral'
@@ -93,14 +93,7 @@ export function FlywheelForm({
               disabled={isSubmitting}
             >
               <Button.Icon as={RiCloseLine} />
-              Cancel
-            </Button.Root>
-            <Button.Root
-              type='submit'
-              disabled={!imageUrl.trim() || isSubmitting}
-            >
-              <Button.Icon as={RiSaveLine} />
-              {isSubmitting ? 'Saving...' : 'Save Changes'}
+              Close
             </Button.Root>
           </Modal.Footer>
         </form>

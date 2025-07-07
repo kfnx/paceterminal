@@ -23,10 +23,15 @@ interface ImageUploaderProps {
 
 interface UploadedImage {
   url: string;
+  key: string;
+  uuid: string;
+  folder: string;
   fileName: string;
   fileSize: number;
   fileType: string;
   replaced: boolean;
+  oldFileDeleted: boolean;
+  replacedUrl: string | null;
   uploadedAt: string;
 }
 
@@ -43,13 +48,6 @@ export function ImageUploader({
   );
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-    }
-  };
-
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(true);
@@ -60,30 +58,25 @@ export function ImageUploader({
     setIsDragOver(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile) {
-      setFile(droppedFile);
-    }
-  }, []);
-
-  const handleUpload = async () => {
-    if (!file || !tokenAddress) {
-      toast.error('Please select a file and ensure token address is provided.');
+  const handleUpload = useCallback(async (uploadFile: File) => {
+    if (!uploadFile) {
+      toast.error('Please select a file.');
       return;
     }
 
     setIsUploading(true);
 
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('tokenAddress', tokenAddress);
+    formData.append('file', uploadFile);
+    formData.append('folder', 'tokens');
+    
+    // If there's a current image, add it as replaceUrl for automatic replacement
+    if (currentImageUrl) {
+      formData.append('replaceUrl', currentImageUrl);
+    }
 
     try {
-      const response = await fetch('/api/upload/token-image', {
+      const response = await fetch('/api/image-upload', {
         method: 'POST',
         body: formData,
       });
@@ -97,7 +90,7 @@ export function ImageUploader({
       setUploadedImage(data);
       onImageUploaded(data.url);
 
-      const message = data.replaced
+      const message = data.oldFileDeleted
         ? 'Image replaced successfully!'
         : 'Image uploaded successfully!';
       toast.success(message);
@@ -108,10 +101,31 @@ export function ImageUploader({
       const errorMessage =
         err instanceof Error ? err.message : 'An unknown error occurred';
       toast.error(errorMessage);
+      // Clear the file on error too
+      setFile(null);
     } finally {
       setIsUploading(false);
     }
-  };
+  }, [currentImageUrl, onImageUploaded]);
+
+  const handleFileChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      await handleUpload(selectedFile);
+    }
+  }, [handleUpload]);
+
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile) {
+      setFile(droppedFile);
+      await handleUpload(droppedFile);
+    }
+  }, [handleUpload]);
 
   const clearFile = () => {
     setFile(null);
@@ -148,7 +162,7 @@ export function ImageUploader({
           </div>
           {uploadedImage && (
             <div className='text-xs text-text-sub-600'>
-              {uploadedImage.replaced
+              {uploadedImage.oldFileDeleted
                 ? 'Replaced existing image'
                 : 'New image uploaded'}
             </div>
@@ -162,7 +176,7 @@ export function ImageUploader({
           isDragOver
             ? 'bg-primary-lighter border-primary-base'
             : 'border-stroke-soft-200'
-        } ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+        } ${disabled || isUploading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -170,7 +184,9 @@ export function ImageUploader({
         <RiUploadLine className='mx-auto h-8 w-8 text-text-soft-400' />
         <div className='mt-2 space-y-1'>
           <p className='text-sm font-medium text-text-strong-950'>
-            {isDragOver
+            {isUploading
+              ? 'Uploading...'
+              : isDragOver
               ? 'Drop your image here'
               : 'Drag and drop an image here'}
           </p>
@@ -188,59 +204,12 @@ export function ImageUploader({
         />
       </div>
 
-      {/* File Preview */}
-      {file && (
-        <div className='rounded-lg border border-stroke-soft-200 bg-bg-weak-50 p-4'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center space-x-3'>
-              <span className='text-2xl'>🖼️</span>
-              <div>
-                <p className='font-medium text-text-strong-950'>{file.name}</p>
-                <p className='text-sm text-text-sub-600'>
-                  {formatFileSize(file.size)}
-                </p>
-              </div>
-            </div>
-            <div className='flex items-center gap-2'>
-              <Button.Root
-                type='button'
-                size='small'
-                onClick={handleUpload}
-                disabled={isUploading}
-              >
-                {isUploading ? (
-                  <>
-                    <div className='mr-2 h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent' />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Button.Icon as={RiUploadLine} />
-                    Upload
-                  </>
-                )}
-              </Button.Root>
-              <Button.Root
-                type='button'
-                size='small'
-                variant='neutral'
-                mode='stroke'
-                onClick={clearFile}
-                disabled={isUploading}
-              >
-                <Button.Icon as={RiCloseLine} />
-              </Button.Root>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Upload Success */}
       {uploadedImage && (
         <div className='flex items-center space-x-2 rounded-lg border border-success-light bg-success-lighter p-3'>
           <RiCheckLine className='h-4 w-4 text-success-base' />
           <p className='text-sm text-success-dark'>
-            Image {uploadedImage.replaced ? 'replaced' : 'uploaded'}{' '}
+            Image {uploadedImage.oldFileDeleted ? 'replaced' : 'uploaded'}{' '}
             successfully!
           </p>
         </div>

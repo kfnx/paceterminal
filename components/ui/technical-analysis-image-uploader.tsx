@@ -23,10 +23,15 @@ interface TechnicalAnalysisImageUploaderProps {
 
 interface UploadedImage {
   url: string;
+  key: string;
+  uuid: string;
+  folder: string;
   fileName: string;
   fileSize: number;
   fileType: string;
   replaced: boolean;
+  oldFileDeleted: boolean;
+  replacedUrl: string | null;
   uploadedAt: string;
 }
 
@@ -72,8 +77,8 @@ export function TechnicalAnalysisImageUploader({
   }, []);
 
   const handleUpload = async () => {
-    if (!file || !tokenAddress) {
-      toast.error('Please select a file and ensure token address is provided.');
+    if (!file) {
+      toast.error('Please select a file.');
       return;
     }
 
@@ -86,25 +91,48 @@ export function TechnicalAnalysisImageUploader({
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('tokenAddress', tokenAddress);
-    formData.append('description', description.trim());
+    formData.append('folder', 'technical-analysis');
+    
+    // If there's a current image, add it as replaceUrl for automatic replacement
+    if (currentImageUrl) {
+      formData.append('replaceUrl', currentImageUrl);
+    }
 
     try {
-      const response = await fetch('/api/upload/technical-analysis-image', {
+      // Step 1: Upload the image
+      const uploadResponse = await fetch('/api/image-upload', {
         method: 'POST',
         body: formData,
       });
 
-      const data = await response.json();
+      const uploadData = await uploadResponse.json();
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Upload failed');
+      if (!uploadResponse.ok || !uploadData.success) {
+        throw new Error(uploadData.error || 'Upload failed');
       }
 
-      setUploadedImage(data);
-      onImageUploaded(data.url);
+      // Step 2: Create the technical analysis record in the database
+      const createFormData = new FormData();
+      createFormData.append('tokenAddress', tokenAddress);
+      createFormData.append('imageUrl', uploadData.url);
+      createFormData.append('description', description.trim());
 
-      const message = data.replaced
+      const createResponse = await fetch('/api/technical-analysis/create', {
+        method: 'POST',
+        body: createFormData,
+      });
+
+      const createResult = await createResponse.json();
+
+      if (!createResponse.ok || !createResult.success) {
+        // If database creation fails, we should probably delete the uploaded image
+        throw new Error(createResult.error || 'Failed to create technical analysis record');
+      }
+
+      setUploadedImage(uploadData);
+      onImageUploaded(uploadData.url);
+
+      const message = uploadData.oldFileDeleted
         ? 'Technical analysis image replaced successfully!'
         : 'Technical analysis image uploaded successfully!';
       toast.success(message);
@@ -163,7 +191,7 @@ export function TechnicalAnalysisImageUploader({
           </div>
           {uploadedImage && (
             <div className='text-xs text-text-sub-600'>
-              {uploadedImage.replaced
+              {uploadedImage.oldFileDeleted
                 ? 'Replaced existing image'
                 : 'New image uploaded'}
             </div>
@@ -197,7 +225,7 @@ export function TechnicalAnalysisImageUploader({
             Click to upload or drag and drop
           </div>
           <div className='text-xs text-text-sub-600'>
-            PNG, JPG, GIF up to 10MB
+            PNG, JPG, GIF up to 5MB
           </div>
         </div>
       </div>

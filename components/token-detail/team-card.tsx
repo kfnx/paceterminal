@@ -127,7 +127,7 @@ export function TeamCard({ address }: TeamCardProps) {
                     </div>
                   )}
                 </div>
-                <div className='absolute right-2 top-2 flex flex-col gap-1'>
+                <div className='absolute right-0 top-0 flex flex-col gap-1'>
                   <Button.Root
                     variant='neutral'
                     mode='stroke'
