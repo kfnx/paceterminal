@@ -92,6 +92,12 @@ export default function AdModal() {
     window.open('https://x.com/PaceTerminal', '_blank');
   };
 
+  React.useEffect(() => {
+    if (!isMember) {
+      setOpen(true);
+    }
+  }, [isMember]);
+
   return (
     <Modal.Root open={open} onOpenChange={handleOpenChange}>
       <Modal.Content className='max-w-[880px]'>
@@ -105,13 +111,18 @@ export default function AdModal() {
             <WalletButton connectText='Connect to Remove Ads' />
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className='flex items-start gap-4'>
-          <img
+        <Modal.Body className='bg-bg-soft-200 m-6 rounded flex min-h-[500px] items-center justify-center gap-4 text-center'>
+          <p>
+            Space available! <br />
+            Contact us on X <br />
+            @paceterminal
+          </p>
+          {/* <img
             src='/images/ads/placeholder.png'
             alt='ad'
             className='w-full cursor-pointer'
             onClick={handleAdsClick}
-          />
+          /> */}
         </Modal.Body>
       </Modal.Content>
     </Modal.Root>

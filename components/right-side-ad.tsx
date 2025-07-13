@@ -89,32 +89,19 @@ export function RightSideAd() {
           </button>
         )}
       </div>
-      <div className='space-y-2'>
-        <img
-          src='/images/ads/placeholder.png'
-          alt='ad'
-          className='w-full transition-transform duration-200 hover:scale-105'
-        />
-        <img
-          src='/images/ads/placeholder.png'
-          alt='ad'
-          className='w-full transition-transform duration-200 hover:scale-105'
-        />
-        <img
-          src='/images/ads/placeholder.png'
-          alt='ad'
-          className='w-full transition-transform duration-200 hover:scale-105'
-        />
-        <img
-          src='/images/ads/placeholder.png'
-          alt='ad'
-          className='w-full transition-transform duration-200 hover:scale-105'
-        />
-        <img
-          src='/images/ads/placeholder.png'
-          alt='ad'
-          className='w-full transition-transform duration-200 hover:scale-105'
-        />
+      <div className='flex flex-wrap justify-center gap-4'>
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div
+            key={i}
+            className='min-h-[300px] w-full flex items-center justify-center text-center space-y-2 bg-bg-weak-50'
+          >
+            <p>
+              Space available! <br />
+              Contact us on X <br />
+              @paceterminal
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );
