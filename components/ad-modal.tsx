@@ -92,12 +92,6 @@ export default function AdModal() {
     window.open('https://x.com/PaceTerminal', '_blank');
   };
 
-  React.useEffect(() => {
-    if (!isMember) {
-      setOpen(true);
-    }
-  }, [isMember]);
-
   return (
     <Modal.Root open={open} onOpenChange={handleOpenChange}>
       <Modal.Content className='max-w-[880px]'>
