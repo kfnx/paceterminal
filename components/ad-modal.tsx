@@ -111,12 +111,6 @@ export default function AdModal() {
             Contact us on X <br />
             @paceterminal
           </p>
-          {/* <img
-            src='/images/ads/placeholder.png'
-            alt='ad'
-            className='w-full cursor-pointer'
-            onClick={handleAdsClick}
-          /> */}
         </Modal.Body>
       </Modal.Content>
     </Modal.Root>
