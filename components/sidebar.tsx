@@ -154,13 +154,13 @@ function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
   const getTierLabel = (tier: number) => {
     switch (tier) {
       case 1:
-        return { label: 'S', color: 'purple' as const };
+        return { label: 'S', color: 'yellow' as const };
       case 2:
-        return { label: 'A', color: 'blue' as const };
+        return { label: 'A', color: 'purple' as const };
       case 3:
-        return { label: 'B', color: 'green' as const };
+        return { label: 'B', color: 'blue' as const };
       case 4:
-        return { label: 'C', color: 'yellow' as const };
+        return { label: 'C', color: 'green' as const };
       default:
         return { label: 'Unknown', color: 'gray' as const };
     }

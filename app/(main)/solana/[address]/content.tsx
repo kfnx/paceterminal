@@ -17,6 +17,7 @@ import { WidgetPlaceholder } from '@/components/widgets/widget-placeholder';
 import WidgetTeam from '@/components/widgets/widget-team';
 import WidgetTechnicalAnalysis from '@/components/widgets/widget-technical-analysis';
 import WidgetUpdates from '@/components/widgets/widget-updates';
+import WidgetDescription from '@/components/widgets/widget-description';
 
 function MemberOnlyPlaceholder({
   title,
@@ -61,6 +62,7 @@ export function Content() {
     <div className='flex flex-row gap-6 px-4 pb-6 lg:px-8 lg:pt-1' id='top'>
       <LeftSideAd />
       <div className='flex flex-1 flex-col gap-6'>
+        <WidgetDescription />
         <WidgetChart />
         <WidgetMetrics />
         <WidgetTeam />

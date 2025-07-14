@@ -62,11 +62,10 @@ export function RightSideAd() {
 
   return (
     <div
-      className={`relative hidden h-[600px] w-[240px] min-w-0 transform cursor-pointer flex-col gap-2 transition-all duration-300 ease-in-out lg:flex ${
-        isVisible
-          ? 'translate-x-0 scale-100 opacity-100'
-          : 'translate-x-4 scale-95 opacity-0'
-      }`}
+      className={`relative hidden h-[600px] w-[240px] min-w-0 transform cursor-pointer flex-col gap-2 transition-all duration-300 ease-in-out lg:flex ${isVisible
+        ? 'translate-x-0 scale-100 opacity-100'
+        : 'translate-x-4 scale-95 opacity-0'
+        }`}
       onClick={() => {
         window?.open('https://x.com/PaceTerminal', '_blank');
       }}
@@ -90,18 +89,15 @@ export function RightSideAd() {
         )}
       </div>
       <div className='flex flex-wrap justify-center gap-4'>
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div
-            key={i}
-            className='min-h-[300px] w-full flex items-center justify-center text-center space-y-2 bg-bg-weak-50'
-          >
-            <p>
-              Space available! <br />
-              Contact us on X <br />
-              @paceterminal
-            </p>
-          </div>
-        ))}
+        <div
+          className='flex min-h-[600px] w-full items-center justify-center space-y-2 bg-bg-weak-50 text-center'
+        >
+          <p>
+            Space available! <br />
+            Contact us on X <br />
+            @paceterminal
+          </p>
+        </div>
       </div>
     </div>
   );
