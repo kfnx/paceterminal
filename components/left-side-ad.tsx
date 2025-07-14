@@ -62,7 +62,7 @@ export function LeftSideAd() {
 
   return (
     <div
-      className={`fixed left-6 top-12 z-50 hidden h-[650px] w-[230px] min-w-0 transform cursor-pointer flex-col gap-2 bg-white/80 p-2 px-4 transition-all duration-300 ease-in-out lg:flex ${
+      className={`fixed left-6 top-12 z-50 hidden h-[850px] w-[230px] min-w-0 transform cursor-pointer flex-col gap-2 bg-white/80 p-2 px-4 transition-all duration-300 ease-in-out lg:flex ${
         isVisible
           ? 'translate-x-0 scale-100 opacity-100'
           : '-translate-x-4 scale-95 opacity-0'
@@ -89,27 +89,19 @@ export function LeftSideAd() {
           </button>
         )}
       </div>
-      <div className='space-y-2'>
-        <img
-          src='/images/ads/placeholder.png'
-          alt='ad'
-          className='w-full transition-transform duration-200 hover:scale-105'
-        />
-        <img
-          src='/images/ads/placeholder.png'
-          alt='ad'
-          className='w-full transition-transform duration-200 hover:scale-105'
-        />
-        <img
-          src='/images/ads/placeholder.png'
-          alt='ad'
-          className='w-full transition-transform duration-200 hover:scale-105'
-        />
-        <img
-          src='/images/ads/placeholder.png'
-          alt='ad'
-          className='w-full transition-transform duration-200 hover:scale-105'
-        />
+      <div className='flex min-h-[325px] w-full items-center justify-center space-y-2 bg-bg-weak-50 text-center'>
+        <p>
+          Space available! <br />
+          Contact us on X <br />
+          @paceterminal
+        </p>
+      </div>
+      <div className='flex min-h-[325px] items-center justify-center space-y-2 bg-bg-weak-50 text-center'>
+        <p>
+          Space available! <br />
+          Contact us on X <br />
+          @paceterminal
+        </p>
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import { cn, cnExt } from '@/utils/cn';
 import { getTokenImageUrl } from '@/utils/image-url';
 import { useAllTokens } from '@/hooks/use-all-tokens';
 import * as Avatar from '@/components/ui/avatar';
+import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/compact-button';
 import * as Divider from '@/components/ui/divider';
 
@@ -150,11 +151,27 @@ function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
     );
   }
 
+  const getTierLabel = (tier: number) => {
+    switch (tier) {
+      case 1:
+        return { label: 'S', color: 'purple' as const };
+      case 2:
+        return { label: 'A', color: 'blue' as const };
+      case 3:
+        return { label: 'B', color: 'green' as const };
+      case 4:
+        return { label: 'C', color: 'yellow' as const };
+      default:
+        return { label: 'Unknown', color: 'gray' as const };
+    }
+  };
+
   return (
     <div className='space-y-1'>
       {tokens.map((token) => {
         const selected = currentTokenAddress === token.address;
         const href = `/solana/${token.address}`;
+        const tierInfo = getTierLabel(token.tier || 0);
 
         return (
           <Link
@@ -194,6 +211,9 @@ function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
               data-hide-collapsed
             >
               <div className='flex-1 text-label-sm'>{token.name}</div>
+              <Badge.Root variant='filled' color={tierInfo.color}>
+                {tierInfo.label}
+              </Badge.Root>
               {selected && (
                 <RiArrowRightSLine className='size-5 text-text-sub-600' />
               )}
