@@ -13,6 +13,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { cn, cnExt } from '@/utils/cn';
 import { getTokenImageUrl } from '@/utils/image-url';
 import { useAllTokens } from '@/hooks/use-all-tokens';
+import { useMemberStatus } from '@/hooks/use-member-status';
 import * as Avatar from '@/components/ui/avatar';
 import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/compact-button';
@@ -130,6 +131,7 @@ function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
   const params = useParams();
   const currentTokenAddress = params.address as string;
   const { data: tokens, isLoading, error } = useAllTokens();
+  const { isMember } = useMemberStatus();
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -211,9 +213,11 @@ function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
               data-hide-collapsed
             >
               <div className='flex-1 text-label-sm'>{token.name}</div>
-              <Badge.Root variant='filled' color={tierInfo.color}>
-                {tierInfo.label}
-              </Badge.Root>
+              {isMember && (
+                <Badge.Root variant='filled' color={tierInfo.color}>
+                  {tierInfo.label}
+                </Badge.Root>
+              )}
               {selected && (
                 <RiArrowRightSLine className='size-5 text-text-sub-600' />
               )}
