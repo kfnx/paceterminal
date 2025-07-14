@@ -16,8 +16,8 @@ import {
 } from '@solana/web3.js';
 
 import {
-  ONE_MONTH_USDC_AMOUNT,
-  ONE_YEAR_USDC_AMOUNT,
+  MEMBERSHIP_DURATION,
+  MEMBERSHIP_PRICE,
   PAYMENT_RECIPIENT,
   USDC_DEVNET,
   USDC_MAINNET,
@@ -37,7 +37,7 @@ export interface WalletTransactionActions {
     recipient: string,
     tokenMint: string,
   ) => Promise<string | null>;
-  payUSDC: (type: 'ONE_MONTH' | 'ONE_YEAR') => Promise<string | null>;
+  payUSDC: (type: MEMBERSHIP_DURATION) => Promise<string | null>;
   resetTransaction: () => void;
 }
 
@@ -234,7 +234,7 @@ export function useWalletTransaction(
   );
 
   const payUSDC = useCallback(
-    async (type: 'ONE_MONTH' | 'ONE_YEAR'): Promise<string | null> => {
+    async (type: MEMBERSHIP_DURATION): Promise<string | null> => {
       if (!publicKey || !sendTransaction || !signTransaction) {
         setError('Wallet not connected or missing required functions');
         return null;
@@ -286,10 +286,7 @@ export function useWalletTransaction(
           );
         }
 
-        const amount =
-          type === 'ONE_MONTH'
-            ? ONE_MONTH_USDC_AMOUNT * Math.pow(10, decimals)
-            : ONE_YEAR_USDC_AMOUNT * Math.pow(10, decimals); // Convert to token units
+        const amount = MEMBERSHIP_PRICE[type] * Math.pow(10, decimals); // Convert to lamports
 
         // Add transfer instruction
         transaction.add(

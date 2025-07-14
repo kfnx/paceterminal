@@ -5,6 +5,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { atom, useAtom } from 'jotai';
 import { toast } from 'sonner';
 
+import { MEMBERSHIP_DURATION, MEMBERSHIP_PRICE } from '@/lib/constants';
 import { useMemberStatus } from '@/hooks/use-member-status';
 import { useWalletTransaction } from '@/hooks/use-wallet-transaction';
 import * as Badge from '@/components/ui/badge';
@@ -15,16 +16,15 @@ export const paymentModalOpenAtom = atom(false);
 
 export function PaymentModal() {
   const [open, setOpen] = useAtom(paymentModalOpenAtom);
-  const [paymentType, setPaymentType] = React.useState<
-    'ONE_MONTH' | 'ONE_YEAR' | null
-  >(null);
+  const [paymentType, setPaymentType] =
+    React.useState<MEMBERSHIP_DURATION | null>(null);
   const { publicKey } = useWallet();
   const { refetch: refetchMemberStatus } = useMemberStatus();
 
   const { isExecuting, signature, error, success, payUSDC, resetTransaction } =
     useWalletTransaction();
 
-  const handlePay = (type: 'ONE_MONTH' | 'ONE_YEAR') => {
+  const handlePay = (type: MEMBERSHIP_DURATION) => {
     setPaymentType(type);
     payUSDC(type);
   };
@@ -125,17 +125,21 @@ export function PaymentModal() {
           <p className='text-heading-2xs'>Remove Ads</p>
           <div className='flex flex-row gap-12'>
             <div className='flex flex-col items-center justify-between gap-4'>
-              <p className='text-label-xl'>$20 a month</p>
+              <p className='text-label-xl'>
+                ${MEMBERSHIP_PRICE[MEMBERSHIP_DURATION.ONE_MONTH]} a month
+              </p>
               <Button.Root
                 variant='primary'
-                onClick={() => handlePay('ONE_MONTH')}
+                onClick={() => handlePay(MEMBERSHIP_DURATION.ONE_MONTH)}
                 disabled={isExecuting}
               >
                 Pay with Crypto USDC
               </Button.Root>
             </div>
             <div className='flex flex-col items-center justify-between gap-4'>
-              <p className='text-label-xl'>$200 a year </p>
+              <p className='text-label-xl'>
+                $${MEMBERSHIP_PRICE[MEMBERSHIP_DURATION.THREE_MONTHS]} 3 months{' '}
+              </p>
 
               <Badge.Root
                 size='medium'
@@ -143,11 +147,11 @@ export function PaymentModal() {
                 color='green'
                 className='mb-8'
               >
-                SAVE $40!
+                SAVE $29!
               </Badge.Root>
               <Button.Root
                 variant='primary'
-                onClick={() => handlePay('ONE_YEAR')}
+                onClick={() => handlePay(MEMBERSHIP_DURATION.THREE_MONTHS)}
                 disabled={isExecuting}
               >
                 Pay with Crypto USDC

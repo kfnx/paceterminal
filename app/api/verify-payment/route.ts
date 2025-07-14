@@ -4,8 +4,8 @@ import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 
 import {
-  ONE_MONTH_USDC_AMOUNT,
-  ONE_YEAR_USDC_AMOUNT,
+  MEMBERSHIP_DURATION,
+  MEMBERSHIP_PRICE,
   USDC_MAINNET,
 } from '@/lib/constants';
 
@@ -21,7 +21,10 @@ if (!PAYMENT_ADDRESS) {
 const PaymentRequestSchema = z.object({
   signature: z.string(),
   fromAddress: z.string(),
-  type: z.enum(['ONE_MONTH', 'ONE_YEAR']),
+  type: z.enum([
+    MEMBERSHIP_DURATION.ONE_MONTH,
+    MEMBERSHIP_DURATION.THREE_MONTHS,
+  ]),
 });
 
 const supabase = createClient(
@@ -107,8 +110,7 @@ export async function POST(request: Request) {
         const receivedAmount = amountChange;
 
         // Verify amount based on subscription type
-        const minAmount =
-          type === 'ONE_MONTH' ? ONE_MONTH_USDC_AMOUNT : ONE_YEAR_USDC_AMOUNT;
+        const minAmount = MEMBERSHIP_PRICE[type];
         if (receivedAmount < minAmount) {
           return NextResponse.json(
             {
