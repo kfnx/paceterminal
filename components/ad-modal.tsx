@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 
 import { useMemberStatus } from '@/hooks/use-member-status';
 import * as Modal from '@/components/ui/modal';
@@ -105,11 +106,13 @@ export default function AdModal() {
             <WalletButton connectText='Connect to Remove Ads' />
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className='bg-bg-soft-200 m-6 rounded flex min-h-[500px] items-center justify-center gap-4 text-center'>
+        <Modal.Body className='m-6 flex min-h-[500px] items-center justify-center gap-4 rounded bg-bg-soft-200 text-center'>
           <p>
             Space available! <br />
-            Contact us on X <br />
-            @paceterminal
+            <Link href='https://x.com/PaceTerminal' target='_blank'>
+              Contact us on X <br />
+              @paceterminal
+            </Link>
           </p>
         </Modal.Body>
       </Modal.Content>

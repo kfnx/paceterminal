@@ -58,74 +58,83 @@ export function ImageUploader({
     setIsDragOver(false);
   }, []);
 
-  const handleUpload = useCallback(async (uploadFile: File) => {
-    if (!uploadFile) {
-      toast.error('Please select a file.');
-      return;
-    }
-
-    setIsUploading(true);
-
-    const formData = new FormData();
-    formData.append('file', uploadFile);
-    formData.append('folder', 'tokens');
-    
-    // If there's a current image, add it as replaceUrl for automatic replacement
-    if (currentImageUrl) {
-      formData.append('replaceUrl', currentImageUrl);
-    }
-
-    try {
-      const response = await fetch('/api/image-upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Upload failed');
+  const handleUpload = useCallback(
+    async (uploadFile: File) => {
+      if (!uploadFile) {
+        toast.error('Please select a file.');
+        return;
       }
 
-      setUploadedImage(data);
-      onImageUploaded(data.url);
+      setIsUploading(true);
 
-      const message = data.oldFileDeleted
-        ? 'Image replaced successfully!'
-        : 'Image uploaded successfully!';
-      toast.success(message);
+      const formData = new FormData();
+      formData.append('file', uploadFile);
+      formData.append('folder', 'tokens');
 
-      // Clear the file after successful upload
-      setFile(null);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      toast.error(errorMessage);
-      // Clear the file on error too
-      setFile(null);
-    } finally {
-      setIsUploading(false);
-    }
-  }, [currentImageUrl, onImageUploaded]);
+      // If there's a current image, add it as replaceUrl for automatic replacement
+      if (currentImageUrl) {
+        formData.append('replaceUrl', currentImageUrl);
+      }
 
-  const handleFileChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      await handleUpload(selectedFile);
-    }
-  }, [handleUpload]);
+      try {
+        const response = await fetch('/api/image-upload', {
+          method: 'POST',
+          body: formData,
+        });
 
-  const handleDrop = useCallback(async (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
+        const data = await response.json();
 
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile) {
-      setFile(droppedFile);
-      await handleUpload(droppedFile);
-    }
-  }, [handleUpload]);
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Upload failed');
+        }
+
+        setUploadedImage(data);
+        onImageUploaded(data.url);
+
+        const message = data.oldFileDeleted
+          ? 'Image replaced successfully!'
+          : 'Image uploaded successfully!';
+        toast.success(message);
+
+        // Clear the file after successful upload
+        setFile(null);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'An unknown error occurred';
+        toast.error(errorMessage);
+        // Clear the file on error too
+        setFile(null);
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [currentImageUrl, onImageUploaded],
+  );
+
+  const handleFileChange = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const selectedFile = e.target.files?.[0];
+      if (selectedFile) {
+        setFile(selectedFile);
+        await handleUpload(selectedFile);
+      }
+    },
+    [handleUpload],
+  );
+
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragOver(false);
+
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile) {
+        setFile(droppedFile);
+        await handleUpload(droppedFile);
+      }
+    },
+    [handleUpload],
+  );
 
   const clearFile = () => {
     setFile(null);
@@ -187,8 +196,8 @@ export function ImageUploader({
             {isUploading
               ? 'Uploading...'
               : isDragOver
-              ? 'Drop your image here'
-              : 'Drag and drop an image here'}
+                ? 'Drop your image here'
+                : 'Drag and drop an image here'}
           </p>
           <p className='text-xs text-text-sub-600'>
             or click to browse (JPEG, PNG, GIF, WebP up to 5MB)

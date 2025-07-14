@@ -92,7 +92,7 @@ export function TechnicalAnalysisImageUploader({
     const formData = new FormData();
     formData.append('file', file);
     formData.append('folder', 'technical-analysis');
-    
+
     // If there's a current image, add it as replaceUrl for automatic replacement
     if (currentImageUrl) {
       formData.append('replaceUrl', currentImageUrl);
@@ -126,7 +126,9 @@ export function TechnicalAnalysisImageUploader({
 
       if (!createResponse.ok || !createResult.success) {
         // If database creation fails, we should probably delete the uploaded image
-        throw new Error(createResult.error || 'Failed to create technical analysis record');
+        throw new Error(
+          createResult.error || 'Failed to create technical analysis record',
+        );
       }
 
       setUploadedImage(uploadData);

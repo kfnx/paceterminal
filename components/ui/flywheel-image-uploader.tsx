@@ -57,95 +57,104 @@ export function FlywheelImageUploader({
     setIsDragOver(false);
   }, []);
 
-  const handleUpload = useCallback(async (uploadFile: File) => {
-    if (!uploadFile) {
-      toast.error('Please select a file.');
-      return;
-    }
-
-    setIsUploading(true);
-
-    const formData = new FormData();
-    formData.append('file', uploadFile);
-    formData.append('folder', 'flywheels');
-
-    // If there's a current image, add it as replaceUrl for automatic replacement
-    if (currentImageUrl) {
-      formData.append('replaceUrl', currentImageUrl);
-    }
-
-    try {
-      // Step 1: Upload the image
-      const uploadResponse = await fetch('/api/image-upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const uploadData = await uploadResponse.json();
-
-      if (!uploadResponse.ok || !uploadData.success) {
-        throw new Error(uploadData.error || 'Upload failed');
+  const handleUpload = useCallback(
+    async (uploadFile: File) => {
+      if (!uploadFile) {
+        toast.error('Please select a file.');
+        return;
       }
 
-      // Step 2: Update the flywheel record in the database
-      const updateFormData = new FormData();
-      updateFormData.append('tokenAddress', tokenAddress);
-      updateFormData.append('imageUrl', uploadData.url);
+      setIsUploading(true);
 
-      const updateResponse = await fetch('/api/flywheel/update-image', {
-        method: 'POST',
-        body: updateFormData,
-      });
+      const formData = new FormData();
+      formData.append('file', uploadFile);
+      formData.append('folder', 'flywheels');
 
-      const updateResult = await updateResponse.json();
-
-      if (!updateResponse.ok || !updateResult.success) {
-        // If database update fails, we should probably delete the uploaded image
-        // For now, just show an error
-        throw new Error(
-          updateResult.error || 'Failed to update flywheel record',
-        );
+      // If there's a current image, add it as replaceUrl for automatic replacement
+      if (currentImageUrl) {
+        formData.append('replaceUrl', currentImageUrl);
       }
 
-      setUploadedImage(uploadData);
-      onImageUploaded(uploadData.url);
+      try {
+        // Step 1: Upload the image
+        const uploadResponse = await fetch('/api/image-upload', {
+          method: 'POST',
+          body: formData,
+        });
 
-      const message = uploadData.oldFileDeleted
-        ? 'Flywheel image replaced successfully!'
-        : 'Flywheel image uploaded successfully!';
-      toast.success(message);
+        const uploadData = await uploadResponse.json();
 
-      // Clear the file after successful upload
-      setFile(null);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      toast.error(errorMessage);
-      // Clear the file on error too
-      setFile(null);
-    } finally {
-      setIsUploading(false);
-    }
-  }, [currentImageUrl, tokenAddress, onImageUploaded]);
+        if (!uploadResponse.ok || !uploadData.success) {
+          throw new Error(uploadData.error || 'Upload failed');
+        }
 
-  const handleFileChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      await handleUpload(selectedFile);
-    }
-  }, [handleUpload]);
+        // Step 2: Update the flywheel record in the database
+        const updateFormData = new FormData();
+        updateFormData.append('tokenAddress', tokenAddress);
+        updateFormData.append('imageUrl', uploadData.url);
 
-  const handleDrop = useCallback(async (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
+        const updateResponse = await fetch('/api/flywheel/update-image', {
+          method: 'POST',
+          body: updateFormData,
+        });
 
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile) {
-      setFile(droppedFile);
-      await handleUpload(droppedFile);
-    }
-  }, [handleUpload]);
+        const updateResult = await updateResponse.json();
+
+        if (!updateResponse.ok || !updateResult.success) {
+          // If database update fails, we should probably delete the uploaded image
+          // For now, just show an error
+          throw new Error(
+            updateResult.error || 'Failed to update flywheel record',
+          );
+        }
+
+        setUploadedImage(uploadData);
+        onImageUploaded(uploadData.url);
+
+        const message = uploadData.oldFileDeleted
+          ? 'Flywheel image replaced successfully!'
+          : 'Flywheel image uploaded successfully!';
+        toast.success(message);
+
+        // Clear the file after successful upload
+        setFile(null);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'An unknown error occurred';
+        toast.error(errorMessage);
+        // Clear the file on error too
+        setFile(null);
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [currentImageUrl, tokenAddress, onImageUploaded],
+  );
+
+  const handleFileChange = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const selectedFile = e.target.files?.[0];
+      if (selectedFile) {
+        setFile(selectedFile);
+        await handleUpload(selectedFile);
+      }
+    },
+    [handleUpload],
+  );
+
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragOver(false);
+
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile) {
+        setFile(droppedFile);
+        await handleUpload(droppedFile);
+      }
+    },
+    [handleUpload],
+  );
 
   const clearFile = () => {
     setFile(null);
@@ -207,8 +216,8 @@ export function FlywheelImageUploader({
             {isUploading
               ? 'Uploading...'
               : isDragOver
-              ? 'Drop your flywheel image here'
-              : 'Drag and drop a flywheel image here'}
+                ? 'Drop your flywheel image here'
+                : 'Drag and drop a flywheel image here'}
           </p>
           <p className='text-xs text-text-sub-600'>
             or click to browse (JPEG, PNG, GIF, WebP up to 5MB)
