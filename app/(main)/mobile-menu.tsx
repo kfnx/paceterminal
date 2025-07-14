@@ -13,9 +13,12 @@ import {
 
 import { cn } from '@/utils/cn';
 import { getTokenImageUrl } from '@/utils/image-url';
+import { getTierLabel } from '@/utils/tier-alphabet-label';
 import { useAllTokens } from '@/hooks/use-all-tokens';
 import useBreakpoint from '@/hooks/use-breakpoint';
+import { useMemberStatus } from '@/hooks/use-member-status';
 import * as Avatar from '@/components/ui/avatar';
+import * as Badge from '@/components/ui/badge';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import * as TopbarItemButton from '@/components/topbar-item-button';
@@ -25,6 +28,7 @@ export default function MobileMenu() {
   const [open, setOpen] = React.useState(false);
   const pathname = usePathname();
   const { data: tokens, isLoading, error } = useAllTokens();
+  const { isMember } = useMemberStatus();
 
   React.useEffect(() => {
     setOpen(false);
@@ -138,6 +142,7 @@ export default function MobileMenu() {
                     ) : (
                       tokens.map((token) => {
                         const href = `/solana/${token.address}`;
+                        const tierInfo = getTierLabel(token.tier || 0);
                         return (
                           <Link
                             key={token.address}
@@ -158,6 +163,14 @@ export default function MobileMenu() {
                             <div className='flex-1 text-label-md'>
                               {token.name}
                             </div>
+                            {isMember && (
+                              <Badge.Root
+                                variant='filled'
+                                color={tierInfo.color}
+                              >
+                                {tierInfo.label}
+                              </Badge.Root>
+                            )}
                             <div
                               className={cn(
                                 'transition-default absolute left-0 top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
