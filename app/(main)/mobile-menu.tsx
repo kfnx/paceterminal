@@ -13,6 +13,7 @@ import {
 
 import { cn } from '@/utils/cn';
 import { getTokenImageUrl } from '@/utils/image-url';
+import { getTierLabel } from '@/utils/tier-alphabet-label';
 import { useAllTokens } from '@/hooks/use-all-tokens';
 import useBreakpoint from '@/hooks/use-breakpoint';
 import { useMemberStatus } from '@/hooks/use-member-status';
@@ -36,21 +37,6 @@ export default function MobileMenu() {
   React.useEffect(() => {
     if (lg) setOpen(false);
   }, [lg]);
-
-  const getTierLabel = (tier: number) => {
-    switch (tier) {
-      case 1:
-        return { label: 'S', color: 'yellow' as const };
-      case 2:
-        return { label: 'A', color: 'purple' as const };
-      case 3:
-        return { label: 'B', color: 'blue' as const };
-      case 4:
-        return { label: 'C', color: 'green' as const };
-      default:
-        return { label: 'Unknown', color: 'gray' as const };
-    }
-  };
 
   return (
     <DialogPrimitives.Root open={open} onOpenChange={setOpen}>
