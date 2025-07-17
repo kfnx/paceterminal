@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { RiCheckboxCircleFill } from '@remixicon/react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { atom, useAtom } from 'jotai';
 import { toast } from 'sonner';
@@ -120,41 +121,94 @@ export function PaymentModal() {
 
   return (
     <Modal.Root open={open} onOpenChange={setOpen}>
-      <Modal.Content className='max-w-[480px]'>
-        <Modal.Body className='flex flex-col items-center justify-center gap-6 py-12'>
-          <p className='text-heading-2xs'>Remove Ads</p>
-          <div className='flex flex-row gap-12'>
-            <div className='flex flex-col items-center justify-between gap-4'>
-              <p className='text-label-xl'>
-                ${MEMBERSHIP_PRICE[MEMBERSHIP_DURATION.ONE_MONTH]} a month
-              </p>
+      <Modal.Content className='max-w-[800px]'>
+        <Modal.Body>
+          <div className='mb-4 border-b border-stroke-soft-200 p-4 text-center'>
+            <h2 className='text-xl text-gray-900 font-semibold'>
+              Choose a plan
+            </h2>
+          </div>
+
+          <div className='flex flex-col gap-6 p-6 sm:flex-row'>
+            <div className='flex flex-1 flex-col rounded-xl border border-stroke-soft-200 bg-white p-6'>
+              <div className='mb-6 flex gap-2'>
+                <div className='text-title-h1 font-bold'>
+                  ${MEMBERSHIP_PRICE[MEMBERSHIP_DURATION.ONE_MONTH]}
+                </div>
+                <div className='self-end pb-2 text-paragraph-lg text-text-sub-600'>
+                  a month
+                </div>
+              </div>
+
+              <div className='mb-8 flex-1 space-y-3'>
+                <div className='text-sm text-gray-700 flex'>
+                  <span className='mr-3 h-4 w-4 text-black'>•</span>
+                  Remove ads
+                </div>
+                <div className='text-sm text-gray-700 flex'>
+                  <span className='mr-3 h-4 w-4 text-black'>•</span>
+                  Premium contents
+                </div>
+                <div className='text-sm text-gray-700 flex'>
+                  <span className='mr-3 h-4 w-4 text-black'>•</span>
+                  Tierlist curated tokens
+                </div>
+              </div>
+
               <Button.Root
-                variant='primary'
+                variant='neutral'
+                mode='stroke'
+                className='w-full'
                 onClick={() => handlePay(MEMBERSHIP_DURATION.ONE_MONTH)}
                 disabled={isExecuting}
               >
-                Pay with Crypto USDC
+                Pay with Crypto
               </Button.Root>
             </div>
-            <div className='flex flex-col items-center justify-between gap-4'>
-              <p className='text-label-xl'>
-                $${MEMBERSHIP_PRICE[MEMBERSHIP_DURATION.THREE_MONTHS]} 3 months{' '}
-              </p>
 
-              <Badge.Root
-                size='medium'
-                variant='light'
-                color='green'
-                className='mb-8'
-              >
-                SAVE $29!
-              </Badge.Root>
+            <div className='relative flex flex-1 flex-col rounded-xl border border-stroke-soft-200 p-6'>
+              <div className='absolute right-4 top-3'>
+                <Badge.Root size='medium' variant='lighter' color='green'>
+                  <Badge.Icon as={RiCheckboxCircleFill} />
+                  BEST SELLER
+                </Badge.Root>
+              </div>
+
+              <div className='mb-6 flex gap-2'>
+                <div className='text-title-h1 font-bold'>
+                  ${MEMBERSHIP_PRICE[MEMBERSHIP_DURATION.THREE_MONTHS]}
+                </div>
+                <div className='self-end pb-2 text-paragraph-lg text-text-sub-600'>
+                  for 3 months
+                </div>
+              </div>
+
+              <div className='mb-8 flex-1 space-y-3'>
+                <div className='text-sm text-gray-700 flex'>
+                  <span className='mr-3 h-4 w-4 text-black'>•</span>
+                  Save 33%
+                </div>
+                <div className='text-sm text-gray-700 flex'>
+                  <span className='mr-3 h-4 w-4 text-black'>•</span>
+                  Remove ads
+                </div>
+                <div className='text-sm text-gray-700 flex'>
+                  <span className='mr-3 h-4 w-4 text-black'>•</span>
+                  Premium contents
+                </div>
+                <div className='text-sm text-gray-700 flex'>
+                  <span className='mr-3 h-4 w-4 text-black'>•</span>
+                  Tierlist curated tokens
+                </div>
+              </div>
+
               <Button.Root
                 variant='primary'
+                className='w-full'
                 onClick={() => handlePay(MEMBERSHIP_DURATION.THREE_MONTHS)}
                 disabled={isExecuting}
               >
-                Pay with Crypto USDC
+                Pay with Crypto
               </Button.Root>
             </div>
           </div>
