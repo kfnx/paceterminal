@@ -122,15 +122,15 @@ export function PaymentModal() {
   return (
     <Modal.Root open={open} onOpenChange={setOpen}>
       <Modal.Content className='max-w-[800px]'>
-        <Modal.Body className='p-0'>
+        <Modal.Body>
           <div className='mb-4 border-b border-stroke-soft-200 p-4 text-center'>
             <h2 className='text-xl text-gray-900 font-semibold'>
               Choose a plan
             </h2>
           </div>
 
-          <div className='flex p-6 flex-col gap-6 sm:flex-row'>
-            <div className='flex flex-1 flex-col rounded-xl bg-white p-6 border border-stroke-soft-200'>
+          <div className='flex flex-col gap-6 p-6 sm:flex-row'>
+            <div className='flex flex-1 flex-col rounded-xl border border-stroke-soft-200 bg-white p-6'>
               <div className='mb-6 flex gap-2'>
                 <div className='text-title-h1 font-bold'>
                   ${MEMBERSHIP_PRICE[MEMBERSHIP_DURATION.ONE_MONTH]}
@@ -166,7 +166,7 @@ export function PaymentModal() {
               </Button.Root>
             </div>
 
-            <div className='relative flex flex-1 flex-col rounded-xl p-6 border border-stroke-soft-200'>
+            <div className='relative flex flex-1 flex-col rounded-xl border border-stroke-soft-200 p-6'>
               <div className='absolute right-4 top-3'>
                 <Badge.Root size='medium' variant='lighter' color='green'>
                   <Badge.Icon as={RiCheckboxCircleFill} />
