@@ -123,16 +123,16 @@ export function PaymentModal() {
     <Modal.Root open={open} onOpenChange={setOpen}>
       <Modal.Content className='max-w-[800px]'>
         <Modal.Body>
-          <div className='mb-4 border-b border-stroke-soft-200 p-4 text-center'>
+          <div className='mb-2 border-b border-stroke-soft-200 pb-2 text-center'>
             <h2 className='text-xl text-gray-900 font-semibold'>
               Choose a plan
             </h2>
           </div>
 
-          <div className='flex flex-col gap-6 p-6 sm:flex-row'>
+          <div className='flex flex-col gap-4 p-2 sm:flex-row'>
             <div className='flex flex-1 flex-col rounded-xl border border-stroke-soft-200 bg-white p-6'>
-              <div className='mb-6 flex gap-2'>
-                <div className='text-title-h1 font-bold'>
+              <div className='mb-2 flex gap-2 sm:mb-6'>
+                <div className='text-title-h2 font-bold sm:text-title-h1'>
                   ${MEMBERSHIP_PRICE[MEMBERSHIP_DURATION.ONE_MONTH]}
                 </div>
                 <div className='self-end pb-2 text-paragraph-lg text-text-sub-600'>
@@ -140,7 +140,7 @@ export function PaymentModal() {
                 </div>
               </div>
 
-              <div className='mb-8 flex-1 space-y-3'>
+              <div className='mb-4 flex-1 space-y-3'>
                 <div className='text-sm text-gray-700 flex'>
                   <span className='mr-3 h-4 w-4 text-black'>•</span>
                   Remove ads
@@ -174,8 +174,8 @@ export function PaymentModal() {
                 </Badge.Root>
               </div>
 
-              <div className='mb-6 flex gap-2'>
-                <div className='text-title-h1 font-bold'>
+              <div className='mb-2 flex gap-2 sm:mb-6'>
+                <div className='text-title-h2 font-bold sm:text-title-h1'>
                   ${MEMBERSHIP_PRICE[MEMBERSHIP_DURATION.THREE_MONTHS]}
                 </div>
                 <div className='self-end pb-2 text-paragraph-lg text-text-sub-600'>
@@ -183,7 +183,7 @@ export function PaymentModal() {
                 </div>
               </div>
 
-              <div className='mb-8 flex-1 space-y-3'>
+              <div className='mb-4 flex-1 space-y-3'>
                 <div className='text-sm text-gray-700 flex'>
                   <span className='mr-3 h-4 w-4 text-black'>•</span>
                   Save 33%
