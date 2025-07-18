@@ -38,7 +38,7 @@ export default function AdminMembersPage() {
       <div className='text-paragraph-sm text-text-sub-600'>
         Loading members...
       </div>
-    </div>;
+    </div>
     )
   }
 
