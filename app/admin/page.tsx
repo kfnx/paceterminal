@@ -2,8 +2,14 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { RiAddLine, RiCoinLine, RiUserLine } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiCoinLine,
+  RiUserLine,
+  RiUserStarLine,
+} from '@remixicon/react';
 
+import { useMembers } from '@/hooks/use-member';
 import { useTokens } from '@/hooks/use-tokens';
 import { useUsers } from '@/hooks/use-users';
 import * as Button from '@/components/ui/button';
@@ -12,6 +18,7 @@ export default function AdminDashboardPage() {
   const router = useRouter();
   const { total: tokensTotal, loading: tokensLoading } = useTokens(1, 1); // Just get the count
   const { users, loading: usersLoading } = useUsers();
+  const { members, loading: membersLoading } = useMembers();
 
   const handleManageTokens = () => {
     router.push('/admin/tokens');
@@ -19,6 +26,10 @@ export default function AdminDashboardPage() {
 
   const handleManageUsers = () => {
     router.push('/admin/users');
+  };
+
+  const handleManageMembers = () => {
+    router.push('/admin/members');
   };
 
   return (
@@ -76,6 +87,30 @@ export default function AdminDashboardPage() {
           <Button.Root onClick={handleManageUsers} className='w-full'>
             <Button.Icon as={RiAddLine} />
             Manage Users
+          </Button.Root>
+        </div>
+
+        <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
+          <div className='mb-4'>
+            <h3 className='mb-2 flex items-center gap-2 text-title-h4 text-text-strong-950'>
+              <RiUserStarLine className='size-5 text-primary-base' />
+              Member Management
+            </h3>
+            <p className='text-paragraph-sm text-text-sub-600'>
+              Manage members and their status
+            </p>
+          </div>
+          <div className='mb-4'>
+            <div className='text-title-h3 text-text-strong-950'>
+              {membersLoading ? '...' : members.length}
+            </div>
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Total Members
+            </div>
+          </div>
+          <Button.Root onClick={handleManageMembers} className='w-full'>
+            <Button.Icon as={RiAddLine} />
+            Manage Members
           </Button.Root>
         </div>
       </div>
