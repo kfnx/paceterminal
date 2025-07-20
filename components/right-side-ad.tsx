@@ -62,10 +62,11 @@ export function RightSideAd() {
 
   return (
     <div
-      className={`relative hidden h-[600px] w-[240px] min-w-0 transform cursor-pointer flex-col gap-2 transition-all duration-300 ease-in-out lg:flex ${isVisible
-        ? 'translate-x-0 scale-100 opacity-100'
-        : 'translate-x-4 scale-95 opacity-0'
-        }`}
+      className={`relative hidden h-[650px] w-[240px] min-w-0 transform cursor-pointer flex-col gap-2 transition-all duration-300 ease-in-out lg:flex ${
+        isVisible
+          ? 'sticky top-0 z-50 translate-x-0 scale-100 opacity-100'
+          : 'translate-x-4 scale-95 opacity-0'
+      }`}
       onClick={() => {
         window?.open('https://x.com/PaceTerminal', '_blank');
       }}
@@ -89,9 +90,7 @@ export function RightSideAd() {
         )}
       </div>
       <div className='flex flex-wrap justify-center gap-4'>
-        <div
-          className='flex min-h-[600px] w-full items-center justify-center space-y-2 bg-bg-weak-50 text-center'
-        >
+        <div className='flex min-h-[650px] w-full items-center justify-center space-y-2 bg-bg-weak-50 text-center'>
           <p>
             Space available! <br />
             Contact us on X <br />
