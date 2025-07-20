@@ -12,6 +12,33 @@ import {
 const NETWORK = 'https://api.mainnet-beta.solana.com';
 const connection = new Connection(NETWORK, 'confirmed');
 
+function getExpiredAt(type: MEMBERSHIP_DURATION) {
+  let monthsToAdd = 1;
+  switch (type) {
+    case MEMBERSHIP_DURATION.ONE_MONTH:
+      monthsToAdd = 1;
+      break;
+    case MEMBERSHIP_DURATION.THREE_MONTHS:
+      monthsToAdd = 3;
+      break;
+    case MEMBERSHIP_DURATION.ONE_YEAR:
+      monthsToAdd = 12;
+      break;
+    default:
+      break;
+  }
+
+  const date = new Date();
+  const originalDate = date.getDate();
+  date.setMonth(date.getMonth() + monthsToAdd);
+
+  if (date.getDate() < originalDate) {
+    date.setDate(0); // adjust to last day of previous month
+  }
+
+  return date;
+}
+
 const PAYMENT_ADDRESS =
   process.env.NEXT_PUBLIC_SOLANA_PAYMENT_RECIPIENT_ADDRESS!;
 if (!PAYMENT_ADDRESS) {
@@ -60,12 +87,7 @@ export async function POST(request: Request) {
 
     await supabase.from('members').insert({
       solana_address: fromAddress,
-      expired_at: new Date(
-        Date.now() +
-          (type === 'ONE_MONTH'
-            ? 30 * 24 * 60 * 60 * 1000
-            : 365 * 24 * 60 * 60 * 1000),
-      ),
+      expired_at: getExpiredAt(type),
     });
 
     // Get transaction details
