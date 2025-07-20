@@ -2,12 +2,13 @@
 
 // import { Suspense } from 'react';
 import { useParams } from 'next/navigation';
+
+import { useDescription } from '@/hooks/use-description';
 // import { RiFileChartLine, RiInformationLine } from '@remixicon/react';
 // import { useTheme } from 'next-themes';
 
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import * as WidgetBox from '@/components/widget-box';
-import { useDescription } from '@/hooks/use-description';
 
 export default function WidgetDescription({
   ...rest

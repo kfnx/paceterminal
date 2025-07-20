@@ -62,10 +62,11 @@ export function LeftSideAd() {
 
   return (
     <div
-      className={`fixed left-6 top-12 z-50 hidden h-[850px] w-[230px] min-w-0 transform cursor-pointer flex-col gap-2 bg-white/80 p-2 px-4 transition-all duration-300 ease-in-out dark:bg-black/80 lg:flex ${isVisible
-        ? 'translate-x-0 scale-100 opacity-100'
-        : '-translate-x-4 scale-95 opacity-0'
-        }`}
+      className={`fixed left-6 top-12 z-50 hidden h-[850px] w-[230px] min-w-0 transform cursor-pointer flex-col gap-2 bg-white/80 p-2 px-4 transition-all duration-300 ease-in-out dark:bg-black/80 lg:flex ${
+        isVisible
+          ? 'translate-x-0 scale-100 opacity-100'
+          : '-translate-x-4 scale-95 opacity-0'
+      }`}
       onClick={() => {
         window?.open('https://x.com/PaceTerminal', '_blank');
       }}

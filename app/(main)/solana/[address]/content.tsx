@@ -11,13 +11,13 @@ import { paymentModalOpenAtom } from '@/components/payment-modal';
 import { RightSideAd } from '@/components/right-side-ad';
 import WidgetAlpha from '@/components/widgets/widget-alpha';
 import WidgetChart from '@/components/widgets/widget-chart';
+import WidgetDescription from '@/components/widgets/widget-description';
 import WidgetFlywheel from '@/components/widgets/widget-flywheel';
 import WidgetMetrics from '@/components/widgets/widget-metrics';
 import { WidgetPlaceholder } from '@/components/widgets/widget-placeholder';
 import WidgetTeam from '@/components/widgets/widget-team';
 import WidgetTechnicalAnalysis from '@/components/widgets/widget-technical-analysis';
 import WidgetUpdates from '@/components/widgets/widget-updates';
-import WidgetDescription from '@/components/widgets/widget-description';
 
 function MemberOnlyPlaceholder({
   title,

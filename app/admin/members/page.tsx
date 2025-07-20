@@ -33,13 +33,13 @@ export default function AdminMembersPage() {
   };
 
   if (loading) {
-    return(
-    <div className='flex items-center justify-center py-12'>
-      <div className='text-paragraph-sm text-text-sub-600'>
-        Loading members...
+    return (
+      <div className='flex items-center justify-center py-12'>
+        <div className='text-paragraph-sm text-text-sub-600'>
+          Loading members...
+        </div>
       </div>
-    </div>
-    )
+    );
   }
 
   if (error) {
