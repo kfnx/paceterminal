@@ -10,7 +10,7 @@ import {
   tokenSortFieldAtom,
   tokenSortOrderAtom,
   tokenTierFilterAtom,
-} from '@/app/admin/tokens/filters';
+} from '@/app/[locale]/admin/tokens/filters';
 
 export type Token = Tables<'tokens'>;
 

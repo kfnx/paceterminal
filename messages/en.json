@@ -1,0 +1,71 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "filter": "Filter",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "nav": {
+    "home": "Home",
+    "tokens": "Tokens",
+    "research": "Research",
+    "portfolio": "Portfolio",
+    "admin": "Admin",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember me",
+    "signInWith": "Sign in with {provider}",
+    "orContinueWith": "Or continue with"
+  },
+  "tokens": {
+    "title": "Tokens",
+    "search": "Search tokens...",
+    "tier": "Tier",
+    "marketCap": "Market Cap",
+    "price": "Price",
+    "change24h": "24h Change",
+    "volume": "Volume",
+    "noTokensFound": "No tokens found",
+    "loadMore": "Load More"
+  },
+  "wallet": {
+    "connect": "Connect Wallet",
+    "connecting": "Connecting...",
+    "disconnect": "Disconnect",
+    "balance": "Balance",
+    "send": "Send",
+    "receive": "Receive",
+    "transaction": "Transaction",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "failed": "Failed"
+  },
+  "membership": {
+    "title": "Membership",
+    "subscribe": "Subscribe",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "price": "${amount}/{period}",
+    "features": "Features",
+    "upgrade": "Upgrade Now"
+  }
+}

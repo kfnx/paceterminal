@@ -1,15 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-
-import * as Divider from '@/components/ui/divider';
-import NotificationButton from '@/components/notification-button';
-import { SearchMenuButton } from '@/components/search';
-import MobileMenu from '@/app/(main)/mobile-menu';
-
+import MobileMenu from '@/app/[locale]/mobile-menu';
 import { LanguageSelect } from './language-select';
 import { ThemeToggler } from './theme-toggler';
-import { WalletButton } from './wallet';
 
 export default function HeaderMobile() {
   return (
@@ -19,14 +13,9 @@ export default function HeaderMobile() {
       </Link>
 
       <div className='flex items-center gap-3'>
-        {/* <SearchMenuButton /> */}
         <LanguageSelect />
         <ThemeToggler />
-        {/* <WalletButton /> */}
-        {/* <NotificationButton /> */}
-
         <div className='flex w-1 shrink-0 items-center before:h-full before:w-px before:bg-stroke-soft-200' />
-
         <MobileMenu />
       </div>
     </div>

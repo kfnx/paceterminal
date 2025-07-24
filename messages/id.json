@@ -1,0 +1,71 @@
+{
+  "common": {
+    "loading": "Memuat...",
+    "error": "Kesalahan",
+    "retry": "Coba Lagi",
+    "cancel": "Batal",
+    "submit": "Kirim",
+    "save": "Simpan",
+    "edit": "Edit",
+    "delete": "Hapus",
+    "search": "Cari",
+    "filter": "Filter",
+    "back": "Kembali",
+    "next": "Selanjutnya",
+    "previous": "Sebelumnya",
+    "yes": "Ya",
+    "no": "Tidak"
+  },
+  "nav": {
+    "home": "Beranda",
+    "tokens": "Token",
+    "research": "Riset",
+    "portfolio": "Portofolio",
+    "admin": "Admin",
+    "profile": "Profil",
+    "settings": "Pengaturan",
+    "logout": "Keluar"
+  },
+  "auth": {
+    "login": "Masuk",
+    "signup": "Daftar",
+    "email": "Email",
+    "password": "Kata Sandi",
+    "forgotPassword": "Lupa Kata Sandi?",
+    "rememberMe": "Ingat saya",
+    "signInWith": "Masuk dengan {provider}",
+    "orContinueWith": "Atau lanjutkan dengan"
+  },
+  "tokens": {
+    "title": "Token",
+    "search": "Cari token...",
+    "tier": "Tingkat",
+    "marketCap": "Kapitalisasi Pasar",
+    "price": "Harga",
+    "change24h": "Perubahan 24j",
+    "volume": "Volume",
+    "noTokensFound": "Token tidak ditemukan",
+    "loadMore": "Muat Lebih Banyak"
+  },
+  "wallet": {
+    "connect": "Hubungkan Wallet",
+    "connecting": "Menghubungkan...",
+    "disconnect": "Putuskan Koneksi",
+    "balance": "Saldo",
+    "send": "Kirim",
+    "receive": "Terima",
+    "transaction": "Transaksi",
+    "pending": "Tertunda",
+    "confirmed": "Terkonfirmasi",
+    "failed": "Gagal"
+  },
+  "membership": {
+    "title": "Keanggotaan",
+    "subscribe": "Berlangganan",
+    "monthly": "Bulanan",
+    "yearly": "Tahunan",
+    "price": "${amount}/{period}",
+    "features": "Fitur",
+    "upgrade": "Upgrade Sekarang"
+  }
+}

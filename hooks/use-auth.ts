@@ -37,22 +37,48 @@ export function useAuth(): AuthHookReturn {
   });
 
   useEffect(() => {
-    // Get initial user - more secure than getSession()
-    const getInitialUser = async () => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
+    // Check if Supabase is properly configured
+    const isSupabaseConfigured =
+      process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+      process.env.NEXT_PUBLIC_SUPABASE_URL !==
+        'https://placeholder.supabase.co';
 
-      if (error) {
-        console.error('Error getting user:', error);
-      }
-
+    if (!isSupabaseConfigured) {
+      // If Supabase is not configured, set loading to false and user to null
       setAuthState({
-        user: user ?? null,
-        session: null, // We'll get session from auth state change
+        user: null,
+        session: null,
         loading: false,
       });
+      return;
+    }
+
+    // Get initial user - more secure than getSession()
+    const getInitialUser = async () => {
+      try {
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser();
+
+        if (error) {
+          console.error('Error getting user:', error);
+        }
+
+        setAuthState({
+          user: user ?? null,
+          session: null, // We'll get session from auth state change
+          loading: false,
+        });
+      } catch (error) {
+        console.error('Supabase auth error:', error);
+        setAuthState({
+          user: null,
+          session: null,
+          loading: false,
+        });
+      }
     };
 
     getInitialUser();
@@ -72,33 +98,50 @@ export function useAuth(): AuthHookReturn {
   }, []);
 
   const signIn = async ({ email, password }: LoginCredentials) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    return { error };
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      return { error };
+    } catch (error) {
+      console.error('Sign in error:', error);
+      return { error: error as AuthError };
+    }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    return { error };
+    try {
+      const { error } = await supabase.auth.signOut();
+      return { error };
+    } catch (error) {
+      console.error('Sign out error:', error);
+      return { error: error as AuthError };
+    }
   };
 
   const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/update-password`,
-    });
-
-    return { error };
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/update-password`,
+      });
+      return { error };
+    } catch (error) {
+      console.error('Reset password error:', error);
+      return { error: error as AuthError };
+    }
   };
 
   const updatePassword = async ({ password }: UpdatePasswordCredentials) => {
-    const { error } = await supabase.auth.updateUser({
-      password,
-    });
-
-    return { error };
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password,
+      });
+      return { error };
+    } catch (error) {
+      console.error('Update password error:', error);
+      return { error: error as AuthError };
+    }
   };
 
   return {

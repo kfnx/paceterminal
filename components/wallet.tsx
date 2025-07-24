@@ -5,6 +5,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 import { useWalletAddress } from '@/hooks/use-wallet-address';
+import { useWalletT } from '@/hooks/use-translations';
 import * as Button from '@/components/ui/button';
 
 export function WalletButton({
@@ -16,6 +17,7 @@ export function WalletButton({
 }) {
   const { connected, formattedAddress, isLoading } = useWalletAddress();
   const { disconnect } = useWallet();
+  const t = useWalletT();
 
   const handleWalletClick = () => {
     if (!connected) {
@@ -39,7 +41,7 @@ export function WalletButton({
     >
       {isLoading ? (
         <>
-          <span className='animate-pulse'>Loading...</span>
+          <span className='animate-pulse'>{t('connecting')}</span>
           <Button.Icon as={RiLoader4Line} className='animate-spin' />
         </>
       ) : connected ? (
@@ -50,7 +52,7 @@ export function WalletButton({
         </>
       ) : (
         <>
-          {collapsed ? '' : 'Connect Wallet'}
+          {collapsed ? '' : t('connect')}
           <Button.Icon as={RiWallet3Line} />
         </>
       )}

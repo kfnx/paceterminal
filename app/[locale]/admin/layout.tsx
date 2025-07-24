@@ -9,8 +9,10 @@ import Sidebar from './sidebar';
 
 export default async function Layout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: { locale: string };
 }>) {
   const supabase = createClient();
 
@@ -19,7 +21,7 @@ export default async function Layout({
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/login');
+    redirect(`/${params.locale}/login`);
   }
 
   return (
