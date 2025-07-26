@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from '@/contexts/translation-context';
 import { RiCloseLine } from '@remixicon/react';
 
 import { useMemberStatus } from '@/hooks/use-member-status';
 
 export function LeftSideAd() {
   const { isMember } = useMemberStatus();
+  const { t } = useTranslation();
   const [showAds, setShowAds] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [canClose, setCanClose] = useState(10000); // 10 seconds in milliseconds
@@ -74,8 +76,11 @@ export function LeftSideAd() {
       <div className='z-10 flex items-center justify-between gap-2 rounded-md'>
         <span className='px-2 text-paragraph-xs text-text-sub-600'>
           {canClose > 0
-            ? `Please wait ${Math.ceil(canClose / 1000)} seconds to close the Sponsored Ad`
-            : 'Sponsored Ad'}
+            ? t('adModal.pleaseWaitToClose').replace(
+                '{seconds}',
+                Math.ceil(canClose / 1000).toString(),
+              )
+            : t('adModal.sponsoredAd')}
         </span>
         {canClose <= 0 && (
           <button
@@ -91,8 +96,8 @@ export function LeftSideAd() {
       </div>
       <div className='flex min-h-[600px] w-full items-center justify-center space-y-2 bg-bg-weak-50 text-center'>
         <p>
-          Space available! <br />
-          Contact us on X <br />
+          {t('adModal.spaceAvailable')} <br />
+          {t('adModal.contactUsOnX')} <br />
           @paceterminal
         </p>
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslation } from '@/contexts/translation-context';
 import { RiCheckboxCircleFill } from '@remixicon/react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { atom, useAtom } from 'jotai';
@@ -21,6 +22,7 @@ export function PaymentModal() {
     React.useState<MEMBERSHIP_DURATION | null>(null);
   const { publicKey } = useWallet();
   const { refetch: refetchMemberStatus } = useMemberStatus();
+  const { t } = useTranslation();
 
   const { isExecuting, signature, error, success, payUSDC, resetTransaction } =
     useWalletTransaction();
@@ -33,13 +35,13 @@ export function PaymentModal() {
   React.useEffect(() => {
     const toastId = 'payment-toast';
     if (isExecuting) {
-      toast.loading('Transaction is being processed...', {
+      toast.loading(t('paymentModal.transactionProcessing'), {
         id: toastId,
       });
     } else {
       toast.dismiss(toastId);
     }
-  }, [isExecuting]);
+  }, [isExecuting, t]);
 
   React.useEffect(() => {
     const toastId = 'payment-toast';
@@ -56,10 +58,10 @@ export function PaymentModal() {
       const fromAddress = publicKey?.toBase58();
       if (success && signature && fromAddress && paymentType) {
         const toastId = 'payment-toast';
-        toast.success('Transaction successful! Verifying...', {
+        toast.success(t('paymentModal.transactionSuccessful'), {
           id: toastId,
           action: {
-            label: 'View Transaction',
+            label: t('paymentModal.viewTransaction'),
             onClick: () =>
               window.open(`https://solscan.io/tx/${signature}`, '_blank'),
           },
@@ -81,7 +83,7 @@ export function PaymentModal() {
           const result = await response.json();
 
           if (response.ok && result.success) {
-            toast.success('Payment verified!', {
+            toast.success(t('paymentModal.paymentVerified'), {
               id: 'verification-toast',
             });
 
@@ -90,12 +92,15 @@ export function PaymentModal() {
 
             setOpen(false);
           } else {
-            toast.error(result.message || 'Payment verification failed.', {
-              id: 'verification-toast',
-            });
+            toast.error(
+              result.message || t('paymentModal.paymentVerificationFailed'),
+              {
+                id: 'verification-toast',
+              },
+            );
           }
         } catch (e) {
-          toast.error('An error occurred during verification.', {
+          toast.error(t('paymentModal.verificationError'), {
             id: 'verification-toast',
           });
         }
@@ -110,6 +115,7 @@ export function PaymentModal() {
     paymentType,
     setOpen,
     refetchMemberStatus,
+    t,
   ]);
 
   React.useEffect(() => {
@@ -125,7 +131,7 @@ export function PaymentModal() {
         <Modal.Body>
           <div className='mb-2 border-b border-stroke-soft-200 pb-2 text-center'>
             <h2 className='text-xl text-gray-900 font-semibold'>
-              Choose a plan
+              {t('paymentModal.choosePlan')}
             </h2>
           </div>
 
@@ -136,22 +142,22 @@ export function PaymentModal() {
                   ${MEMBERSHIP_PRICE[MEMBERSHIP_DURATION.ONE_MONTH]}
                 </div>
                 <div className='self-end pb-2 text-paragraph-lg text-text-sub-600'>
-                  a month
+                  {t('paymentModal.aMonth')}
                 </div>
               </div>
 
               <div className='mb-4 flex-1 space-y-3'>
                 <div className='text-sm text-gray-700 flex'>
                   <span className='mr-3 h-4 w-4 text-black'>•</span>
-                  Remove ads
+                  {t('paymentModal.removeAds')}
                 </div>
                 <div className='text-sm text-gray-700 flex'>
                   <span className='mr-3 h-4 w-4 text-black'>•</span>
-                  Premium contents
+                  {t('paymentModal.premiumContents')}
                 </div>
                 <div className='text-sm text-gray-700 flex'>
                   <span className='mr-3 h-4 w-4 text-black'>•</span>
-                  Tierlist curated tokens
+                  {t('paymentModal.tierlistCuratedTokens')}
                 </div>
               </div>
 
@@ -162,7 +168,7 @@ export function PaymentModal() {
                 onClick={() => handlePay(MEMBERSHIP_DURATION.ONE_MONTH)}
                 disabled={isExecuting}
               >
-                Pay with Crypto
+                {t('paymentModal.payWithCrypto')}
               </Button.Root>
             </div>
 
@@ -170,7 +176,7 @@ export function PaymentModal() {
               <div className='absolute right-4 top-3'>
                 <Badge.Root size='medium' variant='lighter' color='green'>
                   <Badge.Icon as={RiCheckboxCircleFill} />
-                  BEST SELLER
+                  {t('paymentModal.bestSeller')}
                 </Badge.Root>
               </div>
 
@@ -179,26 +185,26 @@ export function PaymentModal() {
                   ${MEMBERSHIP_PRICE[MEMBERSHIP_DURATION.THREE_MONTHS]}
                 </div>
                 <div className='self-end pb-2 text-paragraph-lg text-text-sub-600'>
-                  for 3 months
+                  {t('paymentModal.for3Months')}
                 </div>
               </div>
 
               <div className='mb-4 flex-1 space-y-3'>
                 <div className='text-sm text-gray-700 flex'>
                   <span className='mr-3 h-4 w-4 text-black'>•</span>
-                  Save 33%
+                  {t('paymentModal.save33')}
                 </div>
                 <div className='text-sm text-gray-700 flex'>
                   <span className='mr-3 h-4 w-4 text-black'>•</span>
-                  Remove ads
+                  {t('paymentModal.removeAds')}
                 </div>
                 <div className='text-sm text-gray-700 flex'>
                   <span className='mr-3 h-4 w-4 text-black'>•</span>
-                  Premium contents
+                  {t('paymentModal.premiumContents')}
                 </div>
                 <div className='text-sm text-gray-700 flex'>
                   <span className='mr-3 h-4 w-4 text-black'>•</span>
-                  Tierlist curated tokens
+                  {t('paymentModal.tierlistCuratedTokens')}
                 </div>
               </div>
 
@@ -208,7 +214,7 @@ export function PaymentModal() {
                 onClick={() => handlePay(MEMBERSHIP_DURATION.THREE_MONTHS)}
                 disabled={isExecuting}
               >
-                Pay with Crypto
+                {t('paymentModal.payWithCrypto')}
               </Button.Root>
             </div>
           </div>

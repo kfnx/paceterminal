@@ -4,6 +4,7 @@ import './globals.css';
 
 import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
+import { TranslationProvider } from '@/contexts/translation-context';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
@@ -38,21 +39,23 @@ export default function RootLayout({
       <body className='bg-bg-white-0'>
         <Providers>
           <WalletConnectionProviders>
-            <ThemeProvider
-              attribute='class'
-              enableSystem
-              disableTransitionOnChange
-            >
-              <TooltipProvider
-                delayDuration={100}
-                skipDelayDuration={300}
-                disableHoverableContent
+            <TranslationProvider>
+              <ThemeProvider
+                attribute='class'
+                enableSystem
+                disableTransitionOnChange
               >
-                {children}
-              </TooltipProvider>
-              <PaymentModal />
-              <Toaster richColors closeButton position='top-center' />
-            </ThemeProvider>
+                <TooltipProvider
+                  delayDuration={100}
+                  skipDelayDuration={300}
+                  disableHoverableContent
+                >
+                  {children}
+                </TooltipProvider>
+                <PaymentModal />
+                <Toaster richColors closeButton position='top-center' />
+              </ThemeProvider>
+            </TranslationProvider>
           </WalletConnectionProviders>
         </Providers>
         <GoogleAnalyticsWrapper />

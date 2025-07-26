@@ -6,6 +6,8 @@ import { NavigationTabWrapper } from '@/components/navigation-tab-wrapper';
 import { ThemeToggler } from '@/components/theme-toggler';
 import { WalletButton } from '@/components/wallet-button';
 
+import { LanguageSelect } from './language-select';
+
 export default function Header({
   children,
   className,
@@ -34,7 +36,7 @@ export default function Header({
       <div className={cnExt('flex items-center gap-3', contentClassName)}>
         {/* <SearchMenuButton className='hidden lg:flex' /> */}
         {/* <NotificationButton className='hidden lg:flex' /> */}
-        {/* <LanguageSelect className='hidden lg:flex' /> */}
+        <LanguageSelect className='hidden lg:flex' />
         <ThemeToggler className='hidden lg:flex' />
         <WalletButton className='hidden lg:flex' />
       </div>

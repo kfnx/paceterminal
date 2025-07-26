@@ -2,6 +2,7 @@
 
 // https://github.com/anza-xyz/wallet-adapter/tree/master/packages/core/react#creating-a-custom-connect-button
 import { disconnect } from 'process';
+import { useTranslation } from '@/contexts/translation-context';
 import {
   RiArrowDownSLine,
   RiCloseLine,
@@ -45,6 +46,7 @@ export function WalletButton({
     });
   const { connected, formattedAddress } = useWalletAddress();
   const { isMember, expiredAt, loading } = useMemberStatus();
+  const { t } = useTranslation();
 
   const [_paymentModalOpen, setPaymentModalOpen] =
     useAtom(paymentModalOpenAtom);
@@ -55,14 +57,14 @@ export function WalletButton({
       label = formattedAddress;
       break;
     case 'connecting':
-      label = 'Connecting';
+      label = t('wallet.connecting');
       break;
     case 'disconnecting':
-      label = 'Disconnecting';
+      label = t('wallet.disconnecting');
       break;
     case 'has-wallet':
     case 'no-wallet':
-      label = connectText || 'Connect Wallet';
+      label = connectText || t('wallet.connect');
       break;
   }
 
@@ -85,14 +87,17 @@ export function WalletButton({
           >
             <Dropdown.ItemIcon as={isMember ? RiStarLine : RiLockUnlockLine} />
             {loading
-              ? 'Checking status...'
+              ? t('wallet.checkingStatus')
               : isMember && expiredAt
-                ? `Member until ${expiredAt.toLocaleDateString()}`
-                : 'Remove Ads'}
+                ? t('wallet.memberUntil').replace(
+                    '{date}',
+                    expiredAt.toLocaleDateString(),
+                  )
+                : t('wallet.removeAds')}
           </Dropdown.Item>
           <Dropdown.Item onClick={() => onDisconnect?.()}>
             <Dropdown.ItemIcon as={RiLogoutBoxRLine} />
-            Disconnect Wallet
+            {t('wallet.disconnectWallet')}
           </Dropdown.Item>
         </Dropdown.Content>
       </Dropdown.Root>

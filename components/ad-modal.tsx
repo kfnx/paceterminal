@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useTranslation } from '@/contexts/translation-context';
 
 import { useMemberStatus } from '@/hooks/use-member-status';
 import * as Modal from '@/components/ui/modal';
@@ -17,6 +18,7 @@ export default function AdModal() {
   const [open, setOpen] = React.useState(false);
   const [timeToClose, setTimeToClose] = React.useState(TIME_TO_CLOSE_AD);
   const { isMember } = useMemberStatus();
+  const { t } = useTranslation();
 
   // Check if enough time has passed since last ad showing
   const canShowAd = React.useCallback(() => {
@@ -100,17 +102,20 @@ export default function AdModal() {
           <Modal.Title className='flex w-full items-center justify-between'>
             <span>
               {timeToClose > 0
-                ? `Please wait ${timeToClose / 1000} seconds to close the Sponsored Ad`
-                : 'Sponsored Ad'}
+                ? t('adModal.pleaseWaitToClose').replace(
+                    '{seconds}',
+                    (timeToClose / 1000).toString(),
+                  )
+                : t('adModal.sponsoredAd')}
             </span>
-            <WalletButton connectText='Connect to Remove Ads' />
+            <WalletButton connectText={t('adModal.connectToRemoveAds')} />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className='m-6 flex min-h-[500px] items-center justify-center gap-4 rounded bg-bg-soft-200 text-center'>
           <p>
-            Space available! <br />
+            {t('adModal.spaceAvailable')} <br />
             <Link href='https://x.com/PaceTerminal' target='_blank'>
-              Contact us on X <br />
+              {t('adModal.contactUsOnX')} <br />
               @paceterminal
             </Link>
           </p>
