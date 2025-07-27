@@ -2,22 +2,13 @@
 
 import * as React from 'react';
 import { useParams } from 'next/navigation';
-import {
-  RiAddLine,
-  RiArrowLeftDownFill,
-  RiArrowRightUpFill,
-  RiCalendarCheckFill,
-  RiLineChartLine,
-} from '@remixicon/react';
+import { RiAddLine, RiLineChartLine } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
-import { useCurrentToken } from '@/hooks/use-current-token';
 import { useMetrics } from '@/hooks/use-metrics';
-import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
 import * as SegmentedControl from '@/components/ui/segmented-control';
-import * as Select from '@/components/ui/select';
 import IllustrationEmptyBudgetOverview from '@/components/empty-state-illustrations/budget-overview';
 import * as WidgetBox from '@/components/widget-box';
 
@@ -55,7 +46,7 @@ export default function WidgetMetrics({
         <Divider.Root />
 
         {!loading && metrics && metrics.length > 0 ? (
-          <div className='space-y-4 p-4'>
+          <div className='space-y-4'>
             {metricRows.map((row, rowIndex) => (
               <div
                 key={rowIndex}

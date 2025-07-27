@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from '@/contexts/translation-context';
 import {
   RiAddLine,
   RiCoinLine,
@@ -18,6 +19,7 @@ interface AlphaCardProps {
 
 export function AlphaCard({ address }: AlphaCardProps) {
   const { alpha, loading, error, refetch } = useAlpha(address);
+  const { locale } = useTranslation();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [selectedAlpha, setSelectedAlpha] = React.useState<Alpha | null>(null);
 
@@ -50,6 +52,23 @@ export function AlphaCard({ address }: AlphaCardProps) {
     }
   };
 
+  // Helper function to get the appropriate title and text based on locale
+  const getLocalizedContent = (alphaItem: Alpha) => {
+    // For English locale, try to use title_en and text_en if they exist
+    if (locale === 'en') {
+      return {
+        title: alphaItem.title_en || alphaItem.title || 'Untitled',
+        text: alphaItem.text_en || alphaItem.text || '',
+      };
+    }
+
+    // For other locales, use the default title and text
+    return {
+      title: alphaItem.title || 'Untitled',
+      text: alphaItem.text || '',
+    };
+  };
+
   return (
     <>
       <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
@@ -79,52 +98,55 @@ export function AlphaCard({ address }: AlphaCardProps) {
           </div>
         ) : alpha.length > 0 ? (
           <div className='space-y-4'>
-            {alpha.map((alphaItem) => (
-              <div
-                key={alphaItem.id}
-                className='bg-bg-soft-100 relative rounded-lg'
-              >
-                <div className='flex items-start justify-between'>
-                  <div className='flex-1'>
-                    <div className='mb-2 flex items-center justify-between'>
-                      <h4 className='text-label-sm font-medium text-text-strong-950'>
-                        {alphaItem.title}
-                      </h4>
-                    </div>
-                    {alphaItem.text && (
-                      <div className='mb-2 whitespace-pre-wrap text-paragraph-sm text-text-strong-950'>
-                        {alphaItem.text}
+            {alpha.map((alphaItem) => {
+              const localizedContent = getLocalizedContent(alphaItem);
+              return (
+                <div
+                  key={alphaItem.id}
+                  className='bg-bg-soft-100 relative rounded-lg'
+                >
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1'>
+                      <div className='mb-2 flex items-center justify-between'>
+                        <h4 className='text-label-sm font-medium text-text-strong-950'>
+                          {localizedContent.title}
+                        </h4>
                       </div>
-                    )}
-                    <div className='text-paragraph-xs text-text-sub-600'>
-                      Created:{' '}
-                      {new Date(alphaItem.created_at).toLocaleDateString()}
+                      {localizedContent.text && (
+                        <div className='mb-2 whitespace-pre-wrap text-paragraph-sm text-text-strong-950'>
+                          {localizedContent.text}
+                        </div>
+                      )}
+                      <div className='text-paragraph-xs text-text-sub-600'>
+                        Created:{' '}
+                        {new Date(alphaItem.created_at).toLocaleDateString()}
+                      </div>
                     </div>
-                  </div>
-                  <div className='ml-3 flex flex-col gap-2'>
-                    <Button.Root
-                      variant='neutral'
-                      mode='stroke'
-                      onClick={() => {
-                        setSelectedAlpha(alphaItem);
-                        setIsEditModalOpen(true);
-                      }}
-                      size='xsmall'
-                    >
-                      <RiEditLine className='size-4' />
-                    </Button.Root>
-                    <Button.Root
-                      variant='error'
-                      mode='stroke'
-                      onClick={() => handleDelete(alphaItem.id)}
-                      size='xsmall'
-                    >
-                      <RiDeleteBinLine className='size-4' />
-                    </Button.Root>
+                    <div className='ml-3 flex flex-col gap-2'>
+                      <Button.Root
+                        variant='neutral'
+                        mode='stroke'
+                        onClick={() => {
+                          setSelectedAlpha(alphaItem);
+                          setIsEditModalOpen(true);
+                        }}
+                        size='xsmall'
+                      >
+                        <RiEditLine className='size-4' />
+                      </Button.Root>
+                      <Button.Root
+                        variant='error'
+                        mode='stroke'
+                        onClick={() => handleDelete(alphaItem.id)}
+                        size='xsmall'
+                      >
+                        <RiDeleteBinLine className='size-4' />
+                      </Button.Root>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className='flex flex-col items-center justify-center gap-4 py-8'>

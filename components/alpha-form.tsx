@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslation } from '@/contexts/translation-context';
 import { RiCloseLine, RiSaveLine } from '@remixicon/react';
 import { toast } from 'sonner';
 
@@ -26,13 +27,22 @@ export function AlphaForm({
   onClose,
   onSuccess,
 }: AlphaFormProps) {
+  const { locale } = useTranslation();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  // Default fields (Indonesian)
   const [title, setTitle] = React.useState(alpha?.title || '');
   const [text, setText] = React.useState(alpha?.text || '');
+
+  // English fields
+  const [titleEn, setTitleEn] = React.useState(alpha?.title_en || '');
+  const [textEn, setTextEn] = React.useState(alpha?.text_en || '');
 
   React.useEffect(() => {
     setTitle(alpha?.title || '');
     setText(alpha?.text || '');
+    setTitleEn(alpha?.title_en || '');
+    setTextEn(alpha?.text_en || '');
   }, [alpha]);
 
   const handleClose = () => {
@@ -40,11 +50,14 @@ export function AlphaForm({
     // Reset form
     setTitle('');
     setText('');
+    setTitleEn('');
+    setTextEn('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate that at least the default title is provided
     if (!title.trim()) {
       toast.error('Title is required');
       return;
@@ -56,17 +69,27 @@ export function AlphaForm({
       const url = alpha ? '/api/alpha/update' : '/api/alpha/create';
       const method = alpha ? 'PUT' : 'POST';
 
+      const requestBody: any = {
+        ...(alpha && { id: alpha.id }),
+        address: tokenAddress,
+        title: title.trim(),
+        text: text.trim() || null,
+      };
+
+      // Add English fields if they exist
+      if (titleEn.trim()) {
+        requestBody.title_en = titleEn.trim();
+      }
+      if (textEn.trim()) {
+        requestBody.text_en = textEn.trim();
+      }
+
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...(alpha && { id: alpha.id }),
-          address: tokenAddress,
-          title: title.trim(),
-          text: text.trim() || null,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -102,31 +125,64 @@ export function AlphaForm({
         </Modal.Header>
         <form onSubmit={handleSubmit}>
           <Modal.Body className='space-y-6'>
-            {/* Title */}
+            {/* Default Title (Indonesian) */}
             <div className='flex flex-col gap-2'>
               <Label.Root>
-                Title <Label.Asterisk />
+                Title (Indonesian) <Label.Asterisk />
               </Label.Root>
               <Input.Root>
                 <Input.Wrapper>
                   <Input.Input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder='Enter alpha title...'
+                    placeholder='Enter alpha title in Indonesian...'
                     disabled={isSubmitting}
                   />
                 </Input.Wrapper>
               </Input.Root>
             </div>
 
-            {/* Content */}
+            {/* Default Content (Indonesian) */}
             <div className='flex flex-col gap-2'>
-              <Label.Root>Alpha Content</Label.Root>
+              <Label.Root>Alpha Content (Indonesian)</Label.Root>
               <Textarea.Root
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder='Enter alpha content, insights, analysis...'
-                rows={8}
+                placeholder='Enter alpha content, insights, analysis in Indonesian...'
+                rows={6}
+                disabled={isSubmitting}
+              />
+            </div>
+
+            {/* English Title */}
+            <div className='flex flex-col gap-2'>
+              <Label.Root>
+                Title (English){' '}
+                <span className='text-text-sub-600'>(Optional)</span>
+              </Label.Root>
+              <Input.Root>
+                <Input.Wrapper>
+                  <Input.Input
+                    value={titleEn}
+                    onChange={(e) => setTitleEn(e.target.value)}
+                    placeholder='Enter alpha title in English...'
+                    disabled={isSubmitting}
+                  />
+                </Input.Wrapper>
+              </Input.Root>
+            </div>
+
+            {/* English Content */}
+            <div className='flex flex-col gap-2'>
+              <Label.Root>
+                Alpha Content (English){' '}
+                <span className='text-text-sub-600'>(Optional)</span>
+              </Label.Root>
+              <Textarea.Root
+                value={textEn}
+                onChange={(e) => setTextEn(e.target.value)}
+                placeholder='Enter alpha content, insights, analysis in English...'
+                rows={6}
                 disabled={isSubmitting}
               />
             </div>

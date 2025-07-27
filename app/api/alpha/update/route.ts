@@ -7,21 +7,34 @@ const UpdateAlphaSchema = z.object({
   id: z.number().int('ID must be an integer'),
   title: z.string().min(1, 'Title is required'),
   text: z.string().nullable().optional(),
+  title_en: z.string().optional(),
+  text_en: z.string().nullable().optional(),
 });
 
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, title, text } = UpdateAlphaSchema.parse(body);
+    const { id, title, text, title_en, text_en } =
+      UpdateAlphaSchema.parse(body);
 
     const supabase = createServerSupabaseClient();
 
+    const updateData: any = {
+      title,
+      text: text || null,
+    };
+
+    // Add English fields if they exist
+    if (title_en !== undefined) {
+      updateData.title_en = title_en || null;
+    }
+    if (text_en !== undefined) {
+      updateData.text_en = text_en || null;
+    }
+
     const { data, error } = await supabase
       .from('alpha')
-      .update({
-        title,
-        text: text || null,
-      })
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();

@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { useTranslation } from '@/contexts/translation-context';
 import { RiVipDiamondLine } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
@@ -39,6 +40,24 @@ export default function WidgetAlpha({
   const params = useParams();
   const address = params.address as string;
   const { alpha, loading } = useAlpha(address);
+  const { locale } = useTranslation();
+
+  // Helper function to get the appropriate title and text based on locale
+  const getLocalizedContent = (alphaItem: any) => {
+    // For English locale, try to use title_en and text_en if they exist
+    if (locale === 'en') {
+      return {
+        title: alphaItem.title_en || alphaItem.title || 'Untitled',
+        text: alphaItem.text_en || alphaItem.text || '',
+      };
+    }
+
+    // For other locales, use the default title and text
+    return {
+      title: alphaItem.title || 'Untitled',
+      text: alphaItem.text || '',
+    };
+  };
 
   return (
     <WidgetBox.Root {...rest} id='alpha'>
@@ -53,14 +72,17 @@ export default function WidgetAlpha({
         <div className='w-full pb-1'>
           {!loading && alpha && alpha.length > 0 ? (
             <div className='space-y-4'>
-              {alpha.map((alphaItem) => (
-                <AlphaItem
-                  key={alphaItem.id}
-                  title={alphaItem.title || 'Untitled'}
-                  text={alphaItem.text || ''}
-                  createdAt={alphaItem.created_at}
-                />
-              ))}
+              {alpha.map((alphaItem) => {
+                const localizedContent = getLocalizedContent(alphaItem);
+                return (
+                  <AlphaItem
+                    key={alphaItem.id}
+                    title={localizedContent.title}
+                    text={localizedContent.text}
+                    createdAt={alphaItem.created_at}
+                  />
+                );
+              })}
             </div>
           ) : (
             <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>

@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase-server';
 export async function POST(request: NextRequest) {
   try {
     const supabase = createClient();
-    const { address, title, text } = await request.json();
+    const { address, title, text, title_en, text_en } = await request.json();
 
     if (!address || !title) {
       return NextResponse.json(
@@ -14,13 +14,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const insertData: any = {
+      address,
+      title,
+      text: text || null,
+    };
+
+    // Add English fields if they exist
+    if (title_en) {
+      insertData.title_en = title_en;
+    }
+    if (text_en) {
+      insertData.text_en = text_en;
+    }
+
     const { data, error } = await supabase
       .from('alpha')
-      .insert({
-        address,
-        title,
-        text: text || null,
-      })
+      .insert(insertData)
       .select()
       .single();
 
