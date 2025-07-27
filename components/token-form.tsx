@@ -35,6 +35,7 @@ interface FormData {
   label: string;
   address: string;
   description: string;
+  description_en: string;
   tier: number | null;
   image: string;
   ordering: number | null;
@@ -45,6 +46,7 @@ const initialFormData: FormData = {
   label: '',
   address: '',
   description: '',
+  description_en: '',
   tier: null,
   image: '',
   ordering: null,
@@ -89,6 +91,7 @@ export function TokenForm({
         label: token.label || '',
         address: token.address || '',
         description: token.description || '',
+        description_en: token.description_en || '',
         tier: token.tier,
         image: token.image || '',
         ordering: token.ordering,
@@ -151,6 +154,7 @@ export function TokenForm({
         label: formData.label.trim() || null,
         address: formData.address.trim(),
         description: formData.description.trim() || null,
+        description_en: formData.description_en.trim() || null,
         tier: formData.tier,
         image: formData.image.trim() || null,
         ordering: formData.ordering,
@@ -326,18 +330,36 @@ export function TokenForm({
             </div>
 
             {/* Description */}
-            <div className='flex flex-col gap-2'>
-              <Label.Root htmlFor='description'>Description</Label.Root>
-              <Textarea.Root
-                placeholder='Enter token description'
-                value={formData.description}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                  handleInputChange('description', e.target.value)
-                }
-                rows={4}
-              >
-                <Textarea.CharCounter max={512} />
-              </Textarea.Root>
+            <div className='space-y-4'>
+              <div className='flex flex-col gap-2'>
+                <Label.Root htmlFor='description'>Description (ID)</Label.Root>
+                <Textarea.Root
+                  placeholder='Enter token description in Indonesian'
+                  value={formData.description}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    handleInputChange('description', e.target.value)
+                  }
+                  rows={4}
+                >
+                  <Textarea.CharCounter max={512} />
+                </Textarea.Root>
+              </div>
+
+              <div className='flex flex-col gap-2'>
+                <Label.Root htmlFor='description_en'>
+                  Description (EN)
+                </Label.Root>
+                <Textarea.Root
+                  placeholder='Enter token description in English'
+                  value={formData.description_en}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    handleInputChange('description_en', e.target.value)
+                  }
+                  rows={4}
+                >
+                  <Textarea.CharCounter max={512} />
+                </Textarea.Root>
+              </div>
             </div>
           </Modal.Body>
           <Modal.Footer>

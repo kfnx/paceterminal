@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from '@/contexts/translation-context';
 import { RiEditLine } from '@remixicon/react';
 
 import { useToken } from '@/hooks/use-token';
@@ -27,11 +28,20 @@ const getTierLabel = (tier: number) => {
 
 export function TokenInfoCard({ address }: TokenInfoCardProps) {
   const { data: token, isLoading, error, refetch } = useToken(address);
+  const { locale } = useTranslation();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   const handleSuccess = () => {
     setIsEditModalOpen(false);
     refetch();
+  };
+
+  // Get the appropriate description based on locale
+  const getDescription = () => {
+    if (locale === 'en' && token?.description_en) {
+      return token.description_en;
+    }
+    return token?.description;
   };
 
   if (isLoading) {
@@ -53,6 +63,8 @@ export function TokenInfoCard({ address }: TokenInfoCardProps) {
       </div>
     );
   }
+
+  const description = getDescription();
 
   return (
     <>
@@ -82,10 +94,20 @@ export function TokenInfoCard({ address }: TokenInfoCardProps) {
           {token.description && (
             <div>
               <label className='text-paragraph-sm text-text-sub-600'>
-                Description
+                Description (ID)
               </label>
               <p className='text-paragraph-sm text-text-strong-950'>
                 {token.description}
+              </p>
+            </div>
+          )}
+          {token.description_en && (
+            <div>
+              <label className='text-paragraph-sm text-text-sub-600'>
+                Description (EN)
+              </label>
+              <p className='text-paragraph-sm text-text-strong-950'>
+                {token.description_en}
               </p>
             </div>
           )}
