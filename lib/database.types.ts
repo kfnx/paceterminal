@@ -342,30 +342,36 @@ export type Database = {
           created_at: string
           date: string
           description: string
+          description_en: string | null
           id: number
           image: string | null
           link: string
           title: string
+          title_en: string | null
         }
         Insert: {
           address: string
           created_at?: string
           date?: string
           description: string
+          description_en?: string | null
           id?: number
           image?: string | null
           link: string
           title: string
+          title_en?: string | null
         }
         Update: {
           address?: string
           created_at?: string
           date?: string
           description?: string
+          description_en?: string | null
           id?: number
           image?: string | null
           link?: string
           title?: string
+          title_en?: string | null
         }
         Relationships: [
           {

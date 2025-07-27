@@ -42,12 +42,12 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-        <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
+        <div className='flex flex-col justify-between rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
           <div className='mb-4'>
-            <h3 className='mb-2 flex items-center gap-2 text-title-h4 text-text-strong-950'>
+            <p className='mb-2 flex items-center gap-2 text-title-h5 text-text-strong-950'>
               <RiCoinLine className='size-5 text-primary-base' />
               Token Management
-            </h3>
+            </p>
             <p className='text-paragraph-sm text-text-sub-600'>
               Manage your token collection and settings
             </p>
@@ -66,36 +66,12 @@ export default function AdminDashboardPage() {
           </Button.Root>
         </div>
 
-        <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
+        <div className='flex flex-col justify-between rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
           <div className='mb-4'>
-            <h3 className='mb-2 flex items-center gap-2 text-title-h4 text-text-strong-950'>
-              <RiUserLine className='size-5 text-primary-base' />
-              User Management
-            </h3>
-            <p className='text-paragraph-sm text-text-sub-600'>
-              Manage user accounts and permissions
-            </p>
-          </div>
-          <div className='mb-4'>
-            <div className='text-title-h3 text-text-strong-950'>
-              {usersLoading ? '...' : users.length}
-            </div>
-            <div className='text-paragraph-sm text-text-sub-600'>
-              Total Users
-            </div>
-          </div>
-          <Button.Root onClick={handleManageUsers} className='w-full'>
-            <Button.Icon as={RiAddLine} />
-            Manage Users
-          </Button.Root>
-        </div>
-
-        <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
-          <div className='mb-4'>
-            <h3 className='mb-2 flex items-center gap-2 text-title-h4 text-text-strong-950'>
+            <p className='mb-2 flex items-center gap-2 text-title-h5 text-text-strong-950'>
               <RiUserStarLine className='size-5 text-primary-base' />
-              Member Management
-            </h3>
+              Premium Members
+            </p>
             <p className='text-paragraph-sm text-text-sub-600'>
               Manage members and their status
             </p>
@@ -111,6 +87,30 @@ export default function AdminDashboardPage() {
           <Button.Root onClick={handleManageMembers} className='w-full'>
             <Button.Icon as={RiAddLine} />
             Manage Members
+          </Button.Root>
+        </div>
+
+        <div className='flex flex-col justify-between rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-sm'>
+          <div className='mb-4'>
+            <p className='mb-2 flex items-center gap-2 text-title-h5 text-text-strong-950'>
+              <RiUserLine className='size-5 text-primary-base' />
+              Admins
+            </p>
+            <p className='text-paragraph-sm text-text-sub-600'>
+              Manage admin user accounts and permissions
+            </p>
+          </div>
+          <div className='mb-4'>
+            <div className='text-title-h3 text-text-strong-950'>
+              {usersLoading ? '...' : users.length}
+            </div>
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Total Admin
+            </div>
+          </div>
+          <Button.Root onClick={handleManageUsers} className='w-full'>
+            <Button.Icon as={RiAddLine} />
+            Manage Admins
           </Button.Root>
         </div>
       </div>

@@ -27,6 +27,7 @@ export function UpdatesForm({
 }: UpdatesFormProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [title, setTitle] = React.useState(update?.title || '');
+  const [titleEn, setTitleEn] = React.useState(update?.title_en || '');
   const [date, setDate] = React.useState(
     update?.date
       ? new Date(update.date).toISOString().split('T')[0]
@@ -35,18 +36,23 @@ export function UpdatesForm({
   const [description, setDescription] = React.useState(
     update?.description || '',
   );
+  const [descriptionEn, setDescriptionEn] = React.useState(
+    update?.description_en || '',
+  );
   const [link, setLink] = React.useState(update?.link || '');
   const [image, setImage] = React.useState(update?.image || '');
 
   // Reset form when update changes
   React.useEffect(() => {
     setTitle(update?.title || '');
+    setTitleEn(update?.title_en || '');
     setDate(
       update?.date
         ? new Date(update.date).toISOString().split('T')[0]
         : new Date().toISOString().split('T')[0],
     );
     setDescription(update?.description || '');
+    setDescriptionEn(update?.description_en || '');
     setLink(update?.link || '');
     setImage(update?.image || '');
   }, [update]);
@@ -62,8 +68,10 @@ export function UpdatesForm({
     onClose();
     // Reset form
     setTitle('');
+    setTitleEn('');
     setDate(new Date().toISOString().split('T')[0]);
     setDescription('');
+    setDescriptionEn('');
     setLink('');
     setImage('');
   };
@@ -88,8 +96,10 @@ export function UpdatesForm({
           body: JSON.stringify({
             id: update.id,
             title: title.trim(),
+            title_en: titleEn.trim() || null,
             date: date,
             description: description.trim(),
+            description_en: descriptionEn.trim() || null,
             link: link.trim(),
             image: image.trim() || null,
           }),
@@ -108,8 +118,10 @@ export function UpdatesForm({
           body: JSON.stringify({
             address: tokenAddress,
             title: title.trim(),
+            title_en: titleEn.trim() || null,
             date: date,
             description: description.trim(),
+            description_en: descriptionEn.trim() || null,
             link: link.trim(),
             image: image.trim() || null,
           }),
@@ -158,6 +170,21 @@ export function UpdatesForm({
               </Input.Root>
             </div>
 
+            {/* Title (English) */}
+            <div className='flex flex-col gap-2'>
+              <Label.Root>Title (English)</Label.Root>
+              <Input.Root>
+                <Input.Wrapper>
+                  <Input.Input
+                    value={titleEn}
+                    onChange={(e) => setTitleEn(e.target.value)}
+                    placeholder='Enter update title in English (optional)...'
+                    disabled={isSubmitting}
+                  />
+                </Input.Wrapper>
+              </Input.Root>
+            </div>
+
             {/* Date */}
             <div className='flex flex-col gap-2'>
               <Label.Root>
@@ -184,6 +211,18 @@ export function UpdatesForm({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder='Enter update description...'
+                rows={4}
+                disabled={isSubmitting}
+              />
+            </div>
+
+            {/* Description (English) */}
+            <div className='flex flex-col gap-2'>
+              <Label.Root>Description (English)</Label.Root>
+              <Textarea.Root
+                value={descriptionEn}
+                onChange={(e) => setDescriptionEn(e.target.value)}
+                placeholder='Enter update description in English (optional)...'
                 rows={4}
                 disabled={isSubmitting}
               />

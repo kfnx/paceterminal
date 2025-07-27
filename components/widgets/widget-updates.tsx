@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useTranslation } from '@/contexts/translation-context';
 import { RiExternalLinkLine, RiNewsLine } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
@@ -80,6 +81,24 @@ export default function WidgetUpdates({
   const params = useParams();
   const address = params.address as string;
   const { updates, loading } = useUpdates(address);
+  const { locale } = useTranslation();
+
+  // Helper function to get the appropriate title and description based on locale
+  const getLocalizedContent = (update: any) => {
+    // For English locale, try to use title_en and description_en if they exist
+    if (locale === 'en') {
+      return {
+        title: update.title_en || update.title,
+        description: update.description_en || update.description,
+      };
+    }
+
+    // For other locales, use the default title and description
+    return {
+      title: update.title,
+      description: update.description,
+    };
+  };
 
   return (
     <WidgetBox.Root {...rest} id='updates'>
@@ -94,16 +113,19 @@ export default function WidgetUpdates({
         <div className='w-full pb-1'>
           {!loading && updates && updates.length > 0 ? (
             <div className='space-y-4'>
-              {updates.map((update) => (
-                <UpdateItem
-                  key={update.id}
-                  title={update.title}
-                  description={update.description}
-                  link={update.link}
-                  image={update.image || undefined}
-                  createdAt={update.created_at}
-                />
-              ))}
+              {updates.map((update) => {
+                const { title, description } = getLocalizedContent(update);
+                return (
+                  <UpdateItem
+                    key={update.id}
+                    title={title}
+                    description={description}
+                    link={update.link}
+                    image={update.image || undefined}
+                    createdAt={update.created_at}
+                  />
+                );
+              })}
             </div>
           ) : (
             <div className='flex flex-1 flex-col items-center justify-center gap-5 p-5'>

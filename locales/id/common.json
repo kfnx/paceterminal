@@ -168,5 +168,10 @@
     "paymentVerified": "Pembayaran terverifikasi!",
     "paymentVerificationFailed": "Verifikasi pembayaran gagal.",
     "verificationError": "Terjadi kesalahan saat verifikasi."
+  },
+  "premium": {
+    "premiumContent": "Konten Premium",
+    "unlock": "Buka {feature}",
+    "upgradeToPremium": "Upgrade ke Premium"
   }
 }

@@ -7,7 +7,9 @@ import { createServerSupabaseClient } from '@/lib/supabase';
 const UpdateUpdateSchema = z.object({
   id: z.number().int('ID must be an integer'),
   title: z.string().min(1, 'Title is required'),
+  title_en: z.string().nullable().optional(),
   description: z.string().min(1, 'Description is required'),
+  description_en: z.string().nullable().optional(),
   link: z.string().url('Link must be a valid URL'),
   image: z.string().url('Image must be a valid URL').nullable().optional(),
   date: z.string().min(1, 'Date is required'),
@@ -17,8 +19,16 @@ export async function PUT(request: NextRequest) {
   try {
     // Parse and validate the request body
     const body = await request.json();
-    const { id, title, description, link, image, date } =
-      UpdateUpdateSchema.parse(body);
+    const {
+      id,
+      title,
+      title_en,
+      description,
+      description_en,
+      link,
+      image,
+      date,
+    } = UpdateUpdateSchema.parse(body);
 
     // Create server-side Supabase client with service role key
     const supabase = createServerSupabaseClient();
@@ -27,7 +37,9 @@ export async function PUT(request: NextRequest) {
       .from('updates')
       .update({
         title,
+        title_en,
         description,
+        description_en,
         link,
         image: image || null,
         date: date,

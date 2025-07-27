@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from '@/contexts/translation-context';
 import {
   RiAddLine,
   RiCoinLine,
@@ -18,6 +19,7 @@ interface UpdatesCardProps {
 
 export function UpdatesCard({ address }: UpdatesCardProps) {
   const { updates, loading, error, refetch } = useUpdates(address);
+  const { locale } = useTranslation();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [selectedUpdates, setSelectedUpdates] = React.useState<Update | null>(
     null,
@@ -52,25 +54,41 @@ export function UpdatesCard({ address }: UpdatesCardProps) {
     }
   };
 
+  // Helper function to get the appropriate title and description based on locale
+  const getLocalizedContent = (update: Update) => {
+    // For English locale, try to use title_en and description_en if they exist
+    if (locale === 'en') {
+      return {
+        title: update.title_en || update.title,
+        description: update.description_en || update.description,
+      };
+    }
+
+    // For other locales, use the default title and description
+    return {
+      title: update.title,
+      description: update.description,
+    };
+  };
+
   return (
     <>
-      <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
-        <div className='mb-4 flex items-center justify-between'>
-          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
-            Updates
-          </h3>
-          <Button.Root
-            variant='neutral'
-            mode='stroke'
-            onClick={() => {
-              setSelectedUpdates(null);
-              setIsEditModalOpen(true);
-            }}
-            size='xsmall'
-          >
-            <RiAddLine className='size-4' />
-          </Button.Root>
-        </div>
+      <div className='flex items-center justify-between'>
+        <h3 className='text-label-lg font-semibold text-text-strong-950'>
+          Updates
+        </h3>
+        <Button.Root
+          variant='primary'
+          mode='filled'
+          onClick={() => setIsEditModalOpen(true)}
+          size='small'
+        >
+          <RiAddLine className='size-4' />
+          Add Update
+        </Button.Root>
+      </div>
+
+      <div className='mt-6'>
         {loading ? (
           <div className='text-paragraph-sm text-text-sub-600'>
             Loading updates...
@@ -81,73 +99,78 @@ export function UpdatesCard({ address }: UpdatesCardProps) {
           </div>
         ) : updates.length > 0 ? (
           <div className='space-y-4'>
-            {updates.map((update) => (
-              <div
-                key={update.id}
-                className='bg-bg-soft-100 relative rounded-lg'
-              >
-                <div className='flex gap-4'>
-                  {update.image ? (
-                    <div className='flex-shrink-0'>
-                      <img
-                        src={update.image}
-                        alt={update.title}
-                        className='h-20 w-20 rounded-lg object-cover'
-                      />
-                    </div>
-                  ) : (
-                    <div className='size-20 flex-shrink-0 rounded-lg border border-stroke-soft-200 text-center text-label-xs'>
-                      no image
-                    </div>
-                  )}
+            {updates.map((update) => {
+              const { title, description } = getLocalizedContent(update);
+              return (
+                <div
+                  key={update.id}
+                  className='bg-bg-soft-100 relative rounded-lg'
+                >
+                  <div className='flex gap-4'>
+                    {update.image ? (
+                      <div className='flex-shrink-0'>
+                        <img
+                          src={update.image}
+                          alt={title}
+                          className='h-20 w-20 rounded-lg object-cover'
+                        />
+                      </div>
+                    ) : (
+                      <div className='size-20 flex-shrink-0 rounded-lg border border-stroke-soft-200 text-center text-label-xs'>
+                        no image
+                      </div>
+                    )}
 
-                  <div className='flex flex-1 flex-col gap-3'>
-                    <h4 className='text-label-sm font-medium text-text-strong-950'>
-                      {update.title}
-                    </h4>
+                    <div className='flex flex-1 flex-col gap-3'>
+                      <h4 className='text-label-sm font-medium text-text-strong-950'>
+                        {title}
+                      </h4>
 
-                    <div className='text-paragraph-sm text-text-strong-950'>
-                      {update.description}
+                      <div className='text-paragraph-sm text-text-strong-950'>
+                        {description}
+                      </div>
+
+                      <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
+                        <span>
+                          {new Date(update.date).toLocaleDateString()}
+                        </span>
+                        <a
+                          href={update.link}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='hover:text-primary-600 max-w-[340px] truncate text-primary-base'
+                          title={update.link}
+                        >
+                          {update.link}
+                        </a>
+                      </div>
                     </div>
 
-                    <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
-                      <span>{new Date(update.date).toLocaleDateString()}</span>
-                      <a
-                        href={update.link}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        className='hover:text-primary-600 max-w-[340px] truncate text-primary-base'
-                        title={update.link}
+                    <div className='flex flex-col gap-2'>
+                      <Button.Root
+                        variant='neutral'
+                        mode='stroke'
+                        onClick={() => {
+                          setSelectedUpdates(update);
+                          setIsEditModalOpen(true);
+                        }}
+                        size='xsmall'
                       >
-                        {update.link}
-                      </a>
+                        <RiEditLine className='size-4' />
+                      </Button.Root>
+                      <Button.Root
+                        variant='error'
+                        mode='stroke'
+                        onClick={() => handleDelete(update.id)}
+                        size='xsmall'
+                      >
+                        <RiDeleteBinLine className='size-4' />
+                      </Button.Root>
                     </div>
-                  </div>
-
-                  <div className='flex flex-col gap-2'>
-                    <Button.Root
-                      variant='neutral'
-                      mode='stroke'
-                      onClick={() => {
-                        setSelectedUpdates(update);
-                        setIsEditModalOpen(true);
-                      }}
-                      size='xsmall'
-                    >
-                      <RiEditLine className='size-4' />
-                    </Button.Root>
-                    <Button.Root
-                      variant='error'
-                      mode='stroke'
-                      onClick={() => handleDelete(update.id)}
-                      size='xsmall'
-                    >
-                      <RiDeleteBinLine className='size-4' />
-                    </Button.Root>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className='flex flex-col items-center justify-center gap-4 py-8'>

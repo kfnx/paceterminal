@@ -168,5 +168,10 @@
     "paymentVerified": "Payment verified!",
     "paymentVerificationFailed": "Payment verification failed.",
     "verificationError": "An error occurred during verification."
+  },
+  "premium": {
+    "premiumContent": "Premium Content",
+    "unlock": "Unlock {feature}",
+    "upgradeToPremium": "Upgrade to Premium"
   }
 }

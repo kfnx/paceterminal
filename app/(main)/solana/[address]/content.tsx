@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from '@/contexts/translation-context';
 import { RiLockLine, RiNewsLine, RiVipDiamondLine } from '@remixicon/react';
 import { useAtom } from 'jotai';
 
@@ -28,6 +29,7 @@ function MemberOnlyPlaceholder({
 }) {
   const [_paymentModalOpen, setPaymentModalOpen] =
     useAtom(paymentModalOpenAtom);
+  const { t } = useTranslation();
 
   return (
     <WidgetPlaceholder title={title} icon={icon}>
@@ -37,10 +39,10 @@ function MemberOnlyPlaceholder({
         </div>
         <div className='text-center'>
           <div className='text-paragraph-sm font-medium text-text-strong-950'>
-            Premium Content
+            {t('premium.premiumContent')}
           </div>
           <div className='mt-1 text-paragraph-xs text-text-sub-600'>
-            Unlock {title.toLowerCase()}
+            {t('premium.unlock').replace('{feature}', title.toLowerCase())}
           </div>
         </div>
         <Button.Root
@@ -48,7 +50,7 @@ function MemberOnlyPlaceholder({
           size='small'
           onClick={() => setPaymentModalOpen(true)}
         >
-          Upgrade to Premium
+          {t('premium.upgradeToPremium')}
         </Button.Root>
       </div>
     </WidgetPlaceholder>
