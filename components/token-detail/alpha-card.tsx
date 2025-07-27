@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 
 import { useAlpha, type Alpha } from '@/hooks/use-alpha';
 import * as Button from '@/components/ui/button';
+import * as SegmentedControl from '@/components/ui/segmented-control';
 
 import { AlphaForm } from '../alpha-form';
 
@@ -22,6 +23,14 @@ export function AlphaCard({ address }: AlphaCardProps) {
   const { locale } = useTranslation();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [selectedAlpha, setSelectedAlpha] = React.useState<Alpha | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = React.useState<'id' | 'en'>(
+    locale as 'id' | 'en',
+  );
+
+  // Update selected language when locale changes
+  React.useEffect(() => {
+    setSelectedLanguage(locale as 'id' | 'en');
+  }, [locale]);
 
   const handleSuccess = () => {
     setIsEditModalOpen(false);
@@ -52,17 +61,17 @@ export function AlphaCard({ address }: AlphaCardProps) {
     }
   };
 
-  // Helper function to get the appropriate title and text based on locale
+  // Helper function to get the appropriate title and text based on selected language
   const getLocalizedContent = (alphaItem: Alpha) => {
-    // For English locale, try to use title_en and text_en if they exist
-    if (locale === 'en') {
+    // For English language tab, try to use title_en and text_en if they exist
+    if (selectedLanguage === 'en') {
       return {
         title: alphaItem.title_en || alphaItem.title || 'Untitled',
         text: alphaItem.text_en || alphaItem.text || '',
       };
     }
 
-    // For other locales, use the default title and text
+    // For Indonesian language tab, use the default title and text
     return {
       title: alphaItem.title || 'Untitled',
       text: alphaItem.text || '',
@@ -88,6 +97,19 @@ export function AlphaCard({ address }: AlphaCardProps) {
             <RiAddLine className='size-4' />
           </Button.Root>
         </div>
+
+        {/* Language Tabs */}
+        <SegmentedControl.Root
+          value={selectedLanguage}
+          onValueChange={(value) => setSelectedLanguage(value as 'id' | 'en')}
+          className='mb-4 w-32'
+        >
+          <SegmentedControl.List>
+            <SegmentedControl.Trigger value='id'>ID</SegmentedControl.Trigger>
+            <SegmentedControl.Trigger value='en'>EN</SegmentedControl.Trigger>
+          </SegmentedControl.List>
+        </SegmentedControl.Root>
+
         {loading ? (
           <div className='text-paragraph-sm text-text-sub-600'>
             Loading alpha...

@@ -156,10 +156,7 @@ export function AlphaForm({
 
             {/* English Title */}
             <div className='flex flex-col gap-2'>
-              <Label.Root>
-                Title (English){' '}
-                <span className='text-text-sub-600'>(Optional)</span>
-              </Label.Root>
+              <Label.Root>Title (English)</Label.Root>
               <Input.Root>
                 <Input.Wrapper>
                   <Input.Input
@@ -174,10 +171,7 @@ export function AlphaForm({
 
             {/* English Content */}
             <div className='flex flex-col gap-2'>
-              <Label.Root>
-                Alpha Content (English){' '}
-                <span className='text-text-sub-600'>(Optional)</span>
-              </Label.Root>
+              <Label.Root>Alpha Content (English)</Label.Root>
               <Textarea.Root
                 value={textEn}
                 onChange={(e) => setTextEn(e.target.value)}

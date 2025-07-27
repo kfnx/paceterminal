@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 
 import { useUpdates, type Update } from '@/hooks/use-updates';
 import * as Button from '@/components/ui/button';
+import * as SegmentedControl from '@/components/ui/segmented-control';
 
 import { UpdatesForm } from '../updates-form';
 
@@ -24,6 +25,14 @@ export function UpdatesCard({ address }: UpdatesCardProps) {
   const [selectedUpdates, setSelectedUpdates] = React.useState<Update | null>(
     null,
   );
+  const [selectedLanguage, setSelectedLanguage] = React.useState<'id' | 'en'>(
+    locale as 'id' | 'en',
+  );
+
+  // Update selected language when locale changes
+  React.useEffect(() => {
+    setSelectedLanguage(locale as 'id' | 'en');
+  }, [locale]);
 
   const handleSuccess = () => {
     setIsEditModalOpen(false);
@@ -54,17 +63,17 @@ export function UpdatesCard({ address }: UpdatesCardProps) {
     }
   };
 
-  // Helper function to get the appropriate title and description based on locale
+  // Helper function to get the appropriate title and description based on selected language
   const getLocalizedContent = (update: Update) => {
-    // For English locale, try to use title_en and description_en if they exist
-    if (locale === 'en') {
+    // For English language tab, try to use title_en and description_en if they exist
+    if (selectedLanguage === 'en') {
       return {
         title: update.title_en || update.title,
         description: update.description_en || update.description,
       };
     }
 
-    // For other locales, use the default title and description
+    // For Indonesian language tab, use the default title and description
     return {
       title: update.title,
       description: update.description,
@@ -73,118 +82,132 @@ export function UpdatesCard({ address }: UpdatesCardProps) {
 
   return (
     <>
-      <div className='flex items-center justify-between'>
-        <h3 className='text-label-lg font-semibold text-text-strong-950'>
-          Updates
-        </h3>
-        <Button.Root
-          variant='primary'
-          mode='filled'
-          onClick={() => setIsEditModalOpen(true)}
-          size='small'
+      <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
+        <div className='mb-4 flex items-center justify-between'>
+          <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
+            Updates
+          </h3>
+          <Button.Root
+            variant='neutral'
+            mode='stroke'
+            onClick={() => setIsEditModalOpen(true)}
+            size='xsmall'
+          >
+            <RiAddLine className='size-4' />
+          </Button.Root>
+        </div>
+
+        {/* Language Tabs */}
+        <SegmentedControl.Root
+          value={selectedLanguage}
+          onValueChange={(value) => setSelectedLanguage(value as 'id' | 'en')}
+          className='w-32'
         >
-          <RiAddLine className='size-4' />
-          Add Update
-        </Button.Root>
-      </div>
+          <SegmentedControl.List>
+            <SegmentedControl.Trigger value='id'>ID</SegmentedControl.Trigger>
+            <SegmentedControl.Trigger value='en'>EN</SegmentedControl.Trigger>
+          </SegmentedControl.List>
+        </SegmentedControl.Root>
 
-      <div className='mt-6'>
-        {loading ? (
-          <div className='text-paragraph-sm text-text-sub-600'>
-            Loading updates...
-          </div>
-        ) : error ? (
-          <div className='text-paragraph-sm text-red-600'>
-            Error loading updates: {error}
-          </div>
-        ) : updates.length > 0 ? (
-          <div className='space-y-4'>
-            {updates.map((update) => {
-              const { title, description } = getLocalizedContent(update);
-              return (
-                <div
-                  key={update.id}
-                  className='bg-bg-soft-100 relative rounded-lg'
-                >
-                  <div className='flex gap-4'>
-                    {update.image ? (
-                      <div className='flex-shrink-0'>
-                        <img
-                          src={update.image}
-                          alt={title}
-                          className='h-20 w-20 rounded-lg object-cover'
-                        />
+        <div className='mt-6'>
+          {loading ? (
+            <div className='text-paragraph-sm text-text-sub-600'>
+              Loading updates...
+            </div>
+          ) : error ? (
+            <div className='text-paragraph-sm text-red-600'>
+              Error loading updates: {error}
+            </div>
+          ) : updates.length > 0 ? (
+            <div className='space-y-4'>
+              {updates.map((update) => {
+                const { title, description } = getLocalizedContent(update);
+                return (
+                  <div
+                    key={update.id}
+                    className='bg-bg-soft-100 relative rounded-lg'
+                  >
+                    <div className='flex gap-4'>
+                      {update.image ? (
+                        <div className='flex-shrink-0'>
+                          <img
+                            src={update.image}
+                            alt={title}
+                            className='h-20 w-20 rounded-lg object-cover'
+                          />
+                        </div>
+                      ) : (
+                        <div className='size-20 flex-shrink-0 rounded-lg border border-stroke-soft-200 text-center text-label-xs'>
+                          no image
+                        </div>
+                      )}
+
+                      <div className='flex flex-1 flex-col gap-3'>
+                        <h4 className='text-label-sm font-medium text-text-strong-950'>
+                          {title}
+                        </h4>
+
+                        <div className='text-paragraph-sm text-text-strong-950'>
+                          {description}
+                        </div>
+
+                        <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
+                          <span>
+                            {new Date(update.date).toLocaleDateString()}
+                          </span>
+                          <a
+                            href={update.link}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='hover:text-primary-600 max-w-[340px] truncate text-primary-base'
+                            title={update.link}
+                          >
+                            {update.link}
+                          </a>
+                        </div>
                       </div>
-                    ) : (
-                      <div className='size-20 flex-shrink-0 rounded-lg border border-stroke-soft-200 text-center text-label-xs'>
-                        no image
-                      </div>
-                    )}
 
-                    <div className='flex flex-1 flex-col gap-3'>
-                      <h4 className='text-label-sm font-medium text-text-strong-950'>
-                        {title}
-                      </h4>
-
-                      <div className='text-paragraph-sm text-text-strong-950'>
-                        {description}
-                      </div>
-
-                      <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
-                        <span>
-                          {new Date(update.date).toLocaleDateString()}
-                        </span>
-                        <a
-                          href={update.link}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='hover:text-primary-600 max-w-[340px] truncate text-primary-base'
-                          title={update.link}
+                      <div className='flex flex-col gap-2'>
+                        <Button.Root
+                          variant='neutral'
+                          mode='stroke'
+                          onClick={() => {
+                            setSelectedUpdates(update);
+                            setIsEditModalOpen(true);
+                          }}
+                          size='xsmall'
                         >
-                          {update.link}
-                        </a>
+                          <RiEditLine className='size-4' />
+                        </Button.Root>
+                        <Button.Root
+                          variant='error'
+                          mode='stroke'
+                          onClick={() => handleDelete(update.id)}
+                          size='xsmall'
+                        >
+                          <RiDeleteBinLine className='size-4' />
+                        </Button.Root>
                       </div>
-                    </div>
-
-                    <div className='flex flex-col gap-2'>
-                      <Button.Root
-                        variant='neutral'
-                        mode='stroke'
-                        onClick={() => {
-                          setSelectedUpdates(update);
-                          setIsEditModalOpen(true);
-                        }}
-                        size='xsmall'
-                      >
-                        <RiEditLine className='size-4' />
-                      </Button.Root>
-                      <Button.Root
-                        variant='error'
-                        mode='stroke'
-                        onClick={() => handleDelete(update.id)}
-                        size='xsmall'
-                      >
-                        <RiDeleteBinLine className='size-4' />
-                      </Button.Root>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className='flex flex-col items-center justify-center gap-4 py-8'>
-            <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
-              <RiCoinLine className='size-8 text-text-sub-600' />
+                );
+              })}
             </div>
-            <div className='text-center'>
-              <p className='text-paragraph-sm text-text-sub-600'>
-                No updates found for this token.
-              </p>
+          ) : (
+            <div className='flex flex-col items-center justify-center gap-4 py-8'>
+              <div className='flex size-16 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
+                <RiCoinLine className='size-8 text-text-sub-600' />
+              </div>
+              <div className='text-center'>
+                <p className='text-paragraph-sm text-text-sub-600'>
+                  No updates found for this token.
+                </p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+
       <UpdatesForm
         update={selectedUpdates || undefined}
         tokenAddress={address}
