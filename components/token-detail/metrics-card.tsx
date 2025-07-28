@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from '@/contexts/translation-context';
 import {
   RiAddLine,
   RiCoinLine,
@@ -9,6 +10,7 @@ import { toast } from 'sonner';
 
 import { useMetrics, type Metric } from '@/hooks/use-metrics';
 import * as Button from '@/components/ui/button';
+import * as SegmentedControl from '@/components/ui/segmented-control';
 
 import { MetricsForm } from '../metrics-form';
 
@@ -18,10 +20,19 @@ interface MetricsCardProps {
 
 export function MetricsCard({ address }: MetricsCardProps) {
   const { metrics, loading, error, refetch } = useMetrics(address);
+  const { locale } = useTranslation();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [selectedMetric, setSelectedMetric] = React.useState<Metric | null>(
     null,
   );
+  const [selectedLanguage, setSelectedLanguage] = React.useState<'id' | 'en'>(
+    locale as 'id' | 'en',
+  );
+
+  // Update selected language when locale changes
+  React.useEffect(() => {
+    setSelectedLanguage(locale as 'id' | 'en');
+  }, [locale]);
 
   const handleSuccess = () => {
     setIsEditModalOpen(false);
@@ -52,6 +63,25 @@ export function MetricsCard({ address }: MetricsCardProps) {
     }
   };
 
+  // Helper function to get the appropriate label, value, and description based on selected language
+  const getLocalizedContent = (metric: Metric) => {
+    // For English language tab, try to use label_en, value_en, and description_en if they exist
+    if (selectedLanguage === 'en') {
+      return {
+        label: metric.label_en || metric.label,
+        value: metric.value_en || metric.value,
+        description: metric.description_en || metric.description,
+      };
+    }
+
+    // For Indonesian language tab, use the default label, value, and description
+    return {
+      label: metric.label,
+      value: metric.value,
+      description: metric.description,
+    };
+  };
+
   return (
     <>
       <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
@@ -71,6 +101,19 @@ export function MetricsCard({ address }: MetricsCardProps) {
             <RiAddLine className='size-4' />
           </Button.Root>
         </div>
+
+        {/* Language Tabs */}
+        <SegmentedControl.Root
+          value={selectedLanguage}
+          onValueChange={(value) => setSelectedLanguage(value as 'id' | 'en')}
+          className='mb-4 w-32'
+        >
+          <SegmentedControl.List>
+            <SegmentedControl.Trigger value='id'>ID</SegmentedControl.Trigger>
+            <SegmentedControl.Trigger value='en'>EN</SegmentedControl.Trigger>
+          </SegmentedControl.List>
+        </SegmentedControl.Root>
+
         {loading ? (
           <div className='text-paragraph-sm text-text-sub-600'>
             Loading metrics...
@@ -80,63 +123,66 @@ export function MetricsCard({ address }: MetricsCardProps) {
             Error loading metrics: {error}
           </div>
         ) : metrics.length > 0 ? (
-          <div className='grid gap-6 md:grid-cols-2'>
-            {metrics.map((metric: Metric, index: number) => (
-              <div
-                key={metric.id}
-                className='bg-bg-soft-100 relative rounded-lg'
-              >
-                <div className='flex items-start justify-between'>
-                  <div className='flex-1'>
-                    <div className='mb-2 flex items-center justify-between'>
-                      <h4 className='text-label-sm font-medium text-text-strong-950'>
-                        {metric.label}
-                      </h4>
+          <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+            {metrics.map((metric: Metric, index: number) => {
+              const localizedContent = getLocalizedContent(metric);
+              return (
+                <div key={metric.id} className='relative rounded-lg p-2'>
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1'>
+                      <div className='mb-2 flex items-center justify-between gap-2'>
+                        <h4 className='text-label-sm font-medium text-text-strong-950'>
+                          {localizedContent.label}
+                        </h4>
+                      </div>
+                      <div className='mb-2 text-paragraph-lg font-semibold text-text-strong-950'>
+                        {localizedContent.value}
+                      </div>
+                      {localizedContent.description && (
+                        <div className='mb-2 text-paragraph-xs text-text-sub-600'>
+                          {localizedContent.description}
+                        </div>
+                      )}
+                      {metric.source && (
+                        <p className='text-paragraph-xs text-text-sub-600'>
+                          Source: {metric.source}
+                        </p>
+                      )}
+                      <p className='text-paragraph-xs text-text-soft-400'>
+                        {new Date(metric.created_at).toLocaleDateString()}
+                      </p>
+
                       {metric.ordering && (
-                        <span className='text-paragraph-xs text-text-sub-600'>
+                        <p className='text-paragraph-xs text-text-soft-400'>
                           Order: {metric.ordering}
-                        </span>
+                        </p>
                       )}
                     </div>
-                    <div className='mb-2 text-paragraph-lg font-semibold text-text-strong-950'>
-                      {metric.value}
+                    <div className='ml-3 flex w-fit flex-col gap-2'>
+                      <Button.Root
+                        variant='neutral'
+                        mode='stroke'
+                        onClick={() => {
+                          setSelectedMetric(metric);
+                          setIsEditModalOpen(true);
+                        }}
+                        size='xsmall'
+                      >
+                        <RiEditLine className='size-4' />
+                      </Button.Root>
+                      <Button.Root
+                        variant='error'
+                        mode='stroke'
+                        onClick={() => handleDelete(metric.id)}
+                        size='xsmall'
+                      >
+                        <RiDeleteBinLine className='size-4' />
+                      </Button.Root>
                     </div>
-                    {metric.description && (
-                      <div className='mb-2 text-paragraph-xs text-text-sub-600'>
-                        {metric.description}
-                      </div>
-                    )}
-                    <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
-                      <span>
-                        {new Date(metric.created_at).toLocaleDateString()}
-                      </span>
-                      {metric.source && <span>Source: {metric.source}</span>}
-                    </div>
-                  </div>
-                  <div className='ml-3 flex flex-col gap-2'>
-                    <Button.Root
-                      variant='neutral'
-                      mode='stroke'
-                      onClick={() => {
-                        setSelectedMetric(metric);
-                        setIsEditModalOpen(true);
-                      }}
-                      size='xsmall'
-                    >
-                      <RiEditLine className='size-4' />
-                    </Button.Root>
-                    <Button.Root
-                      variant='error'
-                      mode='stroke'
-                      onClick={() => handleDelete(metric.id)}
-                      size='xsmall'
-                    >
-                      <RiDeleteBinLine className='size-4' />
-                    </Button.Root>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className='flex flex-col items-center justify-center gap-4 py-8'>

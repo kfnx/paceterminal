@@ -158,34 +158,43 @@ export type Database = {
           address: string
           created_at: string
           description: string | null
+          description_en: string | null
           id: number
           label: string
+          label_en: string | null
           ordering: number | null
           source: string | null
           updated_at: string
           value: string
+          value_en: string | null
         }
         Insert: {
           address: string
           created_at?: string
           description?: string | null
+          description_en?: string | null
           id?: number
           label: string
+          label_en?: string | null
           ordering?: number | null
           source?: string | null
           updated_at?: string
           value: string
+          value_en?: string | null
         }
         Update: {
           address?: string
           created_at?: string
           description?: string | null
+          description_en?: string | null
           id?: number
           label?: string
+          label_en?: string | null
           ordering?: number | null
           source?: string | null
           updated_at?: string
           value?: string
+          value_en?: string | null
         }
         Relationships: [
           {

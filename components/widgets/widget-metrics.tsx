@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useParams } from 'next/navigation';
+import { useTranslation } from '@/contexts/translation-context';
 import { RiAddLine, RiLineChartLine } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
@@ -18,12 +19,22 @@ export default function WidgetMetrics({
   const params = useParams();
   const address = params.address as string;
   const { metrics, loading } = useMetrics(address);
+  const { locale } = useTranslation();
 
   // Group metrics into rows of 3 for display
   const metricRows = [];
   for (let i = 0; i < metrics.length; i += 3) {
     metricRows.push(metrics.slice(i, i + 3));
   }
+
+  // Helper function to get the appropriate field based on locale
+  const getLocalizedField = (metric: any, field: string) => {
+    if (locale === 'en') {
+      const englishField = `${field}_en`;
+      return metric[englishField] || metric[field];
+    }
+    return metric[field];
+  };
 
   return (
     <WidgetBox.Root {...rest} id='metrics'>
@@ -55,31 +66,29 @@ export default function WidgetMetrics({
                 {row.map((metric) => (
                   <div
                     key={metric.id}
-                    className='bg-bg-soft-100 rounded-lg p-4'
+                    className='bg-bg-soft-100 flex flex-col rounded-lg p-4'
                   >
                     <div className='mb-2'>
                       <h4 className='text-label-sm font-medium text-text-strong-950'>
-                        {metric.label}
+                        {getLocalizedField(metric, 'label')}
                       </h4>
                     </div>
-                    <div className='mb-2 text-paragraph-lg font-semibold text-text-strong-950'>
-                      {metric.value}
+                    <div className='mb-2 flex-1 text-paragraph-lg font-semibold text-text-strong-950'>
+                      {getLocalizedField(metric, 'value')}
                     </div>
-                    {metric.description && (
+                    {getLocalizedField(metric, 'description') && (
                       <div className='mb-2 text-paragraph-xs text-text-sub-600'>
-                        {metric.description}
+                        {getLocalizedField(metric, 'description')}
                       </div>
                     )}
-                    <div className='flex items-center justify-between text-paragraph-xs text-text-sub-600'>
-                      <span>
-                        {new Date(metric.created_at).toLocaleDateString()}
+                    {metric.source && (
+                      <span className='text-paragraph-xs text-text-sub-600'>
+                        Source: {metric.source}
                       </span>
-                      {metric.source && (
-                        <span className='text-right'>
-                          Source: {metric.source}
-                        </span>
-                      )}
-                    </div>
+                    )}
+                    <span className='text-paragraph-xs text-text-sub-600'>
+                      {new Date(metric.created_at).toLocaleDateString()}
+                    </span>
                   </div>
                 ))}
               </div>
