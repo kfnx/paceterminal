@@ -12,7 +12,7 @@ export async function fetchMetrics(address: string): Promise<Metric[]> {
     .from('metrics_static')
     .select('*')
     .eq('address', address)
-    .order('created_at', { ascending: false });
+    .order('ordering', { ascending: true });
 
   if (error) {
     throw new Error(`Failed to fetch metrics: ${error.message}`);

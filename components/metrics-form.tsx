@@ -32,6 +32,7 @@ export function MetricsForm({
     metric?.description || '',
   );
   const [source, setSource] = React.useState(metric?.source || '');
+  const [order, setOrder] = React.useState(metric?.ordering?.toString() || '');
 
   // Reset form when metric changes
   React.useEffect(() => {
@@ -39,6 +40,7 @@ export function MetricsForm({
     setValue(metric?.value || '');
     setDescription(metric?.description || '');
     setSource(metric?.source || '');
+    setOrder(metric?.ordering?.toString() || '');
   }, [metric]);
 
   const handleClose = () => {
@@ -72,6 +74,7 @@ export function MetricsForm({
           value: value.trim(),
           description: description.trim() || null,
           source: source.trim() || null,
+          ordering: order.trim() ? parseInt(order.trim(), 10) : null,
         }),
       });
 
@@ -86,6 +89,7 @@ export function MetricsForm({
       setValue('');
       setDescription('');
       setSource('');
+      setOrder('');
     } catch (error) {
       console.error('Error saving metric:', error);
     } finally {
@@ -138,6 +142,24 @@ export function MetricsForm({
                       setValue(e.target.value)
                     }
                     placeholder='Enter metric value (e.g., $1.2M, 150K)'
+                    disabled={isSubmitting}
+                  />
+                </Input.Wrapper>
+              </Input.Root>
+            </div>
+
+            {/* Order */}
+            <div className='flex flex-col gap-1'>
+              <Label.Root>Order</Label.Root>
+              <Input.Root>
+                <Input.Wrapper>
+                  <Input.Input
+                    type='number'
+                    value={order}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setOrder(e.target.value)
+                    }
+                    placeholder='Enter display order (e.g., 1, 2, 3)'
                     disabled={isSubmitting}
                   />
                 </Input.Wrapper>

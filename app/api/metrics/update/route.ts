@@ -5,7 +5,8 @@ import { createClient } from '@/lib/supabase-server';
 export async function PUT(request: NextRequest) {
   try {
     const supabase = createClient();
-    const { id, label, value, description, source } = await request.json();
+    const { id, label, value, description, source, ordering } =
+      await request.json();
 
     if (!id || !label || !value) {
       return NextResponse.json(
@@ -21,6 +22,7 @@ export async function PUT(request: NextRequest) {
         value,
         description: description || null,
         source: source || null,
+        ordering: ordering || null,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)

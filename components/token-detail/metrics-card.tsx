@@ -81,7 +81,7 @@ export function MetricsCard({ address }: MetricsCardProps) {
           </div>
         ) : metrics.length > 0 ? (
           <div className='grid gap-6 md:grid-cols-2'>
-            {metrics.map((metric: Metric) => (
+            {metrics.map((metric: Metric, index: number) => (
               <div
                 key={metric.id}
                 className='bg-bg-soft-100 relative rounded-lg'
@@ -92,6 +92,11 @@ export function MetricsCard({ address }: MetricsCardProps) {
                       <h4 className='text-label-sm font-medium text-text-strong-950'>
                         {metric.label}
                       </h4>
+                      {metric.ordering && (
+                        <span className='text-paragraph-xs text-text-sub-600'>
+                          Order: {metric.ordering}
+                        </span>
+                      )}
                     </div>
                     <div className='mb-2 text-paragraph-lg font-semibold text-text-strong-950'>
                       {metric.value}
