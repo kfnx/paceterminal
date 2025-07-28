@@ -4,6 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import {
   RiArrowDownSFill,
+  RiArrowGoBackLine,
   RiArrowLeftDoubleLine,
   RiArrowLeftSLine,
   RiArrowRightDoubleLine,
@@ -13,7 +14,6 @@ import {
   RiDeleteBinLine,
   RiEditLine,
   RiExpandUpDownFill,
-  RiMore2Line,
 } from '@remixicon/react';
 import {
   flexRender,
@@ -23,7 +23,7 @@ import {
   type ColumnDef,
   type SortingState,
 } from '@tanstack/react-table';
-import { atom, useSetAtom } from 'jotai';
+import { atom } from 'jotai';
 import { toast } from 'sonner';
 
 import { supabase } from '@/lib/supabase';
@@ -57,8 +57,11 @@ function ActionCell({
   row: any;
   onDelete: (token: Token) => void;
 }) {
-  const handleDelete = () => {
-    if (confirm(`Are you sure you want to delete "${row.original.name}"?`)) {
+  const isArchived = row.original.archived_at !== null;
+
+  const handleArchiveToggle = () => {
+    const action = isArchived ? 'unarchive' : 'archive';
+    if (confirm(`Are you sure you want to ${action} "${row.original.name}"?`)) {
       onDelete(row.original);
     }
   };
@@ -79,10 +82,10 @@ function ActionCell({
         variant='neutral'
         mode='ghost'
         size='xsmall'
-        onClick={handleDelete}
-        title='Delete token'
+        onClick={handleArchiveToggle}
+        title={isArchived ? 'Unarchive token' : 'Archive token'}
       >
-        <Button.Icon as={RiDeleteBinLine} />
+        <Button.Icon as={isArchived ? RiArrowGoBackLine : RiDeleteBinLine} />
       </Button.Root>
     </div>
   );
@@ -267,6 +270,33 @@ const columns: ColumnDef<Token>[] = [
     ),
   },
   {
+    id: 'status',
+    accessorKey: 'archived_at',
+    header: ({ column }) => (
+      <div className='flex items-center gap-0.5'>
+        Status
+        <button
+          type='button'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          {getSortingIcon(column.getIsSorted())}
+        </button>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const isArchived = row.original.archived_at !== null;
+      return (
+        <div
+          className={`text-paragraph-sm ${
+            isArchived ? 'text-red-600' : 'text-green-600'
+          }`}
+        >
+          {isArchived ? 'Archived' : 'Active'}
+        </div>
+      );
+    },
+  },
+  {
     id: 'actions',
     enableHiding: false,
     cell: ({ row, table }) => (
@@ -321,12 +351,19 @@ export function TokensTable({
         setIsEditModalOpen(true);
       },
       onDelete: async (token: Token) => {
-        if (confirm(`Seriusly delete "${token.name}"?`)) {
+        const isArchived = token.archived_at !== null;
+        const action = isArchived ? 'unarchive' : 'archive';
+
+        if (confirm(`Seriously ${action} "${token.name}"?`)) {
           setIsDeleting(true);
           try {
+            const updateData = isArchived
+              ? { archived_at: null }
+              : { archived_at: new Date().toISOString() };
+
             const { error } = await supabase
               .from('tokens')
-              .delete()
+              .update(updateData)
               .eq('address', token.address);
 
             if (error) throw error;
@@ -334,8 +371,8 @@ export function TokensTable({
             // Refresh the data instead of reloading the page
             onRefetch?.();
           } catch (err) {
-            console.error('Error deleting token:', err);
-            alert('Failed to delete token. Please try again.');
+            console.error(`Error ${action}ing token:`, err);
+            alert(`Failed to ${action} token. Please try again.`);
           } finally {
             setIsDeleting(false);
           }

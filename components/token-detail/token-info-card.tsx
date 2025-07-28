@@ -27,7 +27,7 @@ const getTierLabel = (tier: number) => {
 };
 
 export function TokenInfoCard({ address }: TokenInfoCardProps) {
-  const { data: token, isLoading, error, refetch } = useToken(address);
+  const { data: token, isLoading, error, refetch } = useToken(address, true);
   const { locale } = useTranslation();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 

@@ -63,7 +63,7 @@ export function TokenHeader({ token }: TokenHeaderProps) {
 
       <Link
         href='/admin/tokens'
-        className='flex items-center gap-2 text-text-sub-600 hover:text-text-strong-950 transition-colors p-6'
+        className='flex items-center gap-2 p-6 text-text-sub-600 transition-colors hover:text-text-strong-950'
       >
         <RiArrowLeftLine className='size-4' />
         Back to Manage Token

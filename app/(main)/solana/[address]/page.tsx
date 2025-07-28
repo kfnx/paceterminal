@@ -9,6 +9,7 @@ export async function generateStaticParams() {
     const { data: tokens } = await supabase
       .from('tokens')
       .select('address')
+      .is('archived_at', null)
       .order('ordering', { ascending: true });
 
     return (
@@ -31,6 +32,7 @@ export default async function SolanaTokenPage({
     .from('tokens')
     .select('*')
     .eq('address', params.address)
+    .is('archived_at', null)
     .single();
 
   if (error || !token) {

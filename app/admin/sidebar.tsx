@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   RiArrowRightSLine,
   RiCoinLine,
@@ -115,7 +116,31 @@ export function SidebarHeader({
 }
 
 function MenuItems({ collapsed }: { collapsed: boolean }) {
-  const selected = false;
+  const pathname = usePathname();
+
+  const menuItems = [
+    {
+      href: '/admin/tokens',
+      label: 'Manage Tokens',
+      icon: RiCoinLine,
+    },
+    {
+      href: '/admin/ads',
+      label: 'Manage Ads',
+      icon: RiMoneyDollarCircleLine,
+    },
+    {
+      href: '/admin/members',
+      label: 'Members',
+      icon: RiUserStarLine,
+    },
+    {
+      href: '/admin/users',
+      label: 'User Management',
+      icon: RiUserLine,
+    },
+  ];
+
   return (
     <div className='space-y-2'>
       <div
@@ -126,180 +151,58 @@ function MenuItems({ collapsed }: { collapsed: boolean }) {
         Menu
       </div>
       <div className='space-y-1'>
-        <Link
-          href={'/admin/tokens'}
-          aria-current={true}
-          aria-disabled={false}
-          className={cn(
-            'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
-            'transition-default',
-            'aria-[current=page]:bg-bg-weak-50',
-            'aria-disabled:pointer-events-none aria-disabled:opacity-50',
-            {
-              'w-9 px-2': collapsed,
-              'w-full px-3': !collapsed,
-            },
-          )}
-        >
-          <div
-            className={cn(
-              'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
-              {
-                '-left-[22px]': collapsed,
-                '-left-5': !collapsed,
-                'scale-100': selected,
-                'scale-0': !selected,
-              },
-            )}
-          />
-          {/* {Icon} */}
-          <RiCoinLine
-            className={cn(
-              'transition-default size-5 shrink-0 text-text-sub-600',
-              'group-aria-[current=page]:text-primary-base',
-            )}
-          />
+        {menuItems.map((item) => {
+          const isActive =
+            pathname === item.href || pathname.startsWith(item.href + '/');
+          const Icon = item.icon;
 
-          <div
-            className='flex w-[180px] shrink-0 items-center gap-2'
-            data-hide-collapsed
-          >
-            <div className='flex-1 text-label-sm'>Manage Tokens</div>
-            {selected && (
-              <RiArrowRightSLine className='size-5 text-text-sub-600' />
-            )}
-          </div>
-        </Link>
-        <Link
-          href={'/admin/ads'}
-          aria-current={true}
-          aria-disabled={false}
-          className={cn(
-            'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
-            'transition-default',
-            'aria-[current=page]:bg-bg-weak-50',
-            'aria-disabled:pointer-events-none aria-disabled:opacity-50',
-            {
-              'w-9 px-2': collapsed,
-              'w-full px-3': !collapsed,
-            },
-          )}
-        >
-          <div
-            className={cn(
-              'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
-              {
-                '-left-[22px]': collapsed,
-                '-left-5': !collapsed,
-                'scale-100': selected,
-                'scale-0': !selected,
-              },
-            )}
-          />
-          {/* {Icon} */}
-          <RiMoneyDollarCircleLine
-            className={cn(
-              'transition-default size-5 shrink-0 text-text-sub-600',
-              'group-aria-[current=page]:text-primary-base',
-            )}
-          />
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={isActive ? 'page' : undefined}
+              aria-disabled={false}
+              className={cn(
+                'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
+                'transition-default',
+                'aria-[current=page]:bg-bg-weak-50',
+                'aria-disabled:pointer-events-none aria-disabled:opacity-50',
+                {
+                  'w-9 px-2': collapsed,
+                  'w-full px-3': !collapsed,
+                },
+              )}
+            >
+              <div
+                className={cn(
+                  'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
+                  {
+                    '-left-[22px]': collapsed,
+                    '-left-5': !collapsed,
+                    'scale-100': isActive,
+                    'scale-0': !isActive,
+                  },
+                )}
+              />
+              <Icon
+                className={cn(
+                  'transition-default size-5 shrink-0 text-text-sub-600',
+                  'group-aria-[current=page]:text-primary-base',
+                )}
+              />
 
-          <div
-            className='flex w-[180px] shrink-0 items-center gap-2'
-            data-hide-collapsed
-          >
-            <div className='flex-1 text-label-sm'>Manage Ads</div>
-            {selected && (
-              <RiArrowRightSLine className='size-5 text-text-sub-600' />
-            )}
-          </div>
-        </Link>
-        <Link
-          href={'/admin/members'}
-          aria-current={true}
-          aria-disabled={false}
-          className={cn(
-            'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
-            'transition-default',
-            'aria-[current=page]:bg-bg-weak-50',
-            'aria-disabled:pointer-events-none aria-disabled:opacity-50',
-            {
-              'w-9 px-2': collapsed,
-              'w-full px-3': !collapsed,
-            },
-          )}
-        >
-          <div
-            className={cn(
-              'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
-              {
-                '-left-[22px]': collapsed,
-                '-left-5': !collapsed,
-                'scale-100': selected,
-                'scale-0': !selected,
-              },
-            )}
-          />
-          <RiUserStarLine
-            className={cn(
-              'transition-default size-5 shrink-0 text-text-sub-600',
-              'group-aria-[current=page]:text-primary-base',
-            )}
-          />
-
-          <div
-            className='flex w-[180px] shrink-0 items-center gap-2'
-            data-hide-collapsed
-          >
-            <div className='flex-1 text-label-sm'>Members</div>
-            {selected && (
-              <RiArrowRightSLine className='size-5 text-text-sub-600' />
-            )}
-          </div>
-        </Link>
-        <Link
-          href={'/admin/users'}
-          aria-current={true}
-          aria-disabled={false}
-          className={cn(
-            'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
-            'transition-default',
-            'aria-[current=page]:bg-bg-weak-50',
-            'aria-disabled:pointer-events-none aria-disabled:opacity-50',
-            {
-              'w-9 px-2': collapsed,
-              'w-full px-3': !collapsed,
-            },
-          )}
-        >
-          <div
-            className={cn(
-              'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
-              {
-                '-left-[22px]': collapsed,
-                '-left-5': !collapsed,
-                'scale-100': selected,
-                'scale-0': !selected,
-              },
-            )}
-          />
-          <RiUserLine
-            className={cn(
-              'transition-default size-5 shrink-0 text-text-sub-600',
-              'group-aria-[current=page]:text-primary-base',
-            )}
-          />
-
-          <div
-            className='flex w-[180px] shrink-0 items-center gap-2'
-            data-hide-collapsed
-          >
-            <div className='flex-1 text-label-sm'>User Management</div>
-            {selected && (
-              <RiArrowRightSLine className='size-5 text-text-sub-600' />
-            )}
-          </div>
-        </Link>
+              <div
+                className='flex w-[180px] shrink-0 items-center gap-2'
+                data-hide-collapsed
+              >
+                <div className='flex-1 text-label-sm'>{item.label}</div>
+                {isActive && (
+                  <RiArrowRightSLine className='size-5 text-text-sub-600' />
+                )}
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

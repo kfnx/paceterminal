@@ -16,6 +16,7 @@ export function useAllTokens() {
       const { data, error } = await supabase
         .from('tokens')
         .select('*')
+        .is('archived_at', null)
         .order('ordering', { ascending: true });
 
       if (error) {

@@ -20,7 +20,7 @@ interface ManageTokenProps {
 }
 
 export function ManageToken({ address }: ManageTokenProps) {
-  const { data: token, isLoading, error } = useToken(address);
+  const { data: token, isLoading, error } = useToken(address, true);
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   const handleCreateSuccess = () => {

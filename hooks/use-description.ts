@@ -12,6 +12,7 @@ const fetchDescription = async (
     .from('tokens')
     .select('description, description_en')
     .eq('address', address)
+    .is('archived_at', null)
     .single();
 
   if (error) {

@@ -5,15 +5,17 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import type { Token } from '@/hooks/use-tokens';
 
-export function useToken(address: string) {
+export function useToken(address: string, includeArchived = false) {
   return useQuery({
-    queryKey: ['token', address],
+    queryKey: ['token', address, includeArchived],
     queryFn: async (): Promise<Token | null> => {
-      const { data, error } = await supabase
-        .from('tokens')
-        .select('*')
-        .eq('address', address)
-        .single();
+      let query = supabase.from('tokens').select('*').eq('address', address);
+
+      if (!includeArchived) {
+        query = query.is('archived_at', null);
+      }
+
+      const { data, error } = await query.single();
 
       if (error) {
         if (error.code === 'PGRST116') {

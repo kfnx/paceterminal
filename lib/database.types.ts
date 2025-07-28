@@ -240,6 +240,7 @@ export type Database = {
           address: string
           created_at: string
           description: string
+          description_en: string | null
           id: number
           image: string
           updated_at: string | null
@@ -248,6 +249,7 @@ export type Database = {
           address: string
           created_at?: string
           description: string
+          description_en?: string | null
           id?: number
           image: string
           updated_at?: string | null
@@ -256,6 +258,7 @@ export type Database = {
           address?: string
           created_at?: string
           description?: string
+          description_en?: string | null
           id?: number
           image?: string
           updated_at?: string | null
@@ -273,6 +276,7 @@ export type Database = {
       tokens: {
         Row: {
           address: string
+          archived_at: string | null
           created_at: string
           created_by: string | null
           description: string | null
@@ -286,6 +290,7 @@ export type Database = {
         }
         Insert: {
           address: string
+          archived_at?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
@@ -299,6 +304,7 @@ export type Database = {
         }
         Update: {
           address?: string
+          archived_at?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
