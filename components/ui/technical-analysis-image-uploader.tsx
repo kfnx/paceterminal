@@ -16,6 +16,7 @@ import { S3Image } from '@/components/ui/s3-image';
 interface TechnicalAnalysisImageUploaderProps {
   tokenAddress: string;
   description: string;
+  descriptionEn?: string;
   currentImageUrl?: string;
   onImageUploaded: (imageUrl: string) => void;
   disabled?: boolean;
@@ -38,6 +39,7 @@ interface UploadedImage {
 export function TechnicalAnalysisImageUploader({
   tokenAddress,
   description,
+  descriptionEn = '',
   currentImageUrl,
   onImageUploaded,
   disabled = false,
@@ -116,6 +118,9 @@ export function TechnicalAnalysisImageUploader({
       createFormData.append('tokenAddress', tokenAddress);
       createFormData.append('imageUrl', uploadData.url);
       createFormData.append('description', description.trim());
+      if (descriptionEn.trim()) {
+        createFormData.append('description_en', descriptionEn.trim());
+      }
 
       const createResponse = await fetch('/api/technical-analysis/create', {
         method: 'POST',

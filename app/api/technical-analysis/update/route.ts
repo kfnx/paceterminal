@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 import { createServerSupabaseClient } from '@/lib/supabase';
 
+const UpdateTechnicalAnalysisSchema = z.object({
+  id: z.number().int('ID must be an integer'),
+  description: z.string().min(1, 'Description is required'),
+  description_en: z.string().nullable().optional(),
+});
+
 export async function PUT(request: NextRequest) {
   try {
-    const { id, description } = await request.json();
+    const body = await request.json();
+    const { id, description, description_en } =
+      UpdateTechnicalAnalysisSchema.parse(body);
 
     if (!id) {
       return NextResponse.json({ error: 'No ID provided' }, { status: 400 });
@@ -20,11 +29,18 @@ export async function PUT(request: NextRequest) {
     // Create server-side Supabase client with service role key
     const supabase = createServerSupabaseClient();
 
+    const updateData: any = {
+      description: description || null,
+    };
+
+    // Add English description if it exists
+    if (description_en !== undefined) {
+      updateData.description_en = description_en || null;
+    }
+
     const { data, error } = await supabase
       .from('technical_analysis')
-      .update({
-        description: description || null,
-      })
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();
@@ -43,6 +59,14 @@ export async function PUT(request: NextRequest) {
     });
   } catch (error) {
     console.error('Technical analysis update API error:', error);
+
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: error.errors[0]?.message || 'Invalid request data' },
+        { status: 400 },
+      );
+    }
+
     const errorMessage =
       error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(

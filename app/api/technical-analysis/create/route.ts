@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 import { createServerSupabaseClient } from '@/lib/supabase';
+
+const CreateTechnicalAnalysisSchema = z.object({
+  tokenAddress: z.string().min(1, 'Token address is required'),
+  imageUrl: z.string().min(1, 'Image URL is required'),
+  description: z.string().min(1, 'Description is required'),
+  description_en: z.string().nullable().optional(),
+});
 
 /**
  * Creates technical analysis record in database
@@ -9,16 +17,24 @@ async function createTechnicalAnalysisRecord(
   tokenAddress: string,
   imageUrl: string,
   description: string,
+  description_en?: string | null,
 ) {
   const supabase = createServerSupabaseClient();
 
+  const insertData: any = {
+    address: tokenAddress,
+    image: imageUrl,
+    description: description,
+  };
+
+  // Add English description if it exists
+  if (description_en !== undefined) {
+    insertData.description_en = description_en || null;
+  }
+
   const { data, error } = await supabase
     .from('technical_analysis')
-    .insert({
-      address: tokenAddress,
-      image: imageUrl,
-      description: description,
-    })
+    .insert(insertData)
     .select()
     .single();
 
@@ -36,6 +52,7 @@ export async function POST(request: NextRequest) {
     const tokenAddress = formData.get('tokenAddress') as string | null;
     const imageUrl = formData.get('imageUrl') as string | null;
     const description = formData.get('description') as string | null;
+    const description_en = formData.get('description_en') as string | null;
 
     if (!tokenAddress) {
       return NextResponse.json(
@@ -58,11 +75,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create database record
-    const technicalAnalysisRecord = await createTechnicalAnalysisRecord(
+    // Validate the data
+    const validatedData = CreateTechnicalAnalysisSchema.parse({
       tokenAddress,
       imageUrl,
-      description.trim(),
+      description,
+      description_en,
+    });
+
+    // Create database record
+    const technicalAnalysisRecord = await createTechnicalAnalysisRecord(
+      validatedData.tokenAddress,
+      validatedData.imageUrl,
+      validatedData.description.trim(),
+      validatedData.description_en?.trim() || null,
     );
 
     return NextResponse.json({
@@ -72,6 +98,14 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Technical analysis create API error:', error);
+
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: error.errors[0]?.message || 'Invalid request data' },
+        { status: 400 },
+      );
+    }
+
     const errorMessage =
       error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(

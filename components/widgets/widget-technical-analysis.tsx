@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { useTranslation } from '@/contexts/translation-context';
 import { RiBarChartLine, RiFlashlightLine } from '@remixicon/react';
 
 import { cnExt } from '@/utils/cn';
@@ -16,6 +17,18 @@ export default function WidgetTechnicalAnalysis({
   const params = useParams();
   const address = params.address as string;
   const { technicalAnalysis, loading } = useTechnicalAnalysis(address);
+  const { locale } = useTranslation();
+
+  // Helper function to get the appropriate description based on locale
+  const getLocalizedDescription = (analysis: any) => {
+    // For English locale, try to use description_en if it exists
+    if (locale === 'en' && analysis.description_en) {
+      return analysis.description_en;
+    }
+
+    // For other locales or if description_en doesn't exist, use the default description
+    return analysis.description;
+  };
 
   return (
     <WidgetBox.Root {...rest} id='technical-analysis'>
@@ -50,7 +63,7 @@ export default function WidgetTechnicalAnalysis({
                   </div>
                   <div className='bg-bg-soft-100 rounded-lg p-3'>
                     <p className='whitespace-pre-wrap break-words text-paragraph-sm text-text-strong-950'>
-                      {analysis.description}
+                      {getLocalizedDescription(analysis)}
                     </p>
                   </div>
                 </div>

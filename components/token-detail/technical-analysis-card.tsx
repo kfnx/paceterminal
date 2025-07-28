@@ -1,4 +1,6 @@
+import * as React from 'react';
 import { useState } from 'react';
+import { useTranslation } from '@/contexts/translation-context';
 import {
   RiAddLine,
   RiCoinLine,
@@ -10,6 +12,7 @@ import { toast } from 'sonner';
 import type { TechnicalAnalysis } from '@/hooks/use-technical-analysis';
 import { useTechnicalAnalysis } from '@/hooks/use-technical-analysis';
 import * as Button from '@/components/ui/button';
+import * as SegmentedControl from '@/components/ui/segmented-control';
 import { TechnicalAnalysisForm } from '@/components/technical-analysis-form';
 
 interface TechnicalAnalysisCardProps {
@@ -19,13 +22,21 @@ interface TechnicalAnalysisCardProps {
 export function TechnicalAnalysisCard({ address }: TechnicalAnalysisCardProps) {
   const { technicalAnalysis, loading, error, refetch } =
     useTechnicalAnalysis(address);
-
+  const { locale } = useTranslation();
   const [
     isEditTechnicalAnalysisModalOpen,
     setIsEditTechnicalAnalysisModalOpen,
   ] = useState(false);
   const [selectedTechnicalAnalysis, setSelectedTechnicalAnalysis] =
     useState<TechnicalAnalysis | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<'id' | 'en'>(
+    locale as 'id' | 'en',
+  );
+
+  // Update selected language when locale changes
+  React.useEffect(() => {
+    setSelectedLanguage(locale as 'id' | 'en');
+  }, [locale]);
 
   const handleAdd = () => {
     setSelectedTechnicalAnalysis(null);
@@ -63,6 +74,17 @@ export function TechnicalAnalysisCard({ address }: TechnicalAnalysisCardProps) {
     }
   };
 
+  // Helper function to get the appropriate description based on selected language
+  const getLocalizedDescription = (analysis: TechnicalAnalysis) => {
+    // For English language tab, try to use description_en if it exists
+    if (selectedLanguage === 'en' && analysis.description_en) {
+      return analysis.description_en;
+    }
+
+    // For Indonesian language tab or if description_en doesn't exist, use the default description
+    return analysis.description;
+  };
+
   return (
     <>
       <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
@@ -79,6 +101,19 @@ export function TechnicalAnalysisCard({ address }: TechnicalAnalysisCardProps) {
             <RiAddLine className='size-4' />
           </Button.Root>
         </div>
+
+        {/* Language Tabs */}
+        <SegmentedControl.Root
+          value={selectedLanguage}
+          onValueChange={(value) => setSelectedLanguage(value as 'id' | 'en')}
+          className='mb-4 w-32'
+        >
+          <SegmentedControl.List>
+            <SegmentedControl.Trigger value='id'>ID</SegmentedControl.Trigger>
+            <SegmentedControl.Trigger value='en'>EN</SegmentedControl.Trigger>
+          </SegmentedControl.List>
+        </SegmentedControl.Root>
+
         {loading ? (
           <div className='text-paragraph-sm text-text-sub-600'>
             Loading technical analysis...
@@ -102,7 +137,7 @@ export function TechnicalAnalysisCard({ address }: TechnicalAnalysisCardProps) {
                     </div>
                     <div className='bg-bg-soft-100 rounded-lg p-4'>
                       <p className='whitespace-pre-wrap break-words text-paragraph-sm text-text-strong-950'>
-                        {analysis.description}
+                        {getLocalizedDescription(analysis)}
                       </p>
                     </div>
                     <div className='text-paragraph-xs text-text-sub-600'>

@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslation } from '@/contexts/translation-context';
 import { RiCloseLine, RiSaveLine } from '@remixicon/react';
 
 import type { TechnicalAnalysis } from '@/hooks/use-technical-analysis';
@@ -26,15 +27,24 @@ export function TechnicalAnalysisForm({
   onClose,
   onSuccess,
 }: TechnicalAnalysisFormProps) {
+  const { locale } = useTranslation();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [imageUrl, setImageUrl] = React.useState('');
+
+  // Default fields (Indonesian)
   const [description, setDescription] = React.useState(
     technicalAnalysis?.description || '',
+  );
+
+  // English fields
+  const [descriptionEn, setDescriptionEn] = React.useState(
+    technicalAnalysis?.description_en || '',
   );
 
   // Reset form when technicalAnalysis changes
   React.useEffect(() => {
     setDescription(technicalAnalysis?.description || '');
+    setDescriptionEn(technicalAnalysis?.description_en || '');
     setImageUrl('');
   }, [technicalAnalysis]);
 
@@ -62,6 +72,7 @@ export function TechnicalAnalysisForm({
     // Reset form
     setImageUrl('');
     setDescription('');
+    setDescriptionEn('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -79,7 +90,8 @@ export function TechnicalAnalysisForm({
           },
           body: JSON.stringify({
             id: technicalAnalysis.id,
-            description,
+            description: description.trim(),
+            description_en: descriptionEn.trim() || null,
           }),
         });
 
@@ -92,6 +104,7 @@ export function TechnicalAnalysisForm({
         // Reset form
         setImageUrl('');
         setDescription('');
+        setDescriptionEn('');
       }
       // For new entries, submission is handled by the image uploader
     } catch (error) {
@@ -118,15 +131,16 @@ export function TechnicalAnalysisForm({
         </Modal.Header>
         <form onSubmit={handleSubmit}>
           <Modal.Body className='space-y-6'>
-            {/* Description */}
+            {/* Description (Indonesian) */}
             <div className='flex flex-col gap-1'>
               <Label.Root>
-                Description {!technicalAnalysis && <Label.Asterisk />}
+                Description (Indonesian){' '}
+                {!technicalAnalysis && <Label.Asterisk />}
               </Label.Root>
               <Textarea.Root
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder='Enter technical analysis description...'
+                placeholder='Enter technical analysis description in Indonesian...'
                 rows={4}
                 disabled={isSubmitting}
               />
@@ -138,6 +152,18 @@ export function TechnicalAnalysisForm({
               )}
             </div>
 
+            {/* Description (English) */}
+            <div className='flex flex-col gap-1'>
+              <Label.Root>Description (English)</Label.Root>
+              <Textarea.Root
+                value={descriptionEn}
+                onChange={(e) => setDescriptionEn(e.target.value)}
+                placeholder='Enter technical analysis description in English (optional)...'
+                rows={4}
+                disabled={isSubmitting}
+              />
+            </div>
+
             {/* Technical Analysis Image Upload for new entries */}
             {!technicalAnalysis && (
               <div className='flex flex-col gap-1'>
@@ -147,6 +173,7 @@ export function TechnicalAnalysisForm({
                 <TechnicalAnalysisImageUploader
                   tokenAddress={tokenAddress}
                   description={description}
+                  descriptionEn={descriptionEn}
                   onImageUploaded={handleImageUploaded}
                   disabled={isSubmitting || !description.trim()}
                 />
