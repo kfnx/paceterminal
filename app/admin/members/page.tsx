@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { RiUserStarLine } from '@remixicon/react';
 
-import { useMembers } from '@/hooks/use-member';
+import { useMembers } from '@/hooks/use-members';
 import * as Alert from '@/components/ui/alert';
 import * as Badge from '@/components/ui/badge';
 import {

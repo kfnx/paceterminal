@@ -51,14 +51,21 @@ export function useMemberStatus() {
     retry: 2,
   });
 
-  const isMember = membershipData?.isMember ?? false;
-  const expiredAt =
-    membershipData?.isActive && membershipData.data?.expired_at
-      ? new Date(membershipData.data.expired_at)
-      : null;
+  // const isMember = membershipData?.isMember ?? false;
+  // const isActive = membershipData?.isActive ?? false;
+  // const expiredAt =
+  //   membershipData?.isActive && membershipData.data?.expired_at
+  //     ? new Date(membershipData.data.expired_at)
+  //     : null;
+
+  // for now we give free access to everyone
+  const isMember = true;
+  const isActive = true;
+  const expiredAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 1 month from now
 
   return {
     isMember,
+    isActive,
     expiredAt,
     loading: isLoading,
     error,

@@ -86,14 +86,15 @@ export function WalletButton({
             }}
           >
             <Dropdown.ItemIcon as={isMember ? RiStarLine : RiLockUnlockLine} />
-            {loading
+            {/* {loading
               ? t('wallet.checkingStatus')
               : isMember && expiredAt
                 ? t('wallet.memberUntil').replace(
                     '{date}',
                     expiredAt.toLocaleDateString(),
                   )
-                : t('wallet.removeAds')}
+                : t('wallet.removeAds')} */}
+            Free Premium Access!
           </Dropdown.Item>
           <Dropdown.Item onClick={() => onDisconnect?.()}>
             <Dropdown.ItemIcon as={RiLogoutBoxRLine} />

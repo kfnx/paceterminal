@@ -104,11 +104,12 @@ export function SidebarProfile({
             }}
           >
             <Dropdown.ItemIcon as={isMember ? RiStarLine : RiLockUnlockLine} />
-            {loading
+            {/* {loading
               ? 'Checking status...'
               : isMember && expiredAt
                 ? `Member until ${expiredAt.toLocaleDateString()}`
-                : 'Remove Ads'}
+                : 'Remove Ads'} */}
+            Free Premium Access!
           </Dropdown.Item>
         </Dropdown.Group>
         <Divider.Root variant='line-spacing' />

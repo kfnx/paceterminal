@@ -7,7 +7,7 @@ import {
   RiUserStarLine,
 } from '@remixicon/react';
 
-import type { Member } from '@/hooks/use-member';
+import type { Member } from '@/hooks/use-members';
 import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
 import * as Pagination from '@/components/ui/pagination';

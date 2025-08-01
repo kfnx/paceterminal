@@ -9,7 +9,7 @@ import {
   RiUserStarLine,
 } from '@remixicon/react';
 
-import { useMembers } from '@/hooks/use-member';
+import { useMembers } from '@/hooks/use-members';
 import { useTokens } from '@/hooks/use-tokens';
 import { useUsers } from '@/hooks/use-users';
 import * as Button from '@/components/ui/button';
