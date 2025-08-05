@@ -1,17 +1,26 @@
 'use client';
 
 import * as React from 'react';
-import { RiCloseLine, RiSaveLine } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiCloseLine,
+  RiDeleteBinLine,
+  RiEditLine,
+  RiSaveLine,
+} from '@remixicon/react';
 
-import type { Metric } from '@/hooks/use-metrics';
+import type {
+  MetricDynamic,
+  MetricDynamicValue,
+} from '@/hooks/use-metrics-dynamic';
+import { useDeleteDynamicMetricValue } from '@/hooks/use-metrics-dynamic';
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
-import * as Textarea from '@/components/ui/textarea';
 
 interface MetricsDynamicFormProps {
-  metric?: Metric;
+  metric?: MetricDynamic;
   tokenAddress: string;
   isOpen: boolean;
   onClose: () => void;
@@ -26,34 +35,75 @@ export function MetricsDynamicForm({
   onSuccess,
 }: MetricsDynamicFormProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const deleteValueMutation = useDeleteDynamicMetricValue();
 
-  // Default fields (ID)
+  // Form fields for metric definition
   const [label, setLabel] = React.useState(metric?.label || '');
-  const [value, setValue] = React.useState(metric?.value || '');
-  const [description, setDescription] = React.useState(
-    metric?.description || '',
-  );
-
-  // EN fields
   const [labelEn, setLabelEn] = React.useState(metric?.label_en || '');
-  const [valueEn, setValueEn] = React.useState(metric?.value_en || '');
-  const [descriptionEn, setDescriptionEn] = React.useState(
-    metric?.description_en || '',
+  const [order, setOrder] = React.useState(metric?.ordering?.toString() || '');
+  const [unit, setUnit] = React.useState(metric?.unit || '');
+  const [unitEn, setUnitEn] = React.useState(metric?.unit_en || '');
+
+  // Form fields for adding values
+  const [value, setValue] = React.useState('');
+  const [time, setTime] = React.useState('');
+
+  // State to track if metric was just created (for showing add value section)
+  const [isMetricCreated, setIsMetricCreated] = React.useState(false);
+  const [createdMetricId, setCreatedMetricId] = React.useState<string | null>(
+    null,
   );
 
-  const [source, setSource] = React.useState(metric?.source || '');
-  const [order, setOrder] = React.useState(metric?.ordering?.toString() || '');
+  // State to track existing values
+  const [existingValues, setExistingValues] = React.useState<
+    MetricDynamicValue[]
+  >([]);
+  const [loadingValues, setLoadingValues] = React.useState(false);
+
+  // State for inline editing
+  const [editingValue, setEditingValue] = React.useState<{
+    index: number;
+    value: string;
+    time: string;
+  } | null>(null);
+
+  // Fetch existing values when editing
+  React.useEffect(() => {
+    if (metric?.id) {
+      fetchExistingValues(metric.id);
+    } else {
+      setExistingValues([]);
+    }
+  }, [metric?.id]);
+
+  const fetchExistingValues = async (metricId: string) => {
+    setLoadingValues(true);
+    try {
+      const response = await fetch(
+        `/api/metrics-dynamic/values?metric_id=${metricId}`,
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setExistingValues(data.values || []);
+      }
+    } catch (error) {
+      console.error('Error fetching existing values:', error);
+    } finally {
+      setLoadingValues(false);
+    }
+  };
 
   // Reset form when metric changes
   React.useEffect(() => {
     setLabel(metric?.label || '');
-    setValue(metric?.value || '');
-    setDescription(metric?.description || '');
     setLabelEn(metric?.label_en || '');
-    setValueEn(metric?.value_en || '');
-    setDescriptionEn(metric?.description_en || '');
-    setSource(metric?.source || '');
     setOrder(metric?.ordering?.toString() || '');
+    setUnit(metric?.unit || '');
+    setUnitEn(metric?.unit_en || '');
+    setValue('');
+    setTime('');
+    setIsMetricCreated(false);
+    setCreatedMetricId(null);
   }, [metric]);
 
   const handleClose = () => {
@@ -65,36 +115,27 @@ export function MetricsDynamicForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!label.trim() || !value.trim()) {
+    if (!label.trim()) {
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const url = metric ? '/api/metrics/update' : '/api/metrics/create';
+      const url = metric
+        ? '/api/metrics-dynamic/update'
+        : '/api/metrics-dynamic/create';
       const method = metric ? 'PUT' : 'POST';
 
       const requestBody: any = {
         ...(metric && { id: metric.id }),
         address: tokenAddress,
         label: label.trim(),
-        value: value.trim(),
-        description: description.trim() || null,
-        source: source.trim() || null,
+        label_en: labelEn.trim() || null,
         ordering: order.trim() ? parseInt(order.trim(), 10) : null,
+        unit: unit.trim() || null,
+        unit_en: unitEn.trim() || null,
       };
-
-      // Add EN fields if they exist
-      if (labelEn.trim()) {
-        requestBody.label_en = labelEn.trim();
-      }
-      if (valueEn.trim()) {
-        requestBody.value_en = valueEn.trim();
-      }
-      if (descriptionEn.trim()) {
-        requestBody.description_en = descriptionEn.trim();
-      }
 
       const response = await fetch(url, {
         method,
@@ -105,172 +146,466 @@ export function MetricsDynamicForm({
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save metric');
+        throw new Error('Failed to save dynamic metric');
       }
 
-      onSuccess();
-      onClose();
-      // Reset form
-      setLabel('');
-      setValue('');
-      setDescription('');
-      setLabelEn('');
-      setValueEn('');
-      setDescriptionEn('');
-      setSource('');
-      setOrder('');
+      const result = await response.json();
+
+      // If this was a new metric creation, store the ID and show add value section
+      if (!metric && result.data?.id) {
+        setCreatedMetricId(result.data.id);
+        setIsMetricCreated(true);
+      } else {
+        onSuccess();
+        onClose();
+        // Reset form
+        setLabel('');
+        setLabelEn('');
+        setOrder('');
+        setValue('');
+        setTime('');
+      }
     } catch (error) {
-      console.error('Error saving metric:', error);
+      console.error('Error saving dynamic metric:', error);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleAddValue = async () => {
+    const metricId = metric?.id || createdMetricId;
+    if (!metricId || !value.trim() || !time.trim()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/metrics-dynamic/add-value', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          metric_id: metricId,
+          value: parseFloat(value),
+          time: time,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add metric value');
+      }
+
+      // Reset value fields and refresh existing values
+      setValue('');
+      setTime('');
+
+      // Refresh existing values if editing
+      if (metric?.id) {
+        await fetchExistingValues(metric.id);
+      }
+
+      // Refresh existing values for newly created metrics too
+      if (isMetricCreated && createdMetricId) {
+        await fetchExistingValues(createdMetricId);
+      }
+
+      // Don't call onSuccess() when adding values to keep the form open
+    } catch (error) {
+      console.error('Error adding metric value:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteValue = async (valueTime: string) => {
+    if (
+      !metric?.id ||
+      !confirm('Are you sure you want to delete this value?')
+    ) {
+      return;
+    }
+
+    try {
+      await deleteValueMutation.mutateAsync({
+        metric_id: metric.id,
+        time: valueTime,
+      });
+
+      // Refresh existing values
+      await fetchExistingValues(metric.id);
+      // Don't call onSuccess() when deleting values to keep the form open
+    } catch (error) {
+      console.error('Error deleting metric value:', error);
+    }
+  };
+
+  const handleStartEdit = (index: number, value: MetricDynamicValue) => {
+    setEditingValue({
+      index,
+      value: value.value.toString(),
+      time: value.time.slice(0, 16), // Format for datetime-local input
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingValue(null);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingValue || !metric?.id) return;
+
+    const { index, value, time } = editingValue;
+    if (!value.trim() || !time.trim()) return;
+
+    setIsSubmitting(true);
+
+    try {
+      // Delete the old value
+      await deleteValueMutation.mutateAsync({
+        metric_id: metric.id,
+        time: existingValues[index].time,
+      });
+
+      // Add the new value
+      const response = await fetch('/api/metrics-dynamic/add-value', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          metric_id: metric.id,
+          value: parseFloat(value),
+          time: time,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update metric value');
+      }
+
+      // Refresh existing values
+      await fetchExistingValues(metric.id);
+      setEditingValue(null);
+    } catch (error) {
+      console.error('Error updating metric value:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Determine if we should show the add value section
+  const shouldShowAddValueSection = metric || isMetricCreated;
+  const currentMetricId = metric?.id || createdMetricId;
+
+  const formatDateTime = (dateTimeString: string) => {
+    return new Date(dateTimeString).toLocaleString();
   };
 
   return (
     <Modal.Root open={isOpen} onOpenChange={handleClose}>
       <Modal.Content className='max-w-2xl'>
         <Modal.Header>
-          <Modal.Title>{metric ? 'Edit Metric' : 'Add Metric'}</Modal.Title>
+          <Modal.Title>
+            {metric ? 'Edit Dynamic Metric' : 'Add Dynamic Metric'}
+          </Modal.Title>
           <Modal.Description>
             {metric
-              ? 'Update the metric information for this token.'
-              : 'Add a new metric for this token.'}
+              ? 'Update the dynamic metric information for this token.'
+              : 'Add a new dynamic metric for this token.'}
           </Modal.Description>
         </Modal.Header>
         <form onSubmit={handleSubmit}>
           <Modal.Body className='max-h-[75vh] space-y-4 overflow-y-scroll'>
-            {/* Label (ID) */}
-            <div className='grid gap-6 md:grid-cols-2'>
+            {/* Metric Definition Section */}
+            <div className='space-y-4'>
+              <h3 className='text-sm text-gray-900 dark:text-gray-100 font-medium'>
+                Metric Definition
+              </h3>
+
+              <div className='grid gap-6 md:grid-cols-2'>
+                {/* Label (ID) */}
+                <div className='flex flex-col gap-1'>
+                  <Label.Root>
+                    Label (ID) <Label.Asterisk />
+                  </Label.Root>
+                  <Input.Root>
+                    <Input.Wrapper>
+                      <Input.Input
+                        value={label}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setLabel(e.target.value)
+                        }
+                        placeholder='Enter metric label in ID (e.g., Market Cap, Volume)'
+                        disabled={isSubmitting}
+                      />
+                    </Input.Wrapper>
+                  </Input.Root>
+                </div>
+
+                {/* Label (EN) */}
+                <div className='flex flex-col gap-1'>
+                  <Label.Root>Label (EN)</Label.Root>
+                  <Input.Root>
+                    <Input.Wrapper>
+                      <Input.Input
+                        value={labelEn}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setLabelEn(e.target.value)
+                        }
+                        placeholder='Enter metric label in EN (e.g., Market Cap, Volume)'
+                        disabled={isSubmitting}
+                      />
+                    </Input.Wrapper>
+                  </Input.Root>
+                </div>
+              </div>
+
+              {/* Order */}
               <div className='flex flex-col gap-1'>
-                <Label.Root>
-                  Label (ID) <Label.Asterisk />
-                </Label.Root>
+                <Label.Root>Order</Label.Root>
                 <Input.Root>
                   <Input.Wrapper>
                     <Input.Input
-                      value={label}
+                      type='number'
+                      value={order}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setLabel(e.target.value)
+                        setOrder(e.target.value)
                       }
-                      placeholder='Enter metric label in ID (e.g., Market Cap, Volume)'
+                      placeholder='Enter display order (e.g., 1, 2, 3)'
                       disabled={isSubmitting}
                     />
                   </Input.Wrapper>
                 </Input.Root>
               </div>
 
-              {/* Value (ID) */}
-              <div className='flex flex-col gap-1'>
-                <Label.Root>
-                  Value (ID) <Label.Asterisk />
-                </Label.Root>
-                <Input.Root>
-                  <Input.Wrapper>
-                    <Input.Input
-                      value={value}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setValue(e.target.value)
-                      }
-                      placeholder='Enter metric value in ID (e.g., $1.2M, 150K)'
-                      disabled={isSubmitting}
-                    />
-                  </Input.Wrapper>
-                </Input.Root>
+              {/* Unit Fields */}
+              <div className='grid gap-6 md:grid-cols-2'>
+                {/* Unit (ID) */}
+                <div className='flex flex-col gap-1'>
+                  <Label.Root>Unit (ID)</Label.Root>
+                  <Input.Root>
+                    <Input.Wrapper>
+                      <Input.Input
+                        value={unit}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setUnit(e.target.value)
+                        }
+                        placeholder='Enter unit in ID (e.g., USD, SOL, %)'
+                        disabled={isSubmitting}
+                      />
+                    </Input.Wrapper>
+                  </Input.Root>
+                </div>
+
+                {/* Unit (EN) */}
+                <div className='flex flex-col gap-1'>
+                  <Label.Root>Unit (EN)</Label.Root>
+                  <Input.Root>
+                    <Input.Wrapper>
+                      <Input.Input
+                        value={unitEn}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setUnitEn(e.target.value)
+                        }
+                        placeholder='Enter unit in EN (e.g., USD, SOL, %)'
+                        disabled={isSubmitting}
+                      />
+                    </Input.Wrapper>
+                  </Input.Root>
+                </div>
               </div>
             </div>
 
-            <div className='grid gap-6 md:grid-cols-2'>
-              {/* Label (EN) */}
-              <div className='flex flex-col gap-1'>
-                <Label.Root>Label (EN)</Label.Root>
-                <Input.Root>
-                  <Input.Wrapper>
-                    <Input.Input
-                      value={labelEn}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setLabelEn(e.target.value)
-                      }
-                      placeholder='Enter metric label in EN (e.g., Market Cap, Volume)'
-                      disabled={isSubmitting}
-                    />
-                  </Input.Wrapper>
-                </Input.Root>
+            {/* Existing Values Section - Only show when editing */}
+            {metric && (
+              <div className='space-y-4 border-t pt-4'>
+                <h3 className='text-sm text-gray-900 dark:text-gray-100 font-medium'>
+                  Existing Values ({existingValues.length})
+                </h3>
+
+                {loadingValues ? (
+                  <div className='text-sm text-gray-500 dark:text-gray-400'>
+                    Loading existing values...
+                  </div>
+                ) : existingValues.length > 0 ? (
+                  <div className='max-h-80 space-y-2 overflow-y-auto'>
+                    <div className='grid flex-1 grid-cols-6 gap-4'>
+                      <div className='col-span-2 font-bold'>Time</div>
+                      <div className='col-span-3 font-bold'>Value</div>
+                    </div>
+
+                    {existingValues.map((val, index) => (
+                      <div key={index} className='grid grid-cols-6 gap-4'>
+                        {editingValue?.index === index ? (
+                          // Edit mode
+                          <>
+                            <Input.Root className='col-span-2'>
+                              <Input.Wrapper>
+                                <Input.Input
+                                  type='text'
+                                  value={editingValue.time}
+                                  onChange={(e) =>
+                                    setEditingValue({
+                                      ...editingValue,
+                                      time: e.target.value,
+                                    })
+                                  }
+                                  disabled={isSubmitting}
+                                />
+                              </Input.Wrapper>
+                            </Input.Root>
+                            <Input.Root className='col-span-3'>
+                              <Input.Wrapper>
+                                <Input.Input
+                                  type='number'
+                                  step='any'
+                                  value={editingValue.value}
+                                  onChange={(e) =>
+                                    setEditingValue({
+                                      ...editingValue,
+                                      value: e.target.value,
+                                    })
+                                  }
+                                  disabled={isSubmitting}
+                                />
+                              </Input.Wrapper>
+                            </Input.Root>
+                          </>
+                        ) : (
+                          // View mode
+                          <>
+                            <div className='col-span-2 p-2 text-text-sub-600'>
+                              {formatDateTime(val.time)}
+                            </div>
+                            <div className='col-span-3 p-2 text-text-strong-950'>
+                              {val.value.toLocaleString()}
+                            </div>
+                          </>
+                        )}
+                        {editingValue?.index === index ? (
+                          <div className='col-span-1 space-x-2'>
+                            <Button.Root
+                              type='button'
+                              variant='neutral'
+                              mode='stroke'
+                              onClick={handleSaveEdit}
+                              disabled={isSubmitting}
+                              size='xsmall'
+                            >
+                              <Button.Icon as={RiSaveLine} />
+                            </Button.Root>
+                            <Button.Root
+                              type='button'
+                              variant='neutral'
+                              mode='stroke'
+                              onClick={handleCancelEdit}
+                              disabled={isSubmitting}
+                              size='xsmall'
+                            >
+                              <Button.Icon as={RiCloseLine} />
+                            </Button.Root>
+                          </div>
+                        ) : (
+                          <div className='col-span-1 space-x-2'>
+                            <Button.Root
+                              type='button'
+                              variant='neutral'
+                              mode='stroke'
+                              onClick={() => handleStartEdit(index, val)}
+                              disabled={isSubmitting}
+                              size='xsmall'
+                            >
+                              <Button.Icon as={RiEditLine} />
+                            </Button.Root>
+                            <Button.Root
+                              type='button'
+                              variant='neutral'
+                              mode='stroke'
+                              onClick={() => handleDeleteValue(val.time)}
+                              disabled={deleteValueMutation.isPending}
+                              size='xsmall'
+                            >
+                              <Button.Icon as={RiDeleteBinLine} />
+                            </Button.Root>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className='text-sm text-gray-500 dark:text-gray-400'>
+                    No values added yet. Add your first value below.
+                  </div>
+                )}
               </div>
+            )}
 
-              {/* Value (EN) */}
-              <div className='flex flex-col gap-1'>
-                <Label.Root>Value (EN)</Label.Root>
-                <Input.Root>
-                  <Input.Wrapper>
-                    <Input.Input
-                      value={valueEn}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setValueEn(e.target.value)
-                      }
-                      placeholder='Enter metric value in EN (e.g., $1.2M, 150K)'
-                      disabled={isSubmitting}
-                    />
-                  </Input.Wrapper>
-                </Input.Root>
+            {/* Add Values Section - Show when editing existing metric or after creating new metric */}
+            {shouldShowAddValueSection && (
+              <div className='space-y-4 border-t pt-4'>
+                <h3 className='text-sm text-gray-900 dark:text-gray-100 font-medium'>
+                  Add Metric Value
+                </h3>
+
+                <div className='space-y-4'>
+                  <div className='grid gap-6 md:grid-cols-2'>
+                    {/* Value */}
+                    <div className='flex flex-col gap-1'>
+                      <Label.Root>
+                        Value <Label.Asterisk />
+                      </Label.Root>
+                      <Input.Root>
+                        <Input.Wrapper>
+                          <Input.Input
+                            type='number'
+                            step='any'
+                            value={value}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => setValue(e.target.value)}
+                            placeholder='Enter numeric value (e.g., 1000000)'
+                            disabled={isSubmitting}
+                          />
+                        </Input.Wrapper>
+                      </Input.Root>
+                    </div>
+
+                    {/* Time */}
+                    <div className='flex flex-col gap-1'>
+                      <Label.Root>
+                        Time <Label.Asterisk />
+                      </Label.Root>
+                      <Input.Root>
+                        <Input.Wrapper>
+                          <Input.Input
+                            type='datetime-local'
+                            value={time}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => setTime(e.target.value)}
+                            disabled={isSubmitting}
+                          />
+                        </Input.Wrapper>
+                      </Input.Root>
+                    </div>
+                  </div>
+
+                  <Button.Root
+                    type='button'
+                    variant='neutral'
+                    mode='stroke'
+                    onClick={handleAddValue}
+                    disabled={isSubmitting || !value.trim() || !time.trim()}
+                    className='w-full'
+                  >
+                    <Button.Icon as={RiAddLine} />
+                    Add Value
+                  </Button.Root>
+                </div>
               </div>
-            </div>
-
-            {/* Order */}
-            <div className='flex flex-col gap-1'>
-              <Label.Root>Order</Label.Root>
-              <Input.Root>
-                <Input.Wrapper>
-                  <Input.Input
-                    type='number'
-                    value={order}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setOrder(e.target.value)
-                    }
-                    placeholder='Enter display order (e.g., 1, 2, 3)'
-                    disabled={isSubmitting}
-                  />
-                </Input.Wrapper>
-              </Input.Root>
-            </div>
-
-            {/* Description (ID) */}
-            <div className='flex flex-col gap-1'>
-              <Label.Root>Description (ID)</Label.Root>
-              <Textarea.Root
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder='Enter additional description or context in ID...'
-                disabled={isSubmitting}
-              />
-            </div>
-
-            {/* Description (EN) */}
-            <div className='flex flex-col gap-1'>
-              <Label.Root>Description (EN)</Label.Root>
-              <Textarea.Root
-                value={descriptionEn}
-                onChange={(e) => setDescriptionEn(e.target.value)}
-                placeholder='Enter additional description or context in EN...'
-                disabled={isSubmitting}
-              />
-            </div>
-
-            {/* Source */}
-            <div className='flex flex-col gap-1'>
-              <Label.Root>Source</Label.Root>
-              <Input.Root>
-                <Input.Wrapper>
-                  <Input.Input
-                    value={source}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setSource(e.target.value)
-                    }
-                    placeholder='Enter data source (e.g., CoinGecko, DexScreener)'
-                    disabled={isSubmitting}
-                  />
-                </Input.Wrapper>
-              </Input.Root>
-            </div>
+            )}
           </Modal.Body>
           <Modal.Footer>
             <Button.Root
@@ -283,16 +618,13 @@ export function MetricsDynamicForm({
               <Button.Icon as={RiCloseLine} />
               Cancel
             </Button.Root>
-            <Button.Root
-              type='submit'
-              disabled={isSubmitting || !label.trim() || !value.trim()}
-            >
+            <Button.Root type='submit' disabled={isSubmitting || !label.trim()}>
               <Button.Icon as={RiSaveLine} />
               {isSubmitting
                 ? 'Saving...'
                 : metric
                   ? 'Save Changes'
-                  : 'Add Metric'}
+                  : 'Add Dynamic Metric'}
             </Button.Root>
           </Modal.Footer>
         </form>

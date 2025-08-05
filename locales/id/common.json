@@ -65,7 +65,6 @@
     "history": "Riwayat",
     "phantom": "Dompet Phantom",
     "solflare": "Solflare",
-    "connecting": "Menghubungkan...",
     "connected": "Terhubung",
     "notConnected": "Tidak Terhubung",
     "connecting": "Menghubungkan",
@@ -173,5 +172,9 @@
     "premiumContent": "Konten Premium",
     "unlock": "Buka {feature}",
     "upgradeToPremium": "Upgrade ke Premium"
+  },
+  "metrics": {
+    "latest": "Terbaru",
+    "noData": "Tidak ada data"
   }
 }

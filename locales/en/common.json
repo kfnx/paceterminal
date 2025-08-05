@@ -65,7 +65,6 @@
     "history": "History",
     "phantom": "Phantom Wallet",
     "solflare": "Solflare",
-    "connecting": "Connecting...",
     "connected": "Connected",
     "notConnected": "Not Connected",
     "connecting": "Connecting",
@@ -173,5 +172,9 @@
     "premiumContent": "Premium Content",
     "unlock": "Unlock {feature}",
     "upgradeToPremium": "Upgrade to Premium"
+  },
+  "metrics": {
+    "latest": "Latest",
+    "noData": "No data available"
   }
 }

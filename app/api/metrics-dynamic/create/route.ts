@@ -5,7 +5,8 @@ import { createClient } from '@/lib/supabase-server';
 export async function POST(request: NextRequest) {
   try {
     const supabase = createClient();
-    const { address, label, label_en } = await request.json();
+    const { address, label, label_en, ordering, unit, unit_en } =
+      await request.json();
 
     if (!address || !label) {
       return NextResponse.json(
@@ -20,6 +21,9 @@ export async function POST(request: NextRequest) {
         address,
         label,
         label_en: label_en || null,
+        ordering: ordering || null,
+        unit: unit || null,
+        unit_en: unit_en || null,
       })
       .select()
       .single();

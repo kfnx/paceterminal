@@ -124,61 +124,62 @@ export function MetricsCard({ address }: MetricsCardProps) {
           </div>
         ) : metrics.length > 0 ? (
           <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
-            {metrics.map((metric: Metric, index: number) => {
+            {metrics.map((metric: Metric) => {
               const localizedContent = getLocalizedContent(metric);
               return (
-                <div key={metric.id} className='relative rounded-lg p-2'>
-                  <div className='flex items-start justify-between'>
-                    <div className='flex-1'>
-                      <div className='mb-2 flex items-center justify-between gap-2'>
-                        <h4 className='text-label-sm font-medium text-text-strong-950'>
-                          {localizedContent.label}
-                        </h4>
+                <div
+                  key={metric.id}
+                  className='flex items-start justify-between rounded-lg'
+                >
+                  <div className='flex-1'>
+                    <div className='mb-2 flex items-center justify-between gap-2'>
+                      <h4 className='text-label-sm font-medium text-text-strong-950'>
+                        {localizedContent.label}
+                      </h4>
+                    </div>
+                    <div className='mb-2 text-paragraph-lg font-semibold text-text-strong-950'>
+                      {localizedContent.value}
+                    </div>
+                    {localizedContent.description && (
+                      <div className='mb-2 text-paragraph-xs text-text-sub-600'>
+                        {localizedContent.description}
                       </div>
-                      <div className='mb-2 text-paragraph-lg font-semibold text-text-strong-950'>
-                        {localizedContent.value}
-                      </div>
-                      {localizedContent.description && (
-                        <div className='mb-2 text-paragraph-xs text-text-sub-600'>
-                          {localizedContent.description}
-                        </div>
-                      )}
-                      {metric.source && (
-                        <p className='text-paragraph-xs text-text-sub-600'>
-                          Source: {metric.source}
-                        </p>
-                      )}
-                      <p className='text-paragraph-xs text-text-soft-400'>
-                        {new Date(metric.created_at).toLocaleDateString()}
+                    )}
+                    {metric.source && (
+                      <p className='text-paragraph-xs text-text-sub-600'>
+                        Source: {metric.source}
                       </p>
+                    )}
+                    <p className='text-paragraph-xs text-text-soft-400'>
+                      {new Date(metric.created_at).toLocaleDateString()}
+                    </p>
 
-                      {metric.ordering && (
-                        <p className='text-paragraph-xs text-text-soft-400'>
-                          Order: {metric.ordering}
-                        </p>
-                      )}
-                    </div>
-                    <div className='ml-3 flex w-fit flex-col gap-2'>
-                      <Button.Root
-                        variant='neutral'
-                        mode='stroke'
-                        onClick={() => {
-                          setSelectedMetric(metric);
-                          setIsEditModalOpen(true);
-                        }}
-                        size='xsmall'
-                      >
-                        <RiEditLine className='size-4' />
-                      </Button.Root>
-                      <Button.Root
-                        variant='error'
-                        mode='stroke'
-                        onClick={() => handleDelete(metric.id)}
-                        size='xsmall'
-                      >
-                        <RiDeleteBinLine className='size-4' />
-                      </Button.Root>
-                    </div>
+                    {metric.ordering && (
+                      <p className='text-paragraph-xs text-text-soft-400'>
+                        Order: {metric.ordering}
+                      </p>
+                    )}
+                  </div>
+                  <div className='ml-3 flex w-fit flex-col gap-2'>
+                    <Button.Root
+                      variant='neutral'
+                      mode='stroke'
+                      onClick={() => {
+                        setSelectedMetric(metric);
+                        setIsEditModalOpen(true);
+                      }}
+                      size='xsmall'
+                    >
+                      <RiEditLine className='size-4' />
+                    </Button.Root>
+                    <Button.Root
+                      variant='error'
+                      mode='stroke'
+                      onClick={() => handleDelete(metric.id)}
+                      size='xsmall'
+                    >
+                      <RiDeleteBinLine className='size-4' />
+                    </Button.Root>
                   </div>
                 </div>
               );

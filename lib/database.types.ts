@@ -132,6 +132,8 @@ export type Database = {
           label: string
           label_en: string | null
           ordering: number | null
+          unit: string | null
+          unit_en: string | null
         }
         Insert: {
           address: string
@@ -140,6 +142,8 @@ export type Database = {
           label: string
           label_en?: string | null
           ordering?: number | null
+          unit?: string | null
+          unit_en?: string | null
         }
         Update: {
           address?: string
@@ -148,6 +152,8 @@ export type Database = {
           label?: string
           label_en?: string | null
           ordering?: number | null
+          unit?: string | null
+          unit_en?: string | null
         }
         Relationships: [
           {

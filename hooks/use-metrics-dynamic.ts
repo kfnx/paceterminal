@@ -27,7 +27,7 @@ export async function fetchMetricsDynamic(
     .from('metrics_dynamic')
     .select('*')
     .eq('address', address)
-    .order('created_at', { ascending: false });
+    .order('ordering', { ascending: true });
 
   if (metricsError) {
     throw new Error(`Failed to fetch dynamic metrics: ${metricsError.message}`);
@@ -118,19 +118,26 @@ export function useMetricsDynamic(address: string) {
 
 interface CreateDynamicMetricParams {
   address: string;
-  label_id: string;
+  label: string;
   label_en?: string;
+  ordering?: number;
 }
 
 interface UpdateDynamicMetricParams {
   id: string;
-  label_id: string;
+  label: string;
   label_en?: string;
+  ordering?: number;
 }
 
 interface AddDynamicMetricValueParams {
   metric_id: string;
   value: number;
+  time: string;
+}
+
+interface DeleteDynamicMetricValueParams {
+  metric_id: string;
   time: string;
 }
 
@@ -233,6 +240,35 @@ export function useAddDynamicMetricValue() {
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to add dynamic metric value');
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      // Invalidate all metrics dynamic queries
+      queryClient.invalidateQueries({
+        queryKey: ['metrics-dynamic'],
+      });
+    },
+  });
+}
+
+export function useDeleteDynamicMetricValue() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (params: DeleteDynamicMetricValueParams) => {
+      const response = await fetch('/api/metrics-dynamic/delete-value', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to delete dynamic metric value');
       }
 
       return response.json();

@@ -30,7 +30,7 @@ export default function WidgetMetrics({
   const { metrics, loading } = useMetrics(address);
   const { metricsDynamic, loading: loadingDynamic } =
     useMetricsDynamic(address);
-  const { locale } = useTranslation();
+  const { locale, t } = useTranslation();
   const [selectedMetric, setSelectedMetric] = React.useState('static');
 
   // Group metrics into rows of 3 for display
@@ -171,8 +171,10 @@ export default function WidgetMetrics({
                         </div>
                       )}
                       <div className='flex items-center gap-2'>
-                        Latest: <b>{metric.last.value}</b>(
-                        {format(new Date(metric.last.time), 'MMM d, yyyy')})
+                        {t('metrics.latest')}: <b>{metric.last.value}</b>(
+                        {metric.last.time &&
+                          format(new Date(metric.last.time), 'MMM d, yyyy')}
+                        )
                         <span
                           className={`text-paragraph-sm ${isLatestPositive ? 'text-green-600' : 'text-red-600'}`}
                         >
