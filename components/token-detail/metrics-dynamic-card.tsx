@@ -6,25 +6,34 @@ import {
   RiDeleteBinLine,
   RiEditLine,
 } from '@remixicon/react';
+import { format } from 'date-fns';
 import { toast } from 'sonner';
 
-import { useMetrics, type Metric } from '@/hooks/use-metrics';
+import {
+  useMetricsDynamic,
+  type MetricDynamicWithValues,
+} from '@/hooks/use-metrics-dynamic';
 import * as Button from '@/components/ui/button';
 import * as SegmentedControl from '@/components/ui/segmented-control';
 
+import ChartStepLine from '../chart-step-line';
 import { MetricsForm } from '../metrics-form';
 
 interface MetricsCardProps {
   address: string;
 }
 
-export function MetricsCard({ address }: MetricsCardProps) {
-  const { metrics, loading, error, refetch } = useMetrics(address);
+export function MetricsDynamicCard({ address }: MetricsCardProps) {
+  const {
+    metricsDynamic: metrics,
+    loading,
+    error,
+    refetch,
+  } = useMetricsDynamic(address);
   const { locale } = useTranslation();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
-  const [selectedMetric, setSelectedMetric] = React.useState<Metric | null>(
-    null,
-  );
+  const [selectedMetric, setSelectedMetric] =
+    React.useState<MetricDynamicWithValues | null>(null);
   const [selectedLanguage, setSelectedLanguage] = React.useState<'id' | 'en'>(
     locale as 'id' | 'en',
   );
@@ -41,7 +50,7 @@ export function MetricsCard({ address }: MetricsCardProps) {
     toast.success('Metric updated successfully!');
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this metric?')) {
       return;
     }
@@ -63,23 +72,11 @@ export function MetricsCard({ address }: MetricsCardProps) {
     }
   };
 
-  // Helper function to get the appropriate label, value, and description based on selected language
-  const getLocalizedContent = (metric: Metric) => {
-    // For English language tab, try to use label_en, value_en, and description_en if they exist
-    if (selectedLanguage === 'en') {
-      return {
-        label: metric.label_en || metric.label,
-        value: metric.value_en || metric.value,
-        description: metric.description_en || metric.description,
-      };
+  const getLocalizedLabel = (metric: any) => {
+    if (locale === 'en') {
+      return metric.label_en || metric.label;
     }
-
-    // For Indonesian language tab, use the default label, value, and description
-    return {
-      label: metric.label,
-      value: metric.value,
-      description: metric.description,
-    };
+    return metric.label;
   };
 
   return (
@@ -87,7 +84,7 @@ export function MetricsCard({ address }: MetricsCardProps) {
       <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
         <div className='mb-4 flex items-center justify-between'>
           <h3 className='text-heading-sm mb-4 font-semibold text-text-strong-950'>
-            Metrics Static
+            Metrics Dynamic
           </h3>
           <Button.Root
             variant='neutral'
@@ -123,62 +120,53 @@ export function MetricsCard({ address }: MetricsCardProps) {
             Error loading metrics: {error}
           </div>
         ) : metrics.length > 0 ? (
-          <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
-            {metrics.map((metric: Metric, index: number) => {
-              const localizedContent = getLocalizedContent(metric);
+          <div className='space-y-6 p-5'>
+            {metrics.map((metric: MetricDynamicWithValues) => {
+              const isLatestPositive = metric.last.percentChange >= 0;
+
               return (
-                <div key={metric.id} className='relative rounded-lg p-2'>
-                  <div className='flex items-start justify-between'>
-                    <div className='flex-1'>
-                      <div className='mb-2 flex items-center justify-between gap-2'>
-                        <h4 className='text-label-sm font-medium text-text-strong-950'>
-                          {localizedContent.label}
-                        </h4>
-                      </div>
-                      <div className='mb-2 text-paragraph-lg font-semibold text-text-strong-950'>
-                        {localizedContent.value}
-                      </div>
-                      {localizedContent.description && (
-                        <div className='mb-2 text-paragraph-xs text-text-sub-600'>
-                          {localizedContent.description}
+                <div key={metric.id} className='space-y-2'>
+                  <p className='pb-2 text-paragraph-lg text-text-strong-950'>
+                    {getLocalizedLabel(metric)}
+                  </p>
+                  {metric.values.length > 0 ? (
+                    <ChartStepLine
+                      data={metric.values.map((value) => ({
+                        time: format(new Date(value.time), 'MMM d'),
+                        value: value.value,
+                      }))}
+                      index='time'
+                      categories={['value']}
+                      tooltipContent={(v: { payload: any }) => (
+                        <div className='flex flex-col gap-1 p-1'>
+                          <p className='text-text-sub-600'>
+                            {v.payload[0].payload.time}
+                          </p>
+                          <b>{v.payload[0].payload.value}</b>
                         </div>
                       )}
-                      {metric.source && (
-                        <p className='text-paragraph-xs text-text-sub-600'>
-                          Source: {metric.source}
-                        </p>
-                      )}
-                      <p className='text-paragraph-xs text-text-soft-400'>
-                        {new Date(metric.created_at).toLocaleDateString()}
-                      </p>
-
-                      {metric.ordering && (
-                        <p className='text-paragraph-xs text-text-soft-400'>
-                          Order: {metric.ordering}
-                        </p>
-                      )}
+                      xAxisProps={{
+                        tickFormatter: (value) =>
+                          format(new Date(value), 'MMM d').toLocaleUpperCase(),
+                        tickMargin: 8,
+                      }}
+                    />
+                  ) : (
+                    <div className='border-border-200 bg-bg-soft-100 flex h-[200px] items-center justify-center rounded-lg border'>
+                      <div className='text-center text-paragraph-sm text-text-soft-400'>
+                        No data available
+                      </div>
                     </div>
-                    <div className='ml-3 flex w-fit flex-col gap-2'>
-                      <Button.Root
-                        variant='neutral'
-                        mode='stroke'
-                        onClick={() => {
-                          setSelectedMetric(metric);
-                          setIsEditModalOpen(true);
-                        }}
-                        size='xsmall'
-                      >
-                        <RiEditLine className='size-4' />
-                      </Button.Root>
-                      <Button.Root
-                        variant='error'
-                        mode='stroke'
-                        onClick={() => handleDelete(metric.id)}
-                        size='xsmall'
-                      >
-                        <RiDeleteBinLine className='size-4' />
-                      </Button.Root>
-                    </div>
+                  )}
+                  <div className='flex items-center gap-2'>
+                    Latest: <b>{metric.last.value}</b>(
+                    {format(new Date(metric.last.time), 'MMM d, yyyy')})
+                    <span
+                      className={`text-paragraph-sm ${isLatestPositive ? 'text-green-600' : 'text-red-600'}`}
+                    >
+                      {isLatestPositive ? '+' : ''}
+                      {metric.last.percentChange.toFixed(2)}%
+                    </span>
                   </div>
                 </div>
               );
@@ -198,7 +186,7 @@ export function MetricsCard({ address }: MetricsCardProps) {
         )}
       </div>
 
-      <MetricsForm
+      {/* <MetricsForm
         metric={selectedMetric || undefined}
         tokenAddress={address}
         isOpen={isEditModalOpen}
@@ -207,7 +195,7 @@ export function MetricsCard({ address }: MetricsCardProps) {
           setSelectedMetric(null);
         }}
         onSuccess={handleSuccess}
-      />
+      /> */}
     </>
   );
 }

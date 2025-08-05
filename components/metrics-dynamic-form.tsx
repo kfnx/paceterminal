@@ -10,7 +10,7 @@ import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
 import * as Textarea from '@/components/ui/textarea';
 
-interface MetricsFormProps {
+interface MetricsDynamicFormProps {
   metric?: Metric;
   tokenAddress: string;
   isOpen: boolean;
@@ -18,13 +18,13 @@ interface MetricsFormProps {
   onSuccess: () => void;
 }
 
-export function MetricsForm({
+export function MetricsDynamicForm({
   metric,
   tokenAddress,
   isOpen,
   onClose,
   onSuccess,
-}: MetricsFormProps) {
+}: MetricsDynamicFormProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   // Default fields (ID)

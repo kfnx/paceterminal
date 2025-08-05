@@ -6,10 +6,18 @@ import type { Tables } from '@/lib/database.types';
 import { supabase } from '@/lib/supabase';
 
 export type MetricDynamic = Tables<'metrics_dynamic'>;
-export type MetricDynamicValue = Tables<'metrics_dynamic_values'>;
+export type MetricDynamicValue = Pick<
+  Tables<'metrics_dynamic_values'>,
+  'time' | 'value'
+>;
 
 export interface MetricDynamicWithValues extends MetricDynamic {
   values: MetricDynamicValue[];
+  last: {
+    time: string;
+    value: number;
+    percentChange: number;
+  };
 }
 
 export async function fetchMetricsDynamic(
@@ -20,7 +28,6 @@ export async function fetchMetricsDynamic(
     .select('*')
     .eq('address', address)
     .order('created_at', { ascending: false });
-  console.log('metrics', address, metrics);
 
   if (metricsError) {
     throw new Error(`Failed to fetch dynamic metrics: ${metricsError.message}`);
@@ -35,10 +42,15 @@ export async function fetchMetricsDynamic(
     metrics.map(async (metric) => {
       const { data: values, error: valuesError } = await supabase
         .from('metrics_dynamic_values')
-        .select('*')
-        // .eq('metric_id', metric.id)
+        .select('value, time')
+        .eq('metric_id', metric.id)
         .order('time', { ascending: true });
 
+      let last = {
+        time: '',
+        value: 0,
+        percentChange: 0,
+      };
       if (valuesError) {
         console.error(
           `Failed to fetch values for metric ${metric.id}:`,
@@ -47,13 +59,37 @@ export async function fetchMetricsDynamic(
         return {
           ...metric,
           values: [],
+          last,
         };
       }
 
-      return {
+      // calc latest value for frontend
+      if (values.length < 1) {
+        return {
+          ...metric,
+          values: [],
+          last,
+        };
+      }
+
+      last.time = values[values.length - 1].time;
+      last.value = values[values.length - 1].value;
+      if (values.length >= 2) {
+        const currentValue = values[values.length - 1].value;
+        const previousValue = values[values.length - 2].value;
+        last.percentChange =
+          previousValue !== 0
+            ? ((currentValue - previousValue) / previousValue) * 100
+            : 0;
+      }
+
+      const metricResult: MetricDynamicWithValues = {
         ...metric,
-        values: values || [],
+        values,
+        last,
       };
+
+      return metricResult;
     }),
   );
 

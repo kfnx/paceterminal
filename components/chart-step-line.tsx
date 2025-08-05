@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { TooltipContentProps } from '@radix-ui/react-tooltip';
 //@ts-ignore
 import circleCorners from 'd3-curve-circlecorners';
 import { line } from 'd3-shape';
@@ -263,15 +264,9 @@ const ChartStepLine = <T extends string>({
 
         {showGridLines && <CartesianGrid className='stroke-stroke-soft-200' />}
 
-        <Tooltip
-        // content={
-        //   <CustomTooltip
-        //     renderContent={(v) => (
-        //       <div>{JSON.stringify(v.payload[0].payload)}</div>
-        //     )}
-        //   />
-        // }
-        />
+        {tooltipContent && (
+          <Tooltip content={<CustomTooltip renderContent={tooltipContent} />} />
+        )}
 
         {newPathsAttrs.map((attr, i) => (
           <path

@@ -8,7 +8,7 @@ import * as Button from '@/components/ui/button';
 import { AlphaCard } from '@/components/token-detail/alpha-card';
 import { FlywheelCard } from '@/components/token-detail/flywheel-card';
 import { MetricsCard } from '@/components/token-detail/metrics-card';
-// import { MetricsDynamicCard } from '@/components/token-detail/metrics-dynamic-card';
+import { MetricsDynamicCard } from '@/components/token-detail/metrics-dynamic-card';
 import { TeamCard } from '@/components/token-detail/team-card';
 import { TechnicalAnalysisCard } from '@/components/token-detail/technical-analysis-card';
 import { TokenHeader } from '@/components/token-detail/token-header';
@@ -95,7 +95,7 @@ export function ManageToken({ address }: ManageTokenProps) {
       <div className='flex flex-col gap-6'>
         <TokenInfoCard address={address} />
         <MetricsCard address={address} />
-        {/* <MetricsDynamicCard address={address} /> */}
+        <MetricsDynamicCard address={address} />
         <TeamCard address={address} />
         <FlywheelCard address={address} />
         <TechnicalAnalysisCard address={address} />

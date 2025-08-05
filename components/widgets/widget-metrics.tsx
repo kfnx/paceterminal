@@ -1,5 +1,6 @@
 'use client';
 
+import { time } from 'console';
 import * as React from 'react';
 import { useParams } from 'next/navigation';
 import { useTranslation } from '@/contexts/translation-context';
@@ -8,7 +9,11 @@ import { format } from 'date-fns';
 
 import { cnExt } from '@/utils/cn';
 import { useMetrics } from '@/hooks/use-metrics';
-import { useMetricsDynamic } from '@/hooks/use-metrics-dynamic';
+import {
+  MetricDynamicValue,
+  MetricDynamicWithValues,
+  useMetricsDynamic,
+} from '@/hooks/use-metrics-dynamic';
 import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
 import * as SegmentedControl from '@/components/ui/segmented-control';
@@ -41,6 +46,12 @@ export default function WidgetMetrics({
       return metric[englishField] || metric[field];
     }
     return metric[field];
+  };
+  const getLocalizedLabel = (metric: any) => {
+    if (locale === 'en') {
+      return metric.label_en || metric.label;
+    }
+    return metric.label;
   };
 
   return (
@@ -119,31 +130,30 @@ export default function WidgetMetrics({
           <div className='flex flex-col'>
             {!loadingDynamic && metricsDynamic && metricsDynamic.length > 0 ? (
               <div className='space-y-6 p-5'>
-                {metricsDynamic.map((metric) => {
-                  // Transform the values data for the chart
-                  const chartData = metric.values.map((value) => ({
-                    date: new Date(value.time).toISOString(),
-                    value: value.value,
-                  }));
-
-                  // Get localized label
-                  const getLocalizedLabel = (metric: any) => {
-                    if (locale === 'en') {
-                      return metric.label_en || metric.label_id;
-                    }
-                    return metric.label_id;
-                  };
+                {metricsDynamic.map((metric: MetricDynamicWithValues) => {
+                  const isLatestPositive = metric.last.percentChange >= 0;
 
                   return (
                     <div key={metric.id} className='space-y-2'>
                       <p className='pb-2 text-paragraph-lg text-text-strong-950'>
                         {getLocalizedLabel(metric)}
                       </p>
-                      {chartData.length > 0 ? (
+                      {metric.values.length > 0 ? (
                         <ChartStepLine
-                          data={chartData}
-                          index='date'
+                          data={metric.values.map((value) => ({
+                            time: format(new Date(value.time), 'MMM d'),
+                            value: value.value,
+                          }))}
+                          index='time'
                           categories={['value']}
+                          tooltipContent={(v: { payload: any }) => (
+                            <div className='flex flex-col gap-1 p-1'>
+                              <p className='text-text-sub-600'>
+                                {v.payload[0].payload.time}
+                              </p>
+                              <b>{v.payload[0].payload.value}</b>
+                            </div>
+                          )}
                           xAxisProps={{
                             tickFormatter: (value) =>
                               format(
@@ -161,36 +171,14 @@ export default function WidgetMetrics({
                         </div>
                       )}
                       <div className='flex items-center gap-2'>
-                        Latest:{' '}
-                        <b>{metric.values[metric.values.length - 1].value}</b>(
-                        {format(
-                          new Date(
-                            metric.values[metric.values.length - 1].time,
-                          ),
-                          'MMM d, yyyy',
-                        )}
-                        )
-                        {(() => {
-                          const currentValue =
-                            metric.values[metric.values.length - 1].value;
-                          const previousValue =
-                            metric.values[metric.values.length - 2].value;
-                          const percentageChange =
-                            previousValue !== 0
-                              ? ((currentValue - previousValue) /
-                                  previousValue) *
-                                100
-                              : 0;
-                          const isPositive = percentageChange >= 0;
-                          return (
-                            <span
-                              className={`text-paragraph-sm ${isPositive ? 'text-green-600' : 'text-red-600'}`}
-                            >
-                              {isPositive ? '+' : ''}
-                              {percentageChange.toFixed(2)}%
-                            </span>
-                          );
-                        })()}
+                        Latest: <b>{metric.last.value}</b>(
+                        {format(new Date(metric.last.time), 'MMM d, yyyy')})
+                        <span
+                          className={`text-paragraph-sm ${isLatestPositive ? 'text-green-600' : 'text-red-600'}`}
+                        >
+                          {isLatestPositive ? '+' : ''}
+                          {metric.last.percentChange.toFixed(2)}%
+                        </span>
                       </div>
                     </div>
                   );
