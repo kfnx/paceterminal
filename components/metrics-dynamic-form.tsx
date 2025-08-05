@@ -189,7 +189,7 @@ export function MetricsDynamicForm({
         body: JSON.stringify({
           metric_id: metricId,
           value: parseFloat(value),
-          time: time,
+          time: new Date(time).toISOString(),
         }),
       });
 
@@ -242,10 +242,18 @@ export function MetricsDynamicForm({
   };
 
   const handleStartEdit = (index: number, value: MetricDynamicValue) => {
+    // Convert the time to local timezone for datetime-local input
+    const date = new Date(value.time);
+    const localTime = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000,
+    )
+      .toISOString()
+      .slice(0, 16);
+
     setEditingValue({
       index,
       value: value.value.toString(),
-      time: value.time.slice(0, 16), // Format for datetime-local input
+      time: localTime,
     });
   };
 
@@ -268,6 +276,12 @@ export function MetricsDynamicForm({
         time: existingValues[index].time,
       });
 
+      // Convert local time back to UTC for saving
+      const localDate = new Date(time);
+      const utcTime = new Date(
+        localDate.getTime() + localDate.getTimezoneOffset() * 60000,
+      ).toISOString();
+
       // Add the new value
       const response = await fetch('/api/metrics-dynamic/add-value', {
         method: 'POST',
@@ -277,7 +291,7 @@ export function MetricsDynamicForm({
         body: JSON.stringify({
           metric_id: metric.id,
           value: parseFloat(value),
-          time: time,
+          time: utcTime,
         }),
       });
 
