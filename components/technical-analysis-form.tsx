@@ -130,7 +130,7 @@ export function TechnicalAnalysisForm({
           </Modal.Description>
         </Modal.Header>
         <form onSubmit={handleSubmit}>
-          <Modal.Body className='space-y-6'>
+          <Modal.Body className='max-h-[75vh] space-y-6 overflow-y-scroll'>
             {/* Description (Indonesian) */}
             <div className='flex flex-col gap-1'>
               <Label.Root>

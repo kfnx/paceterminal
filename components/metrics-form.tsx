@@ -140,7 +140,7 @@ export function MetricsForm({
           </Modal.Description>
         </Modal.Header>
         <form onSubmit={handleSubmit}>
-          <Modal.Body className='space-y-4'>
+          <Modal.Body className='max-h-[75vh] space-y-4 overflow-y-scroll'>
             {/* Label (ID) */}
             <div className='grid gap-6 md:grid-cols-2'>
               <div className='flex flex-col gap-1'>

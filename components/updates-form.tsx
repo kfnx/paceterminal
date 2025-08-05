@@ -152,7 +152,7 @@ export function UpdatesForm({
           </Modal.Description>
         </Modal.Header>
         <form onSubmit={handleSubmit}>
-          <Modal.Body className='space-y-6'>
+          <Modal.Body className='max-h-[75vh] space-y-6 overflow-y-scroll'>
             {/* Title */}
             <div className='flex flex-col gap-2'>
               <Label.Root>
