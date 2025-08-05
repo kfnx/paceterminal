@@ -28,11 +28,11 @@ export default function WidgetFlywheel({
         <Divider.Root />
 
         {!loading && flywheel?.image ? (
-          <div className='w-full pb-1'>
+          <div className='w-full p-2'>
             <img
               src={getFlywheelImageUrl(flywheel.image)}
               alt={flywheel.image}
-              className='h-full w-full object-cover'
+              className='h-full w-full rounded-lg object-cover'
             />
           </div>
         ) : (

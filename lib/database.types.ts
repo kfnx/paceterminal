@@ -124,24 +124,30 @@ export type Database = {
         }
         Relationships: []
       }
-      metric_dynamic: {
+      metrics_dynamic: {
         Row: {
           address: string
           created_at: string
           id: string
           label: string
+          label_en: string | null
+          ordering: number | null
         }
         Insert: {
           address: string
           created_at?: string
-          id: string
+          id?: string
           label: string
+          label_en?: string | null
+          ordering?: number | null
         }
         Update: {
           address?: string
           created_at?: string
           id?: string
           label?: string
+          label_en?: string | null
+          ordering?: number | null
         }
         Relationships: [
           {
@@ -150,6 +156,35 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "tokens"
             referencedColumns: ["address"]
+          },
+        ]
+      }
+      metrics_dynamic_values: {
+        Row: {
+          id: string
+          metric_id: string
+          time: string
+          value: number
+        }
+        Insert: {
+          id?: string
+          metric_id?: string
+          time?: string
+          value: number
+        }
+        Update: {
+          id?: string
+          metric_id?: string
+          time?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metrics_dymicvalues_metric_id_fkey"
+            columns: ["metric_id"]
+            isOneToOne: false
+            referencedRelation: "metrics_dynamic"
+            referencedColumns: ["id"]
           },
         ]
       }

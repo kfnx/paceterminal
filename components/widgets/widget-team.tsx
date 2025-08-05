@@ -20,12 +20,12 @@ type TeamMemberProps = {
 
 function TeamMembers({ name, description, image, role, x }: TeamMemberProps) {
   return (
-    <div className='flex flex-col items-center gap-3 space-x-2 text-center'>
-      <div className='flex items-center gap-1'>
+    <div className='flex flex-col items-center gap-2 space-x-2 text-center'>
+      <div className='flex items-center'>
         <img
           src={image}
           alt={name}
-          className='max-h-32 max-w-32 rounded-full object-cover'
+          className='max-h-28 max-w-28 rounded-full object-cover'
         />
       </div>
       <div className='flex flex-col gap-1'>
@@ -34,7 +34,7 @@ function TeamMembers({ name, description, image, role, x }: TeamMemberProps) {
       </div>
       {x && (
         <div className='flex flex-row items-center gap-1 text-paragraph-xs text-text-sub-600'>
-          <RiTwitterLine />
+          <RiTwitterLine className='size-5' />
           <Link href={`https://x.com/${x}`} target='_blank'>
             @{x}
           </Link>
@@ -62,28 +62,26 @@ export default function WidgetTeam({
       <div className='flex flex-col gap-4'>
         <Divider.Root />
 
-        <div className='w-full pb-1'>
-          <div className='grid grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
-            {!loading && teams && teams.length > 0 ? (
-              teams.map((team, index) => (
-                <TeamMembers
-                  key={team.id}
-                  name={team.name || ''}
-                  description={team.description || ''}
-                  image={team.image || ''}
-                  role={team.role || ''}
-                  x={team.x_account || ''}
-                />
-              ))
-            ) : (
-              <div className='col-span-full flex flex-1 flex-col items-center justify-center gap-5 p-5'>
-                <IllustrationEmptySavedActions className='size-[108px]' />
-                <div className='text-center text-paragraph-sm text-text-soft-400'>
-                  {loading ? 'Loading team...' : 'Team member unknown.'}
-                </div>
+        <div className='grid grid-cols-1 justify-items-center gap-6 py-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+          {!loading && teams && teams.length > 0 ? (
+            teams.map((team, index) => (
+              <TeamMembers
+                key={team.id}
+                name={team.name || ''}
+                description={team.description || ''}
+                image={team.image || ''}
+                role={team.role || ''}
+                x={team.x_account || ''}
+              />
+            ))
+          ) : (
+            <div className='col-span-full flex flex-1 flex-col items-center justify-center gap-5 p-5'>
+              <IllustrationEmptySavedActions className='size-[108px]' />
+              <div className='text-center text-paragraph-sm text-text-soft-400'>
+                {loading ? 'Loading team...' : 'Team member unknown.'}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </WidgetBox.Root>

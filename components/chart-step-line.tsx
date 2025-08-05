@@ -248,7 +248,7 @@ const ChartStepLine = <T extends string>({
   const newPathsAttrs = useUpdatedPaths(chartRef);
 
   return (
-    <ResponsiveContainer width='100%' height={70} ref={chartRef}>
+    <ResponsiveContainer width='100%' height={240} ref={chartRef}>
       <RechartsLineChart
         data={data}
         margin={{ top: 1, right: 0, bottom: 0, left: 0 }}
