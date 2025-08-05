@@ -64,7 +64,7 @@ export default function WidgetMetrics({
         </SegmentedControl.Root>
       </WidgetBox.Header>
 
-      <div className='flex min-h-[420px] flex-col gap-4'>
+      <div className='flex flex-col gap-4'>
         <Divider.Root />
         {selectedMetric === 'static' ? (
           <div className='flex flex-col'>
@@ -136,9 +136,9 @@ export default function WidgetMetrics({
 
                   return (
                     <div key={metric.id} className='space-y-2'>
-                      <h4 className='text-label-sm font-medium text-text-strong-950'>
+                      <p className='pb-2 text-paragraph-lg text-text-strong-950'>
                         {getLocalizedLabel(metric)}
-                      </h4>
+                      </p>
                       {chartData.length > 0 ? (
                         <ChartStepLine
                           data={chartData}
@@ -148,11 +148,10 @@ export default function WidgetMetrics({
                             tickFormatter: (value) =>
                               format(
                                 new Date(value),
-                                'MMM',
+                                'MMM d',
                               ).toLocaleUpperCase(),
                             tickMargin: 8,
                           }}
-                          yAxisProps={{ hide: true }}
                         />
                       ) : (
                         <div className='border-border-200 bg-bg-soft-100 flex h-[200px] items-center justify-center rounded-lg border'>
@@ -161,6 +160,38 @@ export default function WidgetMetrics({
                           </div>
                         </div>
                       )}
+                      <div className='flex items-center gap-2'>
+                        Latest:{' '}
+                        <b>{metric.values[metric.values.length - 1].value}</b>(
+                        {format(
+                          new Date(
+                            metric.values[metric.values.length - 1].time,
+                          ),
+                          'MMM d, yyyy',
+                        )}
+                        )
+                        {(() => {
+                          const currentValue =
+                            metric.values[metric.values.length - 1].value;
+                          const previousValue =
+                            metric.values[metric.values.length - 2].value;
+                          const percentageChange =
+                            previousValue !== 0
+                              ? ((currentValue - previousValue) /
+                                  previousValue) *
+                                100
+                              : 0;
+                          const isPositive = percentageChange >= 0;
+                          return (
+                            <span
+                              className={`text-paragraph-sm ${isPositive ? 'text-green-600' : 'text-red-600'}`}
+                            >
+                              {isPositive ? '+' : ''}
+                              {percentageChange.toFixed(2)}%
+                            </span>
+                          );
+                        })()}
+                      </div>
                     </div>
                   );
                 })}

@@ -7,9 +7,9 @@ import { line } from 'd3-shape';
 import {
   CartesianGrid,
   Line,
-  LineChart as RechartsLineChart,
-  Tooltip as RechartsTooltip,
+  LineChart,
   ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
   type XAxisProps,
@@ -244,19 +244,14 @@ const ChartStepLine = <T extends string>({
   yAxisProps,
 }: ChartStepLineProps<T>) => {
   const chartRef = React.useRef<HTMLDivElement>(null);
-  const tooltipPos = useTooltipPosition(chartRef);
+  // const tooltipPos = useTooltipPosition(chartRef);
   const newPathsAttrs = useUpdatedPaths(chartRef);
 
   return (
     <ResponsiveContainer width='100%' height={240} ref={chartRef}>
-      <RechartsLineChart
-        data={data}
-        margin={{ top: 1, right: 0, bottom: 0, left: 0 }}
-      >
+      <LineChart data={data}>
         <XAxis
           dataKey={index}
-          tickLine={false}
-          axisLine={false}
           className='[&_.recharts-cartesian-axis-tick_text]:fill-text-soft-400 [&_.recharts-cartesian-axis-tick_text]:text-subheading-2xs'
           {...(xAxisProps as any)}
         />
@@ -266,26 +261,17 @@ const ChartStepLine = <T extends string>({
           {...(yAxisProps as any)}
         />
 
-        {showGridLines && (
-          <CartesianGrid
-            className='stroke-stroke-soft-200'
-            strokeDasharray='2 2'
-            strokeWidth={1}
-            horizontal={false}
-            vertical={true}
-          />
-        )}
+        {showGridLines && <CartesianGrid className='stroke-stroke-soft-200' />}
 
-        {showTooltip && tooltipContent && (
-          <RechartsTooltip
-            content={<CustomTooltip renderContent={tooltipContent} />}
-            cursor={false}
-            isAnimationActive={true}
-            animationDuration={100}
-            offset={0}
-            position={{ y: tooltipPos.y, x: tooltipPos.x }}
-          />
-        )}
+        <Tooltip
+        // content={
+        //   <CustomTooltip
+        //     renderContent={(v) => (
+        //       <div>{JSON.stringify(v.payload[0].payload)}</div>
+        //     )}
+        //   />
+        // }
+        />
 
         {newPathsAttrs.map((attr, i) => (
           <path
@@ -299,7 +285,6 @@ const ChartStepLine = <T extends string>({
           <Line
             key={i}
             dataKey={category}
-            dot={false}
             type='step'
             strokeWidth={2}
             opacity={0}
@@ -317,12 +302,12 @@ const ChartStepLine = <T extends string>({
             }}
           />
         ))}
-      </RechartsLineChart>
+      </LineChart>
     </ResponsiveContainer>
   );
 };
 
-type CustomTooltipProps = React.ComponentProps<typeof RechartsTooltip> & {
+type CustomTooltipProps = React.ComponentProps<typeof Tooltip> & {
   renderContent: (props: { payload: any }) => React.ReactNode;
 };
 
