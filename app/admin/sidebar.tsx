@@ -17,6 +17,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { cn, cnExt } from '@/utils/cn';
 import * as Button from '@/components/ui/compact-button';
 import * as Divider from '@/components/ui/divider';
+import { SidebarProfile } from '@/components/sidebar-profile';
 
 function useCollapsedState({
   defaultCollapsed = false,
@@ -227,11 +228,11 @@ function UserProfile({ collapsed }: { collapsed: boolean }) {
         'px-2': collapsed,
       })}
     >
-      {/* <SidebarProfile
+      <SidebarProfile
         className={cn('transition-all-default', {
           'w-auto': collapsed,
         })}
-      /> */}
+      />
     </div>
   );
 }

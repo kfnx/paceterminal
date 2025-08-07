@@ -9,6 +9,8 @@ import {
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
+import { compactNumFormatter } from '@/utils/number-formatter';
+
 import {
   useMetricsDynamic,
   type MetricDynamicWithValues,
@@ -159,6 +161,10 @@ export function MetricsDynamicCard({ address }: MetricsCardProps) {
                               'MMM d',
                             ).toLocaleUpperCase(),
                           tickMargin: 8,
+                        }}
+                        yAxisProps={{
+                          tickFormatter: (value) =>
+                            compactNumFormatter.format(value),
                         }}
                       />
                     ) : (

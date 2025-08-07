@@ -317,6 +317,14 @@ export function MetricsDynamicForm({
     return new Date(dateTimeString).toLocaleString();
   };
 
+  const formatDate = (dateTimeString: string) => {
+    const date = new Date(dateTimeString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <Modal.Root open={isOpen} onOpenChange={handleClose}>
       <Modal.Content className='max-w-2xl'>
@@ -406,7 +414,7 @@ export function MetricsDynamicForm({
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           setUnit(e.target.value)
                         }
-                        placeholder='Enter unit in ID (e.g., USD, SOL, %)'
+                        placeholder='Enter unit in ID (e.g., Pengguna, Transaksi, %)'
                         disabled={isSubmitting}
                       />
                     </Input.Wrapper>
@@ -423,7 +431,7 @@ export function MetricsDynamicForm({
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           setUnitEn(e.target.value)
                         }
-                        placeholder='Enter unit in EN (e.g., USD, SOL, %)'
+                        placeholder='Enter unit in EN (e.g., User, Transaction, %)'
                         disabled={isSubmitting}
                       />
                     </Input.Wrapper>
@@ -434,7 +442,7 @@ export function MetricsDynamicForm({
 
             {/* Existing Values Section - Only show when editing */}
             {metric && (
-              <div className='space-y-4 border-t pt-4'>
+              <div className='space-y-4 pt-4'>
                 <h3 className='text-sm text-gray-900 dark:text-gray-100 font-medium'>
                   Existing Values ({existingValues.length})
                 </h3>
@@ -458,7 +466,7 @@ export function MetricsDynamicForm({
                             <Input.Root className='col-span-2'>
                               <Input.Wrapper>
                                 <Input.Input
-                                  type='text'
+                                  type='date'
                                   value={editingValue.time}
                                   onChange={(e) =>
                                     setEditingValue({
@@ -474,7 +482,6 @@ export function MetricsDynamicForm({
                               <Input.Wrapper>
                                 <Input.Input
                                   type='number'
-                                  step='any'
                                   value={editingValue.value}
                                   onChange={(e) =>
                                     setEditingValue({
@@ -490,10 +497,10 @@ export function MetricsDynamicForm({
                         ) : (
                           // View mode
                           <>
-                            <div className='col-span-2 p-2 text-text-sub-600'>
-                              {formatDateTime(val.time)}
+                            <div className='col-span-2 rounded-lg border border-bg-sub-300 p-2 text-paragraph-sm text-text-sub-600'>
+                              {formatDate(val.time)}
                             </div>
-                            <div className='col-span-3 p-2 text-text-strong-950'>
+                            <div className='col-span-3 rounded-lg border border-bg-sub-300 p-2 text-paragraph-sm text-text-strong-950'>
                               {val.value.toLocaleString()}
                             </div>
                           </>
@@ -506,7 +513,7 @@ export function MetricsDynamicForm({
                               mode='stroke'
                               onClick={handleSaveEdit}
                               disabled={isSubmitting}
-                              size='xsmall'
+                              size='medium'
                             >
                               <Button.Icon as={RiSaveLine} />
                             </Button.Root>
@@ -516,7 +523,7 @@ export function MetricsDynamicForm({
                               mode='stroke'
                               onClick={handleCancelEdit}
                               disabled={isSubmitting}
-                              size='xsmall'
+                              size='medium'
                             >
                               <Button.Icon as={RiCloseLine} />
                             </Button.Root>
@@ -529,7 +536,7 @@ export function MetricsDynamicForm({
                               mode='stroke'
                               onClick={() => handleStartEdit(index, val)}
                               disabled={isSubmitting}
-                              size='xsmall'
+                              size='medium'
                             >
                               <Button.Icon as={RiEditLine} />
                             </Button.Root>
@@ -539,7 +546,7 @@ export function MetricsDynamicForm({
                               mode='stroke'
                               onClick={() => handleDeleteValue(val.time)}
                               disabled={deleteValueMutation.isPending}
-                              size='xsmall'
+                              size='medium'
                             >
                               <Button.Icon as={RiDeleteBinLine} />
                             </Button.Root>
@@ -558,65 +565,63 @@ export function MetricsDynamicForm({
 
             {/* Add Values Section - Show when editing existing metric or after creating new metric */}
             {shouldShowAddValueSection && (
-              <div className='space-y-4 border-t pt-4'>
+              <div className='pt-2'>
                 <h3 className='text-sm text-gray-900 dark:text-gray-100 font-medium'>
                   Add Metric Value
                 </h3>
 
-                <div className='space-y-4'>
-                  <div className='grid gap-6 md:grid-cols-2'>
-                    {/* Value */}
-                    <div className='flex flex-col gap-1'>
-                      <Label.Root>
-                        Value <Label.Asterisk />
-                      </Label.Root>
-                      <Input.Root>
-                        <Input.Wrapper>
-                          <Input.Input
-                            type='number'
-                            step='any'
-                            value={value}
-                            onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>,
-                            ) => setValue(e.target.value)}
-                            placeholder='Enter numeric value (e.g., 1000000)'
-                            disabled={isSubmitting}
-                          />
-                        </Input.Wrapper>
-                      </Input.Root>
-                    </div>
-
-                    {/* Time */}
-                    <div className='flex flex-col gap-1'>
-                      <Label.Root>
-                        Time <Label.Asterisk />
-                      </Label.Root>
-                      <Input.Root>
-                        <Input.Wrapper>
-                          <Input.Input
-                            type='datetime-local'
-                            value={time}
-                            onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>,
-                            ) => setTime(e.target.value)}
-                            disabled={isSubmitting}
-                          />
-                        </Input.Wrapper>
-                      </Input.Root>
-                    </div>
+                <div className='grid grid-cols-6 items-end gap-4 space-y-4'>
+                  {/* Time */}
+                  <div className='col-span-2 flex flex-col gap-1'>
+                    <Label.Root>
+                      Time <Label.Asterisk />
+                    </Label.Root>
+                    <Input.Root>
+                      <Input.Wrapper>
+                        <Input.Input
+                          type='date'
+                          value={time}
+                          onChange={(
+                            e: React.ChangeEvent<HTMLInputElement>,
+                          ) => setTime(e.target.value)}
+                          disabled={isSubmitting}
+                        />
+                      </Input.Wrapper>
+                    </Input.Root>
                   </div>
 
-                  <Button.Root
-                    type='button'
-                    variant='neutral'
-                    mode='stroke'
-                    onClick={handleAddValue}
-                    disabled={isSubmitting || !value.trim() || !time.trim()}
-                    className='w-full'
-                  >
-                    <Button.Icon as={RiAddLine} />
-                    Add Value
-                  </Button.Root>
+                  {/* Value */}
+                  <div className='col-span-3 flex flex-col justify-start gap-1'>
+                    <Label.Root>
+                      Value <Label.Asterisk />
+                    </Label.Root>
+                    <Input.Root>
+                      <Input.Wrapper>
+                        <Input.Input
+                          type='number'
+                          value={value}
+                          onChange={(
+                            e: React.ChangeEvent<HTMLInputElement>,
+                          ) => setValue(e.target.value)}
+                          placeholder='Enter numeric value (e.g., 1000000)'
+                          disabled={isSubmitting}
+                        />
+                      </Input.Wrapper>
+                    </Input.Root>
+                  </div>
+
+                  <div className='col-span-1'>
+                    <Button.Root
+                      type='button'
+                      variant='neutral'
+                      mode='stroke'
+                      onClick={handleAddValue}
+                      disabled={isSubmitting || !value.trim() || !time.trim()}
+                    >
+                      <Button.Icon as={RiAddLine} />
+                      Add
+                    </Button.Root>
+                  </div>
                 </div>
               </div>
             )}

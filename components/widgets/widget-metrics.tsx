@@ -21,6 +21,7 @@ import IllustrationEmptyBudgetOverview from '@/components/empty-state-illustrati
 import * as WidgetBox from '@/components/widget-box';
 
 import ChartStepLine from '../chart-step-line';
+import { compactNumFormatter } from '@/utils/number-formatter';
 
 export default function WidgetMetrics({
   ...rest
@@ -161,6 +162,10 @@ export default function WidgetMetrics({
                                 'MMM d',
                               ).toLocaleUpperCase(),
                             tickMargin: 8,
+                          }}
+                          yAxisProps={{
+                            tickFormatter: (value) =>
+                              compactNumFormatter.format(value),
                           }}
                         />
                       ) : (
