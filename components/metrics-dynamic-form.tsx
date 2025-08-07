@@ -45,6 +45,7 @@ export function MetricsDynamicForm({
   const [order, setOrder] = React.useState(metric?.ordering?.toString() || '');
   const [unit, setUnit] = React.useState(metric?.unit || '');
   const [unitEn, setUnitEn] = React.useState(metric?.unit_en || '');
+  const [source, setSource] = React.useState(metric?.source || '');
 
   // Form fields for adding values
   const [value, setValue] = React.useState('');
@@ -102,6 +103,7 @@ export function MetricsDynamicForm({
     setOrder(metric?.ordering?.toString() || '');
     setUnit(metric?.unit || '');
     setUnitEn(metric?.unit_en || '');
+    setSource(metric?.source || '');
     setValue('');
     setTime('');
     setIsMetricCreated(false);
@@ -137,6 +139,7 @@ export function MetricsDynamicForm({
         ordering: order.trim() ? parseInt(order.trim(), 10) : null,
         unit: unit.trim() || null,
         unit_en: unitEn.trim() || null,
+        source: source.trim() || null,
       };
 
       const response = await fetch(url, {
@@ -164,6 +167,9 @@ export function MetricsDynamicForm({
         setLabel('');
         setLabelEn('');
         setOrder('');
+        setUnit('');
+        setUnitEn('');
+        setSource('');
         setValue('');
         setTime('');
       } else {
@@ -380,24 +386,41 @@ export function MetricsDynamicForm({
                 </div>
               </div>
 
-              {/* Order */}
-              <div className='flex flex-col gap-1'>
-                <Label.Root>Order</Label.Root>
-                <Input.Root>
-                  <Input.Wrapper>
-                    <Input.Input
-                      type='number'
-                      value={order}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setOrder(e.target.value)
-                      }
-                      placeholder='Enter display order (e.g., 1, 2, 3)'
-                      disabled={isSubmitting}
-                    />
-                  </Input.Wrapper>
-                </Input.Root>
+              <div className='grid gap-6 md:grid-cols-2'>
+                {/* Source */}
+                <div className='flex flex-col gap-1'>
+                  <Label.Root>Source</Label.Root>
+                  <Input.Root>
+                    <Input.Wrapper>
+                      <Input.Input
+                        value={source}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setSource(e.target.value)
+                        }
+                        placeholder='Enter source of the metric (e.g., CoinGecko, Binance)'
+                        disabled={isSubmitting}
+                      />
+                    </Input.Wrapper>
+                  </Input.Root>
+                </div>
+                {/* Order */}
+                <div className='flex flex-col gap-1'>
+                  <Label.Root>Order</Label.Root>
+                  <Input.Root>
+                    <Input.Wrapper>
+                      <Input.Input
+                        type='number'
+                        value={order}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setOrder(e.target.value)
+                        }
+                        placeholder='Enter display order (e.g., 1, 2, 3)'
+                        disabled={isSubmitting}
+                      />
+                    </Input.Wrapper>
+                  </Input.Root>
+                </div>
               </div>
-
               {/* Unit Fields */}
               <div className='grid gap-6 md:grid-cols-2'>
                 {/* Unit (ID) */}

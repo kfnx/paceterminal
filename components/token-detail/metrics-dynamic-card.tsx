@@ -168,26 +168,25 @@ export function MetricsDynamicCard({ address }: MetricsCardProps) {
                         </div>
                       </div>
                     )}
-                    <div className='flex items-center gap-2'>
-                      {selectedLanguage === 'en' ? 'Latest' : 'Terbaru'}:{' '}
-                      <b>
-                        {Number(metric.last.value).toLocaleString()}{' '}
+                    <div className='flex items-center justify-between'>
+                      <div className='flex gap-2'>
+                        {selectedLanguage === 'id' ? 'Terakhir' : 'Latest'}: <span className='font-semibold'>{Number(metric.last.value).toLocaleString()}</span>
                         <span>
-                          {selectedLanguage === 'en'
-                            ? metric.unit_en
-                            : metric.unit}
+                          ({metric.last.time &&
+                            format(new Date(metric.last.time), 'MMM d, yyyy')})
                         </span>
-                      </b>
-                      (
-                      {metric.last.time &&
-                        format(new Date(metric.last.time), 'MMM d, yyyy')}
-                      )
-                      <span
-                        className={`text-paragraph-sm ${isLatestPositive ? 'text-green-600' : 'text-red-600'}`}
-                      >
-                        {isLatestPositive ? '+' : ''}
-                        {metric.last.percentChange.toFixed(2)}%
-                      </span>
+                        <span
+                          className={`text-paragraph-sm ${isLatestPositive ? 'text-green-600' : 'text-red-600'}`}
+                        >
+                          {isLatestPositive ? '+' : ''}
+                          {metric.last.percentChange.toFixed(0)}%
+                        </span>
+                      </div>
+                      <div>
+                        <span className='text-paragraph-sm text-text-sub-600'>
+                          {selectedLanguage === 'id' ? 'Sumber' : 'Source'}: {metric.source}
+                        </span>
+                      </div>
                     </div>
                   </div>
                   <div className='ml-3 flex w-fit flex-col gap-2'>

@@ -132,6 +132,7 @@ export type Database = {
           label: string
           label_en: string | null
           ordering: number | null
+          source: string | null
           unit: string | null
           unit_en: string | null
         }
@@ -142,6 +143,7 @@ export type Database = {
           label: string
           label_en?: string | null
           ordering?: number | null
+          source?: string | null
           unit?: string | null
           unit_en?: string | null
         }
@@ -152,6 +154,7 @@ export type Database = {
           label?: string
           label_en?: string | null
           ordering?: number | null
+          source?: string | null
           unit?: string | null
           unit_en?: string | null
         }

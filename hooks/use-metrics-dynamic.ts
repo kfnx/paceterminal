@@ -121,6 +121,9 @@ interface CreateDynamicMetricParams {
   label: string;
   label_en?: string;
   ordering?: number;
+  unit?: string;
+  unit_en?: string;
+  source?: string;
 }
 
 interface UpdateDynamicMetricParams {
@@ -128,6 +131,9 @@ interface UpdateDynamicMetricParams {
   label: string;
   label_en?: string;
   ordering?: number;
+  unit?: string;
+  unit_en?: string;
+  source?: string;
 }
 
 interface AddDynamicMetricValueParams {

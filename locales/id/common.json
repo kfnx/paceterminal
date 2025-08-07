@@ -52,7 +52,9 @@
     "amount": "Jumlah",
     "total": "Total",
     "noData": "Tidak ada data tersedia",
-    "comingSoon": "Segera Hadir"
+    "comingSoon": "Segera Hadir",
+    "latest": "Terbaru",
+    "source": "Sumber"
   },
   "wallet": {
     "connect": "Hubungkan Dompet",
@@ -172,9 +174,5 @@
     "premiumContent": "Konten Premium",
     "unlock": "Buka {feature}",
     "upgradeToPremium": "Upgrade ke Premium"
-  },
-  "metrics": {
-    "latest": "Terbaru",
-    "noData": "Tidak ada data"
   }
 }

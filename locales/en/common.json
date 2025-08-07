@@ -52,7 +52,9 @@
     "amount": "Amount",
     "total": "Total",
     "noData": "No data available",
-    "comingSoon": "Coming Soon"
+    "comingSoon": "Coming Soon",
+    "latest": "Latest",
+    "source": "Source"
   },
   "wallet": {
     "connect": "Connect Wallet",
@@ -172,9 +174,5 @@
     "premiumContent": "Premium Content",
     "unlock": "Unlock {feature}",
     "upgradeToPremium": "Upgrade to Premium"
-  },
-  "metrics": {
-    "latest": "Latest",
-    "noData": "No data available"
   }
 }

@@ -173,17 +173,25 @@ export default function WidgetMetrics({
                           </div>
                         </div>
                       )}
-                      <div className='flex items-center gap-2'>
-                        {t('metrics.latest')}: <b>{metric.last.value}</b>(
-                        {metric.last.time &&
-                          format(new Date(metric.last.time), 'MMM d, yyyy')}
-                        )
-                        <span
-                          className={`text-paragraph-sm ${isLatestPositive ? 'text-green-600' : 'text-red-600'}`}
-                        >
-                          {isLatestPositive ? '+' : ''}
-                          {metric.last.percentChange.toFixed(2)}%
-                        </span>
+                      <div className='flex items-center justify-between'>
+                        <div className='flex gap-2'>
+                          {t('common.latest')}: <span className='font-semibold'>{Number(metric.last.value).toLocaleString()}</span>
+                          <span>
+                            ({metric.last.time &&
+                              format(new Date(metric.last.time), 'MMM d, yyyy')})
+                          </span>
+                          <span
+                            className={`text-paragraph-sm ${isLatestPositive ? 'text-green-600' : 'text-red-600'}`}
+                          >
+                            {isLatestPositive ? '+' : ''}
+                            {metric.last.percentChange.toFixed(1)}%
+                          </span>
+                        </div>
+                        <div>
+                          <span className='text-paragraph-sm text-text-sub-600'>
+                            {t('common.source')}: {metric.source}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   );
