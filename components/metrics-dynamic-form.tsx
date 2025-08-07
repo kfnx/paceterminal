@@ -157,7 +157,7 @@ export function MetricsDynamicForm({
       if (!metric && result.data?.id) {
         setCreatedMetricId(result.data.id);
         setIsMetricCreated(true);
-      } else {
+        // Close modal after creating new metric
         onSuccess();
         onClose();
         // Reset form
@@ -166,6 +166,11 @@ export function MetricsDynamicForm({
         setOrder('');
         setValue('');
         setTime('');
+      } else {
+        // For editing existing metrics, don't close the modal
+        // so user can continue adding values
+        onSuccess();
+        // Don't call onClose() here to keep modal open for adding values
       }
     } catch (error) {
       console.error('Error saving dynamic metric:', error);
@@ -432,7 +437,7 @@ export function MetricsDynamicForm({
             </div>
 
             {/* Existing Values Section - Only show when editing */}
-            {metric && (
+            {metric && existingValues.length > 0 && (
               <div className='space-y-4 pt-4'>
                 <h3 className='text-sm text-gray-900 dark:text-gray-100 font-medium'>
                   Existing Values ({existingValues.length})
@@ -553,9 +558,8 @@ export function MetricsDynamicForm({
                 )}
               </div>
             )}
-
             {/* Add Values Section - Show when editing existing metric or after creating new metric */}
-            {<div className='pt-2'>
+            {shouldShowAddValueSection && (<div className='pt-2'>
               <h3 className='text-sm text-gray-900 dark:text-gray-100 font-medium'>
                 Add Metric Value
               </h3>
@@ -613,8 +617,7 @@ export function MetricsDynamicForm({
                   </Button.Root>
                 </div>
               </div>
-            </div>
-            }
+            </div>)}
           </Modal.Body>
           <Modal.Footer>
             <Button.Root

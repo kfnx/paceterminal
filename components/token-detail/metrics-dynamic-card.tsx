@@ -9,7 +9,7 @@ import {
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
-import { compactNumFormatter } from '@/utils/number-formatter';
+import { compactNumFormatter, thousandSeparatorFormatter } from '@/utils/number-formatter';
 import {
   useMetricsDynamic,
   type MetricDynamicWithValues,
@@ -146,9 +146,9 @@ export function MetricsDynamicCard({ address }: MetricsCardProps) {
                         tooltipContent={(v: { payload: any }) => (
                           <div className='flex flex-col gap-1 p-1'>
                             <p className='text-text-sub-600'>
-                              {v.payload[0].payload.time}
+                              {formatDateDMY(new Date(v.payload[0].payload.time))}
                             </p>
-                            <b>{v.payload[0].payload.value}</b>
+                            <b>{Number(v.payload[0].payload.value).toLocaleString()}</b>
                           </div>
                         )}
                         xAxisProps={{
@@ -171,7 +171,7 @@ export function MetricsDynamicCard({ address }: MetricsCardProps) {
                     <div className='flex items-center gap-2'>
                       {selectedLanguage === 'en' ? 'Latest' : 'Terbaru'}:{' '}
                       <b>
-                        {metric.last.value}{' '}
+                        {Number(metric.last.value).toLocaleString()}{' '}
                         <span>
                           {selectedLanguage === 'en'
                             ? metric.unit_en

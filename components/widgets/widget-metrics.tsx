@@ -22,6 +22,7 @@ import IllustrationEmptyBudgetOverview from '@/components/empty-state-illustrati
 import * as WidgetBox from '@/components/widget-box';
 
 import ChartStepLine from '../chart-step-line';
+import { formatDateDMY } from '@/utils/date-formatter';
 
 export default function WidgetMetrics({
   ...rest
@@ -147,9 +148,9 @@ export default function WidgetMetrics({
                           tooltipContent={(v: { payload: any }) => (
                             <div className='flex flex-col gap-1 p-1'>
                               <p className='text-text-sub-600'>
-                                {v.payload[0].payload.time}
+                                {formatDateDMY(new Date(v.payload[0].payload.time))}
                               </p>
-                              <b>{v.payload[0].payload.value}</b>
+                              <b>{Number(v.payload[0].payload.value).toLocaleString()}</b>
                             </div>
                           )}
                           xAxisProps={{
