@@ -8,6 +8,7 @@ import { RiAddLine, RiLineChartLine } from '@remixicon/react';
 import { format } from 'date-fns';
 
 import { cnExt } from '@/utils/cn';
+import { compactNumFormatter } from '@/utils/number-formatter';
 import { useMetrics } from '@/hooks/use-metrics';
 import {
   MetricDynamicValue,
@@ -21,7 +22,6 @@ import IllustrationEmptyBudgetOverview from '@/components/empty-state-illustrati
 import * as WidgetBox from '@/components/widget-box';
 
 import ChartStepLine from '../chart-step-line';
-import { compactNumFormatter } from '@/utils/number-formatter';
 
 export default function WidgetMetrics({
   ...rest

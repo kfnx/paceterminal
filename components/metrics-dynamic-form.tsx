@@ -581,9 +581,9 @@ export function MetricsDynamicForm({
                         <Input.Input
                           type='date'
                           value={time}
-                          onChange={(
-                            e: React.ChangeEvent<HTMLInputElement>,
-                          ) => setTime(e.target.value)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setTime(e.target.value)
+                          }
                           disabled={isSubmitting}
                         />
                       </Input.Wrapper>
@@ -600,9 +600,9 @@ export function MetricsDynamicForm({
                         <Input.Input
                           type='number'
                           value={value}
-                          onChange={(
-                            e: React.ChangeEvent<HTMLInputElement>,
-                          ) => setValue(e.target.value)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setValue(e.target.value)
+                          }
                           placeholder='Enter numeric value (e.g., 1000000)'
                           disabled={isSubmitting}
                         />

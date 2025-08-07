@@ -10,7 +10,6 @@ import { format } from 'date-fns';
 import { toast } from 'sonner';
 
 import { compactNumFormatter } from '@/utils/number-formatter';
-
 import {
   useMetricsDynamic,
   type MetricDynamicWithValues,
