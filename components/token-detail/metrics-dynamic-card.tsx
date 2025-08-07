@@ -19,6 +19,7 @@ import * as SegmentedControl from '@/components/ui/segmented-control';
 
 import ChartStepLine from '../chart-step-line';
 import { MetricsDynamicForm } from '../metrics-dynamic-form';
+import { formatDateDMY } from '@/utils/date-formatter';
 
 interface MetricsCardProps {
   address: string;
@@ -139,10 +140,7 @@ export function MetricsDynamicCard({ address }: MetricsCardProps) {
                     </div>
                     {metric.values.length > 0 ? (
                       <ChartStepLine
-                        data={metric.values.map((value) => ({
-                          time: format(new Date(value.time), 'MMM d'),
-                          value: value.value,
-                        }))}
+                        data={metric.values}
                         index='time'
                         categories={['value']}
                         tooltipContent={(v: { payload: any }) => (
@@ -155,10 +153,7 @@ export function MetricsDynamicCard({ address }: MetricsCardProps) {
                         )}
                         xAxisProps={{
                           tickFormatter: (value) =>
-                            format(
-                              new Date(value),
-                              'MMM d',
-                            ).toLocaleUpperCase(),
+                            formatDateDMY(value),
                           tickMargin: 8,
                         }}
                         yAxisProps={{

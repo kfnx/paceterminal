@@ -139,10 +139,8 @@ export default function AdminUsersPage() {
           <Table.Header>
             <Table.Row>
               <Table.Head>User</Table.Head>
-              <Table.Head>Status</Table.Head>
-              <Table.Head>Created</Table.Head>
-              <Table.Head>Last Sign In</Table.Head>
-              <Table.Head>Actions</Table.Head>
+              <Table.Head>Created at</Table.Head>
+              {/* <Table.Head>Actions</Table.Head> */}
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -153,63 +151,28 @@ export default function AdminUsersPage() {
                     <div className='bg-primary-50 flex h-8 w-8 items-center justify-center rounded-full'>
                       <RiUserLine className='size-4 text-primary-base' />
                     </div>
-                    <div>
-                      <div className='font-medium text-text-strong-950'>
-                        {user.email}
-                      </div>
-                      <div className='text-paragraph-xs text-text-sub-600'>
-                        ID: {user.id.slice(0, 8)}...
-                      </div>
+                    <div className='font-medium text-text-strong-950'>
+                      {user.email}
                     </div>
                   </div>
-                </Table.Cell>
-                <Table.Cell>
-                  {user.confirmed_at ? (
-                    <Badge.Root variant='filled' color='green'>
-                      Confirmed
-                    </Badge.Root>
-                  ) : (
-                    <Badge.Root variant='filled' color='orange'>
-                      Pending
-                    </Badge.Root>
-                  )}
                 </Table.Cell>
                 <Table.Cell className='text-paragraph-sm text-text-sub-600'>
                   {formatDate(user.created_at)}
                 </Table.Cell>
-                <Table.Cell className='text-paragraph-sm text-text-sub-600'>
-                  {formatDate(user.last_sign_in_at)}
-                </Table.Cell>
-                <Table.Cell>
-                  <div className='flex items-center gap-2'>
-                    {!user.confirmed_at && (
-                      <Button.Root
-                        variant='neutral'
-                        mode='stroke'
-                        size='small'
-                        onClick={() => handleResendInvitation(user.email)}
-                        disabled={resending}
-                      >
-                        <Button.Icon
-                          as={resending ? undefined : RiRefreshLine}
-                        />
-                        {resending ? 'Sending...' : 'Resend'}
-                      </Button.Root>
-                    )}
-                    <Button.Root
-                      variant='error'
-                      mode='stroke'
-                      size='small'
-                      onClick={() => openDeleteModal(user)}
-                      disabled={deleting}
-                    >
-                      <Button.Icon
-                        as={deleting ? undefined : RiDeleteBinLine}
-                      />
-                      {deleting ? 'Deleting...' : 'Delete'}
-                    </Button.Root>
-                  </div>
-                </Table.Cell>
+                {/* <Table.Cell>
+                  <Button.Root
+                    variant='error'
+                    mode='stroke'
+                    size='small'
+                    onClick={() => openDeleteModal(user)}
+                    disabled={deleting}
+                  >
+                    <Button.Icon
+                      as={deleting ? undefined : RiDeleteBinLine}
+                    />
+                    {deleting ? 'Deleting...' : 'Delete'}
+                  </Button.Root>
+                </Table.Cell> */}
               </Table.Row>
             ))}
           </Table.Body>

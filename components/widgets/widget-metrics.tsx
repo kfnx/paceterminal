@@ -141,10 +141,7 @@ export default function WidgetMetrics({
                       </p>
                       {metric.values.length > 0 ? (
                         <ChartStepLine
-                          data={metric.values.map((value) => ({
-                            time: format(new Date(value.time), 'MMM d'),
-                            value: value.value,
-                          }))}
+                          data={metric.values}
                           index='time'
                           categories={['value']}
                           tooltipContent={(v: { payload: any }) => (

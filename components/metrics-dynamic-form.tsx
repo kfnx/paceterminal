@@ -18,6 +18,8 @@ import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
+import { formatDateDMY } from '@/utils/date-formatter';
+import { toast } from 'sonner';
 
 interface MetricsDynamicFormProps {
   metric?: MetricDynamic;
@@ -194,12 +196,13 @@ export function MetricsDynamicForm({
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add metric value');
+        toast.error('Failed to add metric value');
+      } else {
+        // Reset value fields and refresh existing values
+        setValue('');
+        setTime('');
       }
 
-      // Reset value fields and refresh existing values
-      setValue('');
-      setTime('');
 
       // Refresh existing values if editing
       if (metric?.id) {
@@ -312,18 +315,6 @@ export function MetricsDynamicForm({
   // Determine if we should show the add value section
   const shouldShowAddValueSection = metric || isMetricCreated;
   const currentMetricId = metric?.id || createdMetricId;
-
-  const formatDateTime = (dateTimeString: string) => {
-    return new Date(dateTimeString).toLocaleString();
-  };
-
-  const formatDate = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
 
   return (
     <Modal.Root open={isOpen} onOpenChange={handleClose}>
@@ -498,7 +489,7 @@ export function MetricsDynamicForm({
                           // View mode
                           <>
                             <div className='col-span-2 rounded-lg border border-bg-sub-300 p-2 text-paragraph-sm text-text-sub-600'>
-                              {formatDate(val.time)}
+                              {formatDateDMY(new Date(val.time))}
                             </div>
                             <div className='col-span-3 rounded-lg border border-bg-sub-300 p-2 text-paragraph-sm text-text-strong-950'>
                               {val.value.toLocaleString()}
@@ -564,67 +555,66 @@ export function MetricsDynamicForm({
             )}
 
             {/* Add Values Section - Show when editing existing metric or after creating new metric */}
-            {shouldShowAddValueSection && (
-              <div className='pt-2'>
-                <h3 className='text-sm text-gray-900 dark:text-gray-100 font-medium'>
-                  Add Metric Value
-                </h3>
+            {<div className='pt-2'>
+              <h3 className='text-sm text-gray-900 dark:text-gray-100 font-medium'>
+                Add Metric Value
+              </h3>
 
-                <div className='grid grid-cols-6 items-end gap-4 space-y-4'>
-                  {/* Time */}
-                  <div className='col-span-2 flex flex-col gap-1'>
-                    <Label.Root>
-                      Time <Label.Asterisk />
-                    </Label.Root>
-                    <Input.Root>
-                      <Input.Wrapper>
-                        <Input.Input
-                          type='date'
-                          value={time}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setTime(e.target.value)
-                          }
-                          disabled={isSubmitting}
-                        />
-                      </Input.Wrapper>
-                    </Input.Root>
-                  </div>
+              <div className='grid grid-cols-6 items-end gap-4 space-y-4'>
+                {/* Time */}
+                <div className='col-span-2 flex flex-col gap-1'>
+                  <Label.Root>
+                    Time <Label.Asterisk />
+                  </Label.Root>
+                  <Input.Root>
+                    <Input.Wrapper>
+                      <Input.Input
+                        type='date'
+                        value={time}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setTime(e.target.value)
+                        }
+                        disabled={isSubmitting}
+                      />
+                    </Input.Wrapper>
+                  </Input.Root>
+                </div>
 
-                  {/* Value */}
-                  <div className='col-span-3 flex flex-col justify-start gap-1'>
-                    <Label.Root>
-                      Value <Label.Asterisk />
-                    </Label.Root>
-                    <Input.Root>
-                      <Input.Wrapper>
-                        <Input.Input
-                          type='number'
-                          value={value}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setValue(e.target.value)
-                          }
-                          placeholder='Enter numeric value (e.g., 1000000)'
-                          disabled={isSubmitting}
-                        />
-                      </Input.Wrapper>
-                    </Input.Root>
-                  </div>
+                {/* Value */}
+                <div className='col-span-3 flex flex-col justify-start gap-1'>
+                  <Label.Root>
+                    Value <Label.Asterisk />
+                  </Label.Root>
+                  <Input.Root>
+                    <Input.Wrapper>
+                      <Input.Input
+                        type='number'
+                        value={value}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setValue(e.target.value)
+                        }
+                        placeholder='Enter numeric value (e.g., 1000000)'
+                        disabled={isSubmitting}
+                      />
+                    </Input.Wrapper>
+                  </Input.Root>
+                </div>
 
-                  <div className='col-span-1'>
-                    <Button.Root
-                      type='button'
-                      variant='neutral'
-                      mode='stroke'
-                      onClick={handleAddValue}
-                      disabled={isSubmitting || !value.trim() || !time.trim()}
-                    >
-                      <Button.Icon as={RiAddLine} />
-                      Add
-                    </Button.Root>
-                  </div>
+                <div className='col-span-1'>
+                  <Button.Root
+                    type='button'
+                    variant='neutral'
+                    mode='stroke'
+                    onClick={handleAddValue}
+                    disabled={isSubmitting || !value.trim() || !time.trim()}
+                  >
+                    <Button.Icon as={RiAddLine} />
+                    Add
+                  </Button.Root>
                 </div>
               </div>
-            )}
+            </div>
+            }
           </Modal.Body>
           <Modal.Footer>
             <Button.Root
