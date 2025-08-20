@@ -8,6 +8,7 @@ import { RiAddLine, RiLineChartLine } from '@remixicon/react';
 import { format } from 'date-fns';
 
 import { cnExt } from '@/utils/cn';
+import { formatDateDMY } from '@/utils/date-formatter';
 import { compactNumFormatter } from '@/utils/number-formatter';
 import { useMetrics } from '@/hooks/use-metrics';
 import {
@@ -22,7 +23,6 @@ import IllustrationEmptyBudgetOverview from '@/components/empty-state-illustrati
 import * as WidgetBox from '@/components/widget-box';
 
 import ChartStepLine from '../chart-step-line';
-import { formatDateDMY } from '@/utils/date-formatter';
 
 export default function WidgetMetrics({
   ...rest
@@ -148,9 +148,15 @@ export default function WidgetMetrics({
                           tooltipContent={(v: { payload: any }) => (
                             <div className='flex flex-col gap-1 p-1'>
                               <p className='text-text-sub-600'>
-                                {formatDateDMY(new Date(v.payload[0].payload.time))}
+                                {formatDateDMY(
+                                  new Date(v.payload[0].payload.time),
+                                )}
                               </p>
-                              <b>{Number(v.payload[0].payload.value).toLocaleString()}</b>
+                              <b>
+                                {Number(
+                                  v.payload[0].payload.value,
+                                ).toLocaleString()}
+                              </b>
                             </div>
                           )}
                           xAxisProps={{
@@ -175,10 +181,15 @@ export default function WidgetMetrics({
                       )}
                       <div className='flex items-center justify-between'>
                         <div className='flex gap-2'>
-                          {t('common.latest')}: <span className='font-semibold'>{Number(metric.last.value).toLocaleString()}</span>
+                          {t('common.latest')}:{' '}
+                          <span className='font-semibold'>
+                            {Number(metric.last.value).toLocaleString()}
+                          </span>
                           <span>
-                            ({metric.last.time &&
-                              format(new Date(metric.last.time), 'MMM d, yyyy')})
+                            (
+                            {metric.last.time &&
+                              format(new Date(metric.last.time), 'MMM d, yyyy')}
+                            )
                           </span>
                           <span
                             className={`text-paragraph-sm ${isLatestPositive ? 'text-green-600' : 'text-red-600'}`}

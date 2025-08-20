@@ -2,9 +2,10 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import {
   RiArrowRightSLine,
+  RiNewspaperLine,
   RiSkipLeftLine,
   RiSkipRightLine,
 } from '@remixicon/react';
@@ -215,6 +216,74 @@ function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
   );
 }
 
+function GeneralNavigation({ collapsed }: { collapsed: boolean }) {
+  const pathname = usePathname();
+
+  const navItems = [
+    {
+      href: '/updates',
+      label: 'Updates',
+      icon: RiNewspaperLine,
+    },
+  ];
+
+  return (
+    <div className='space-y-2'>
+      <div
+        className={cn('p-1 text-subheading-xs uppercase text-text-soft-400', {
+          '-mx-2.5 w-14 px-0 text-center': collapsed,
+        })}
+      >
+        {collapsed ? 'NAV' : 'Navigation'}
+      </div>
+      <div className='space-y-1'>
+        {navItems.map((item) => {
+          const selected = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={selected ? 'page' : undefined}
+              className={cn(
+                'group relative flex items-center gap-2 whitespace-nowrap rounded-lg py-2 text-text-sub-600 hover:bg-bg-weak-50',
+                'transition-default',
+                'aria-[current=page]:bg-bg-weak-50',
+                {
+                  'w-9 px-2': collapsed,
+                  'w-full px-3': !collapsed,
+                },
+              )}
+            >
+              <div
+                className={cn(
+                  'transition-default absolute top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
+                  {
+                    '-left-[22px]': collapsed,
+                    '-left-5': !collapsed,
+                    'scale-100': selected,
+                    'scale-0': !selected,
+                  },
+                )}
+              />
+              <item.icon className='h-6 w-6' />
+
+              <div
+                className='flex w-[180px] shrink-0 items-center gap-2'
+                data-hide-collapsed
+              >
+                <div className='flex-1 text-label-sm'>{item.label}</div>
+                {selected && (
+                  <RiArrowRightSLine className='size-5 text-text-sub-600' />
+                )}
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function CuratedTokens({ collapsed }: { collapsed: boolean }) {
   return (
     <div className='space-y-2'>
@@ -295,6 +364,7 @@ export default function Sidebar({
               'px-5': !collapsed,
             })}
           >
+            <GeneralNavigation collapsed={collapsed} />
             <CuratedTokens collapsed={collapsed} />
           </div>
 

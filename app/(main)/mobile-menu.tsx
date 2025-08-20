@@ -8,6 +8,7 @@ import {
   RiArrowRightSLine,
   RiCloseFill,
   RiMenu3Fill,
+  RiNewspaperLine,
   RiSearch2Line,
 } from '@remixicon/react';
 
@@ -102,26 +103,54 @@ export default function MobileMenu() {
             {/* <CompanySwitchMobile /> */}
 
             <TabMenuHorizontal.Root
-              defaultValue='main'
+              defaultValue='nav'
               className='flex flex-1 flex-col'
             >
               <TabMenuHorizontal.List className='gap-8 px-7'>
+                <TabMenuHorizontal.Trigger
+                  value='nav'
+                  className='flex-1 text-label-md'
+                >
+                  Navigation
+                </TabMenuHorizontal.Trigger>
+                <div className='flex h-6 w-1 shrink-0 items-center before:h-full before:w-px before:bg-stroke-soft-200' />
                 <TabMenuHorizontal.Trigger
                   value='main'
                   className='flex-1 text-label-md'
                 >
                   Tokens
                 </TabMenuHorizontal.Trigger>
-                <div className='flex h-6 w-1 shrink-0 items-center before:h-full before:w-px before:bg-stroke-soft-200' />
-                <TabMenuHorizontal.Trigger
-                  value='favorites'
-                  className='flex-1 text-label-md'
-                >
-                  Favorites
-                </TabMenuHorizontal.Trigger>
               </TabMenuHorizontal.List>
 
               <div className='flex-1 py-6'>
+                <TabMenuHorizontal.Content
+                  value='nav'
+                  className='data-[state=active]:duration-300 data-[state=active]:animate-in data-[state=active]:fade-in-0'
+                >
+                  <div className='flex flex-col gap-5'>
+                    <Link
+                      href='/updates'
+                      aria-current={
+                        pathname === '/updates' ? 'page' : undefined
+                      }
+                      className={cn(
+                        'group relative flex w-full items-center gap-2.5 whitespace-nowrap px-5 text-text-sub-600',
+                      )}
+                    >
+                      <RiNewspaperLine className='h-6 w-6 text-text-sub-600' />
+                      <div className='flex-1 text-label-md'>Updates</div>
+                      <div
+                        className={cn(
+                          'transition-default absolute left-0 top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
+                          {
+                            'scale-0': pathname !== '/updates',
+                          },
+                        )}
+                      />
+                      <RiArrowRightSLine className='size-6 text-text-sub-600' />
+                    </Link>
+                  </div>
+                </TabMenuHorizontal.Content>
                 <TabMenuHorizontal.Content
                   value='main'
                   className='data-[state=active]:duration-300 data-[state=active]:animate-in data-[state=active]:fade-in-0'

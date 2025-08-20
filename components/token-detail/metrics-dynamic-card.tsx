@@ -9,7 +9,11 @@ import {
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
-import { compactNumFormatter, thousandSeparatorFormatter } from '@/utils/number-formatter';
+import { formatDateDMY } from '@/utils/date-formatter';
+import {
+  compactNumFormatter,
+  thousandSeparatorFormatter,
+} from '@/utils/number-formatter';
 import {
   useMetricsDynamic,
   type MetricDynamicWithValues,
@@ -19,7 +23,6 @@ import * as SegmentedControl from '@/components/ui/segmented-control';
 
 import ChartStepLine from '../chart-step-line';
 import { MetricsDynamicForm } from '../metrics-dynamic-form';
-import { formatDateDMY } from '@/utils/date-formatter';
 
 interface MetricsCardProps {
   address: string;
@@ -146,14 +149,19 @@ export function MetricsDynamicCard({ address }: MetricsCardProps) {
                         tooltipContent={(v: { payload: any }) => (
                           <div className='flex flex-col gap-1 p-1'>
                             <p className='text-text-sub-600'>
-                              {formatDateDMY(new Date(v.payload[0].payload.time))}
+                              {formatDateDMY(
+                                new Date(v.payload[0].payload.time),
+                              )}
                             </p>
-                            <b>{Number(v.payload[0].payload.value).toLocaleString()}</b>
+                            <b>
+                              {Number(
+                                v.payload[0].payload.value,
+                              ).toLocaleString()}
+                            </b>
                           </div>
                         )}
                         xAxisProps={{
-                          tickFormatter: (value) =>
-                            formatDateDMY(value),
+                          tickFormatter: (value) => formatDateDMY(value),
                           tickMargin: 8,
                         }}
                         yAxisProps={{
@@ -170,10 +178,15 @@ export function MetricsDynamicCard({ address }: MetricsCardProps) {
                     )}
                     <div className='flex items-center justify-between'>
                       <div className='flex gap-2'>
-                        {selectedLanguage === 'id' ? 'Terakhir' : 'Latest'}: <span className='font-semibold'>{Number(metric.last.value).toLocaleString()}</span>
+                        {selectedLanguage === 'id' ? 'Terakhir' : 'Latest'}:{' '}
+                        <span className='font-semibold'>
+                          {Number(metric.last.value).toLocaleString()}
+                        </span>
                         <span>
-                          ({metric.last.time &&
-                            format(new Date(metric.last.time), 'MMM d, yyyy')})
+                          (
+                          {metric.last.time &&
+                            format(new Date(metric.last.time), 'MMM d, yyyy')}
+                          )
                         </span>
                         <span
                           className={`text-paragraph-sm ${isLatestPositive ? 'text-green-600' : 'text-red-600'}`}
@@ -184,7 +197,8 @@ export function MetricsDynamicCard({ address }: MetricsCardProps) {
                       </div>
                       <div>
                         <span className='text-paragraph-sm text-text-sub-600'>
-                          {selectedLanguage === 'id' ? 'Sumber' : 'Source'}: {metric.source}
+                          {selectedLanguage === 'id' ? 'Sumber' : 'Source'}:{' '}
+                          {metric.source}
                         </span>
                       </div>
                     </div>

@@ -8,7 +8,9 @@ import {
   RiEditLine,
   RiSaveLine,
 } from '@remixicon/react';
+import { toast } from 'sonner';
 
+import { formatDateDMY } from '@/utils/date-formatter';
 import type {
   MetricDynamic,
   MetricDynamicValue,
@@ -18,8 +20,6 @@ import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
-import { formatDateDMY } from '@/utils/date-formatter';
-import { toast } from 'sonner';
 
 interface MetricsDynamicFormProps {
   metric?: MetricDynamic;
@@ -213,7 +213,6 @@ export function MetricsDynamicForm({
         setValue('');
         setTime('');
       }
-
 
       // Refresh existing values if editing
       if (metric?.id) {
@@ -582,65 +581,67 @@ export function MetricsDynamicForm({
               </div>
             )}
             {/* Add Values Section - Show when editing existing metric or after creating new metric */}
-            {shouldShowAddValueSection && (<div className='pt-2'>
-              <h3 className='text-sm text-gray-900 dark:text-gray-100 font-medium'>
-                Add Metric Value
-              </h3>
+            {shouldShowAddValueSection && (
+              <div className='pt-2'>
+                <h3 className='text-sm text-gray-900 dark:text-gray-100 font-medium'>
+                  Add Metric Value
+                </h3>
 
-              <div className='grid grid-cols-6 items-end gap-4 space-y-4'>
-                {/* Time */}
-                <div className='col-span-2 flex flex-col gap-1'>
-                  <Label.Root>
-                    Time <Label.Asterisk />
-                  </Label.Root>
-                  <Input.Root>
-                    <Input.Wrapper>
-                      <Input.Input
-                        type='date'
-                        value={time}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          setTime(e.target.value)
-                        }
-                        disabled={isSubmitting}
-                      />
-                    </Input.Wrapper>
-                  </Input.Root>
-                </div>
+                <div className='grid grid-cols-6 items-end gap-4 space-y-4'>
+                  {/* Time */}
+                  <div className='col-span-2 flex flex-col gap-1'>
+                    <Label.Root>
+                      Time <Label.Asterisk />
+                    </Label.Root>
+                    <Input.Root>
+                      <Input.Wrapper>
+                        <Input.Input
+                          type='date'
+                          value={time}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setTime(e.target.value)
+                          }
+                          disabled={isSubmitting}
+                        />
+                      </Input.Wrapper>
+                    </Input.Root>
+                  </div>
 
-                {/* Value */}
-                <div className='col-span-3 flex flex-col justify-start gap-1'>
-                  <Label.Root>
-                    Value <Label.Asterisk />
-                  </Label.Root>
-                  <Input.Root>
-                    <Input.Wrapper>
-                      <Input.Input
-                        type='number'
-                        value={value}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          setValue(e.target.value)
-                        }
-                        placeholder='Enter numeric value (e.g., 1000000)'
-                        disabled={isSubmitting}
-                      />
-                    </Input.Wrapper>
-                  </Input.Root>
-                </div>
+                  {/* Value */}
+                  <div className='col-span-3 flex flex-col justify-start gap-1'>
+                    <Label.Root>
+                      Value <Label.Asterisk />
+                    </Label.Root>
+                    <Input.Root>
+                      <Input.Wrapper>
+                        <Input.Input
+                          type='number'
+                          value={value}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setValue(e.target.value)
+                          }
+                          placeholder='Enter numeric value (e.g., 1000000)'
+                          disabled={isSubmitting}
+                        />
+                      </Input.Wrapper>
+                    </Input.Root>
+                  </div>
 
-                <div className='col-span-1'>
-                  <Button.Root
-                    type='button'
-                    variant='neutral'
-                    mode='stroke'
-                    onClick={handleAddValue}
-                    disabled={isSubmitting || !value.trim() || !time.trim()}
-                  >
-                    <Button.Icon as={RiAddLine} />
-                    Add
-                  </Button.Root>
+                  <div className='col-span-1'>
+                    <Button.Root
+                      type='button'
+                      variant='neutral'
+                      mode='stroke'
+                      onClick={handleAddValue}
+                      disabled={isSubmitting || !value.trim() || !time.trim()}
+                    >
+                      <Button.Icon as={RiAddLine} />
+                      Add
+                    </Button.Root>
+                  </div>
                 </div>
               </div>
-            </div>)}
+            )}
           </Modal.Body>
           <Modal.Footer>
             <Button.Root
