@@ -3,9 +3,11 @@ import { useTranslation } from '@/contexts/translation-context';
 import { RiCloseLine } from '@remixicon/react';
 
 import { useMemberStatus } from '@/hooks/use-member-status';
+const isMember = false // pace request: show ads but keep content free
 
 export function RightSideAd() {
-  const { isMember } = useMemberStatus();
+  // const { isMember } = useMemberStatus();
+
   const { t } = useTranslation();
   const [showAds, setShowAds] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -64,11 +66,10 @@ export function RightSideAd() {
 
   return (
     <div
-      className={`relative hidden h-[650px] w-[240px] min-w-0 transform cursor-pointer flex-col gap-2 transition-all duration-300 ease-in-out lg:flex ${
-        isVisible
+      className={`relative hidden h-[650px] w-[240px] min-w-0 transform cursor-pointer flex-col gap-2 transition-all duration-300 ease-in-out lg:flex ${isVisible
           ? 'sticky top-0 z-50 translate-x-0 scale-100 opacity-100'
           : 'translate-x-4 scale-95 opacity-0'
-      }`}
+        }`}
       onClick={() => {
         window?.open('https://x.com/PaceTerminal', '_blank');
       }}
@@ -77,9 +78,9 @@ export function RightSideAd() {
         <span className='px-2 text-paragraph-xs text-text-sub-600'>
           {canClose > 0
             ? t('adModal.pleaseWaitToClose').replace(
-                '{seconds}',
-                Math.ceil(canClose / 1000).toString(),
-              )
+              '{seconds}',
+              Math.ceil(canClose / 1000).toString(),
+            )
             : t('adModal.sponsoredAd')}
         </span>
         {canClose <= 0 && (

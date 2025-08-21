@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from '@/contexts/translation-context';
-import { RiCalendarLine, RiExternalLinkLine } from '@remixicon/react';
+import { RiCalendarLine, RiExternalLinkLine, RiArrowDownSLine, RiArrowUpSLine } from '@remixicon/react';
 
 import { Database } from '@/lib/database.types';
 import { supabase } from '@/lib/supabase';
+import { RightSideAd } from '@/components/right-side-ad';
+import { LeftSideAd } from '@/components/left-side-ad';
 
 type UpdateWithToken = Database['public']['Tables']['updates']['Row'] & {
   tokens: {
@@ -20,6 +22,17 @@ export default function UpdatesPage() {
   const [updates, setUpdates] = useState<UpdateWithToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedArticles, setExpandedArticles] = useState<Set<string>>(new Set());
+
+  const toggleExpanded = (updateId: string) => {
+    const newExpanded = new Set(expandedArticles);
+    if (newExpanded.has(updateId)) {
+      newExpanded.delete(updateId);
+    } else {
+      newExpanded.add(updateId);
+    }
+    setExpandedArticles(newExpanded);
+  };
 
   useEffect(() => {
     const fetchUpdates = async () => {
@@ -94,7 +107,7 @@ export default function UpdatesPage() {
   if (loading) {
     return (
       <div className='flex-1 px-4 py-8'>
-        <div className='mx-auto max-w-4xl'>
+        <div className='mx-auto max-w-6xl'>
           <div className='mb-8'>
             <h1 className='text-3xl font-bold text-text-strong-950'>
               {locale === 'id' ? 'Pembaruan Token' : 'Token Updates'}
@@ -105,8 +118,8 @@ export default function UpdatesPage() {
                 : 'Latest updates from all tokens'}
             </p>
           </div>
-          <div className='space-y-4'>
-            {[...Array(5)].map((_, i) => (
+          <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 lg:items-start'>
+            {[...Array(6)].map((_, i) => (
               <div
                 key={i}
                 className='animate-pulse rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
@@ -125,7 +138,7 @@ export default function UpdatesPage() {
   if (error) {
     return (
       <div className='flex-1 px-4 py-8'>
-        <div className='mx-auto max-w-4xl'>
+        <div className='mx-auto max-w-6xl'>
           <div className='rounded-lg border border-error-base bg-red-alpha-10 p-6 text-center'>
             <p className='text-error-base'>{error}</p>
           </div>
@@ -136,7 +149,8 @@ export default function UpdatesPage() {
 
   return (
     <div className='flex-1 p-4'>
-      <div className='mx-auto max-w-4xl'>
+      <LeftSideAd />
+      <div className='mx-auto max-w-6xl'>
         <div className='mb-8'>
           <h1 className='text-3xl font-bold text-text-strong-950'>
             {locale === 'id' ? 'Pembaruan Token' : 'Token Updates'}
@@ -155,81 +169,117 @@ export default function UpdatesPage() {
             </p>
           </div>
         ) : (
-          <div className='space-y-4'>
-            {updates.map((update) => (
-              <article
-                key={update.id}
-                className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
-              >
-                <div className='flex items-start gap-4'>
-                  {update.tokens?.image && (
-                    <div className='relative h-12 w-12 flex-shrink-0'>
-                      <img
-                        src={update.tokens.image}
-                        alt={update.tokens.name}
-                        className='h-12 w-12 rounded-lg object-cover'
-                      />
-                      {update.tokens.tier && (
-                        <div
-                          className={`text-xs absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border border-bg-white-0 font-bold shadow-regular-xs ${getTierColor(update.tokens.tier)}`}
-                        >
-                          {getTierLabel(update.tokens.tier)}
-                        </div>
-                      )}
-                    </div>
-                  )}
+          <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 lg:items-start'>
+            {updates.map((update) => {
+              const isExpanded = expandedArticles.has(update.id.toString());
+              const description = locale === 'id' && update.description_en
+                ? update.description_en
+                : update.description;
 
-                  <div className='min-w-0 flex-1'>
-                    <div className='mb-3 flex items-start justify-between'>
-                      <div>
-                        <h3 className='text-lg font-semibold text-text-strong-950'>
-                          {locale === 'id' && update.title_en
-                            ? update.title_en
-                            : update.title}
-                        </h3>
-                        <p className='text-sm mt-1 text-text-sub-600'>
-                          {update.tokens?.name}
-                        </p>
-                      </div>
-                      <a
-                        href={update.link}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        className='flex items-center gap-1 text-text-sub-600 transition-colors hover:text-primary-base'
-                      >
-                        <RiExternalLinkLine className='h-6 w-6' />
-                      </a>
-                    </div>
+              // Determine if content should be expandable based on description length + image presence
+              const shouldShowExpand = (description.length > 200 && update.image) ||
+                (description.length > 400 && !update.image) ||
+                update.image; // Always expandable if has image
 
-                    <p className='mb-4 leading-relaxed text-text-sub-600'>
-                      {locale === 'id' && update.description_en
-                        ? update.description_en
-                        : update.description}
-                    </p>
-
-                    {update.image && (
-                      <div className='mb-4 overflow-hidden rounded-lg border border-stroke-soft-200'>
+              return (
+                <article
+                  key={update.id}
+                  className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+                >
+                  <div className='flex items-start gap-4'>
+                    {update.tokens?.image && (
+                      <div className='relative h-12 w-12 flex-shrink-0'>
                         <img
-                          src={update.image}
-                          alt='Update'
-                          className='h-auto w-full'
+                          src={update.tokens.image}
+                          alt={update.tokens.name}
+                          className='h-12 w-12 rounded-lg object-cover'
                         />
+                        {update.tokens.tier && (
+                          <div
+                            className={`text-xs absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border border-bg-white-0 font-bold shadow-regular-xs ${getTierColor(update.tokens.tier)}`}
+                          >
+                            {getTierLabel(update.tokens.tier)}
+                          </div>
+                        )}
                       </div>
                     )}
 
-                    <div className='text-sm flex items-center gap-2 text-text-soft-400'>
-                      <RiCalendarLine className='h-4 w-4' />
-                      <time dateTime={update.created_at}>
-                        {formatDate(update.date || update.created_at)}
-                      </time>
+                    <div className='min-w-0 flex-1'>
+                      <div className='mb-3 flex items-start justify-between'>
+                        <div>
+                          <h3 className='text-lg font-semibold text-text-strong-950'>
+                            {locale === 'id' && update.title_en
+                              ? update.title_en
+                              : update.title}
+                          </h3>
+                          <p className='text-sm mt-1 text-text-sub-600'>
+                            {update.tokens?.name}
+                          </p>
+                        </div>
+                        <a
+                          href={update.link}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='flex items-center gap-1 text-text-sub-600 transition-colors hover:text-primary-base'
+                        >
+                          <RiExternalLinkLine className='h-4 w-4' />
+                        </a>
+                      </div>
+
+                      <div className={`relative ${!isExpanded && shouldShowExpand ? 'max-h-52 overflow-hidden' : ''}`}>
+                        <p className='mb-4 leading-relaxed text-text-sub-600'>
+                          {description}
+                        </p>
+
+                        {update.image && (
+                          <div className='mb-4 overflow-hidden rounded-lg border border-stroke-soft-200'>
+                            <img
+                              src={update.image}
+                              alt='Update'
+                              className='h-auto w-full'
+                            />
+                          </div>
+                        )}
+
+                        {!isExpanded && shouldShowExpand && (
+                          <div className='pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-bg-white-0 to-transparent'></div>
+                        )}
+                      </div>
+
+                      {shouldShowExpand && (
+                        <button
+                          onClick={() => toggleExpanded(update.id.toString())}
+                          className='text-sm mb-4 flex items-center gap-1 text-primary-base transition-colors hover:text-primary-darker'
+                        >
+                          {isExpanded ? (
+                            <>
+                              <RiArrowUpSLine className='h-4 w-4' />
+                              {locale === 'id' ? 'Tutup' : 'Show less'}
+                            </>
+                          ) : (
+                            <>
+                              <RiArrowDownSLine className='h-4 w-4' />
+                              {locale === 'id' ? 'Selengkapnya' : 'Read more'}
+                            </>
+                          )}
+                        </button>
+                      )}
+
+                      <div className='text-sm flex items-center gap-2 text-text-soft-400'>
+                        <RiCalendarLine className='h-4 w-4' />
+                        <time dateTime={update.created_at}>
+                          {formatDate(update.date || update.created_at)}
+                        </time>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
         )}
       </div>
+      <RightSideAd />
     </div>
   );
 }
