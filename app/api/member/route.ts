@@ -39,15 +39,15 @@ export async function GET(request: Request) {
   }
 
   // Validate Solana address format
-  if (!isValidSolanaAddress(address)) {
-    return NextResponse.json(
-      {
-        error: 'Invalid Solana address',
-        message: 'The provided address is not a valid Solana address format',
-      },
-      { status: 400 },
-    );
-  }
+  // if (!isValidSolanaAddress(address)) {
+  //   return NextResponse.json(
+  //     {
+  //       error: 'Invalid Solana address',
+  //       message: 'The provided address is not a valid Solana address format',
+  //     },
+  //     { status: 400 },
+  //   );
+  // }
 
   try {
     // Query the members table for this address

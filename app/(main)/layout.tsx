@@ -14,7 +14,6 @@ export default function Layout({
       <HeaderMobile />
       <div className='mx-auto flex w-full flex-1 flex-col self-stretch'>
         <Header />
-        <div className='mx-auto flex w-full flex-1 flex-col self-stretch'></div>
         <div className='flex'>
           {children}
           <RightSideAd />

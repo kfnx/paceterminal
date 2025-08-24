@@ -6,7 +6,7 @@ export default function PageHome() {
   const { t, locale } = useTranslation();
 
   return (
-    <div className='mt-20 flex flex-col items-center justify-center space-y-4'>
+    <div className='mt-20 flex w-full flex-col items-center justify-center space-y-4'>
       <img src='/images/semar.png' alt='logo' className='h-64 w-64' />
       <h1 className='text-2xl font-bold'>
         {locale === 'id' ? 'Monggo Dipilih' : 'Please Choose'}

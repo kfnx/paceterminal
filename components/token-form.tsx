@@ -65,9 +65,10 @@ const isValidSolanaAddress = (address: string): boolean => {
     const trimmedAddress = address.trim();
     if (!trimmedAddress) return false;
 
-    const publicKey = new PublicKey(trimmedAddress);
-    return PublicKey.isOnCurve(publicKey);
-  } catch {
+    new PublicKey(trimmedAddress);
+    return true
+  } catch (e) {
+    console.error(e)
     return false;
   }
 };
@@ -124,19 +125,12 @@ export function TokenForm({
       return false;
     }
     // Validate Solana address using official library
-    if (!isValidSolanaAddress(formData.address.trim())) {
+    // if (!isValidSolanaAddress(formData.address.trim())) {
+    if (!formData.address.trim()) {
       toast.error('Please enter a valid Solana token address');
       return false;
     }
-    if (!formData.tier) {
-      toast.error('Token tier is required');
-      return false;
-    }
-    if (formData.ordering !== null && formData.ordering < 0) {
-      toast.error('Ordering must be 0 or greater');
-      return false;
-    }
-    return true;
+    return true
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
