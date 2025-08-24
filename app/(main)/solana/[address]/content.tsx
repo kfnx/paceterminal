@@ -7,9 +7,7 @@ import { useAtom } from 'jotai';
 import { useMemberStatus } from '@/hooks/use-member-status';
 import * as Button from '@/components/ui/button';
 import AdModal from '@/components/ad-modal';
-import { LeftSideAd } from '@/components/left-side-ad';
 import { paymentModalOpenAtom } from '@/components/payment-modal';
-import { RightSideAd } from '@/components/right-side-ad';
 import WidgetAlpha from '@/components/widgets/widget-alpha';
 import WidgetChart from '@/components/widgets/widget-chart';
 import WidgetDescription from '@/components/widgets/widget-description';
@@ -62,7 +60,6 @@ export function Content() {
 
   return (
     <div className='flex flex-row gap-6 px-4 pb-6 lg:px-8 lg:pt-1' id='top'>
-      <LeftSideAd />
       <div className='flex flex-1 flex-col gap-6'>
         <WidgetDescription />
         <WidgetChart />
@@ -88,7 +85,6 @@ export function Content() {
 
         <AdModal />
       </div>
-      <RightSideAd />
     </div>
   );
 }

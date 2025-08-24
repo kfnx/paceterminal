@@ -8,6 +8,7 @@ import {
   RiNewspaperLine,
   RiSkipLeftLine,
   RiSkipRightLine,
+  RiStarLine,
 } from '@remixicon/react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
@@ -21,6 +22,7 @@ import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/compact-button';
 import * as Divider from '@/components/ui/divider';
 
+import { LeftSideAd } from './left-side-ad';
 import { SidebarProfile } from './sidebar-profile';
 import { LoadingSpinner } from './ui/loading-spinner';
 
@@ -196,7 +198,7 @@ function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
             </Avatar.Root>
 
             <div
-              className='flex w-[180px] shrink-0 items-center gap-2'
+              className='flex w-[180px] shrink-0 items-center gap-2 pr-2'
               data-hide-collapsed
             >
               <div className='flex-1 text-label-sm'>{token.name}</div>
@@ -224,6 +226,11 @@ function GeneralNavigation({ collapsed }: { collapsed: boolean }) {
       href: '/updates',
       label: 'Updates',
       icon: RiNewspaperLine,
+    },
+    {
+      href: '/alpha',
+      label: 'Alpha',
+      icon: RiStarLine,
     },
   ];
 
@@ -265,10 +272,10 @@ function GeneralNavigation({ collapsed }: { collapsed: boolean }) {
                   },
                 )}
               />
-              <item.icon className='h-6 w-6' />
+              <item.icon className='min-h-4 min-w-4' />
 
               <div
-                className='flex w-[180px] shrink-0 items-center gap-2'
+                className='flex w-[180px] shrink-0 items-center gap-2 pr-2'
                 data-hide-collapsed
               >
                 <div className='flex-1 text-label-sm'>{item.label}</div>
@@ -381,6 +388,7 @@ export default function Sidebar({
           'w-20': collapsed,
         })}
       />
+      <LeftSideAd />
     </>
   );
 }

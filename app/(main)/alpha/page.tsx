@@ -12,7 +12,7 @@ import {
 import { Database } from '@/lib/database.types';
 import { supabase } from '@/lib/supabase';
 
-type UpdateWithToken = Database['public']['Tables']['updates']['Row'] & {
+type AlphaWithToken = Database['public']['Tables']['alpha']['Row'] & {
   tokens: {
     name: string;
     image: string | null;
@@ -20,30 +20,30 @@ type UpdateWithToken = Database['public']['Tables']['updates']['Row'] & {
   } | null;
 };
 
-export default function UpdatesPage() {
+export default function AlphaPage() {
   const { t, locale } = useTranslation();
-  const [updates, setUpdates] = useState<UpdateWithToken[]>([]);
+  const [alphas, setAlphas] = useState<AlphaWithToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedArticles, setExpandedArticles] = useState<Set<string>>(
     new Set(),
   );
 
-  const toggleExpanded = (updateId: string) => {
+  const toggleExpanded = (alphaId: string) => {
     const newExpanded = new Set(expandedArticles);
-    if (newExpanded.has(updateId)) {
-      newExpanded.delete(updateId);
+    if (newExpanded.has(alphaId)) {
+      newExpanded.delete(alphaId);
     } else {
-      newExpanded.add(updateId);
+      newExpanded.add(alphaId);
     }
     setExpandedArticles(newExpanded);
   };
 
   useEffect(() => {
-    const fetchUpdates = async () => {
+    const fetchAlphas = async () => {
       try {
         const { data, error } = await supabase
-          .from('updates')
+          .from('alpha')
           .select(
             `
             *,
@@ -59,16 +59,16 @@ export default function UpdatesPage() {
         if (error) {
           setError(error.message);
         } else {
-          setUpdates(data || []);
+          setAlphas(data || []);
         }
       } catch (err) {
-        setError('Failed to fetch updates');
+        setError('Failed to fetch alpha data');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUpdates();
+    fetchAlphas();
   }, []);
 
   const formatDate = (dateString: string) => {
@@ -115,12 +115,12 @@ export default function UpdatesPage() {
         <div className='mx-auto max-w-6xl'>
           <div className='mb-8'>
             <h1 className='text-3xl font-bold text-text-strong-950'>
-              {locale === 'id' ? 'Pembaruan Token' : 'Token Updates'}
+              {locale === 'id' ? 'Alpha Insights' : 'Alpha Insights'}
             </h1>
             <p className='mt-2 text-text-sub-600'>
               {locale === 'id'
-                ? 'Pembaruan terbaru dari semua token'
-                : 'Latest updates from all tokens'}
+                ? 'Wawasan alpha terbaru dari semua token'
+                : 'Latest alpha insights from all tokens'}
             </p>
           </div>
           <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 lg:items-start'>
@@ -157,97 +157,76 @@ export default function UpdatesPage() {
       <div className='mx-auto max-w-6xl'>
         <div className='mb-8'>
           <h1 className='text-3xl font-bold text-text-strong-950'>
-            {locale === 'id' ? 'Pembaruan Token' : 'Token Updates'}
+            {locale === 'id' ? 'Alpha Insights' : 'Alpha Insights'}
           </h1>
           <p className='mt-2 text-text-sub-600'>
             {locale === 'id'
-              ? 'Pembaruan terbaru dari semua token'
-              : 'Latest updates from all tokens'}
+              ? 'Wawasan alpha terbaru dari semua token'
+              : 'Latest alpha insights from all tokens'}
           </p>
         </div>
 
-        {updates.length === 0 ? (
+        {alphas.length === 0 ? (
           <div className='rounded-lg border border-stroke-soft-200 bg-bg-weak-50 p-8 text-center'>
             <p className='text-text-sub-600'>
-              {locale === 'id' ? 'Belum ada pembaruan' : 'No updates available'}
+              {locale === 'id'
+                ? 'Belum ada alpha insights'
+                : 'No alpha insights available'}
             </p>
           </div>
         ) : (
           <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 lg:items-start'>
-            {updates.map((update) => {
-              const isExpanded = expandedArticles.has(update.id.toString());
-              const description =
-                locale === 'id' && update.description_en
-                  ? update.description_en
-                  : update.description;
+            {alphas.map((alpha) => {
+              const isExpanded = expandedArticles.has(alpha.id.toString());
+              const text =
+                locale === 'id' && alpha.text_en
+                  ? alpha.text_en
+                  : alpha.text || '';
 
-              // Determine if content should be expandable based on description length + image presence
-              const shouldShowExpand =
-                (description.length > 200 && update.image) ||
-                (description.length > 400 && !update.image) ||
-                update.image; // Always expandable if has image
+              // Determine if content should be expandable based on text length
+              const shouldShowExpand = text.length > 300;
 
               return (
                 <article
-                  key={update.id}
+                  key={alpha.id}
                   className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
                 >
                   <div className='flex items-start gap-4'>
-                    {update.tokens?.image && (
+                    {alpha.tokens?.image && (
                       <div className='relative h-12 w-12 flex-shrink-0'>
                         <img
-                          src={update.tokens.image}
-                          alt={update.tokens.name}
+                          src={alpha.tokens.image}
+                          alt={alpha.tokens.name}
                           className='h-12 w-12 rounded-lg object-cover'
                         />
-                        {update.tokens.tier && (
+                        {alpha.tokens.tier && (
                           <div
-                            className={`text-xs absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border border-bg-white-0 font-bold shadow-regular-xs ${getTierColor(update.tokens.tier)}`}
+                            className={`text-xs absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border border-bg-white-0 font-bold shadow-regular-xs ${getTierColor(alpha.tokens.tier)}`}
                           >
-                            {getTierLabel(update.tokens.tier)}
+                            {getTierLabel(alpha.tokens.tier)}
                           </div>
                         )}
                       </div>
                     )}
 
                     <div className='min-w-0 flex-1'>
-                      <div className='mb-3 flex items-start justify-between'>
-                        <div>
-                          <h3 className='text-lg font-semibold text-text-strong-950'>
-                            {locale === 'id' && update.title_en
-                              ? update.title_en
-                              : update.title}
-                          </h3>
-                          <p className='text-sm mt-1 text-text-sub-600'>
-                            {update.tokens?.name}
-                          </p>
-                        </div>
-                        <a
-                          href={update.link}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='flex items-center gap-1 text-text-sub-600 transition-colors hover:text-primary-base'
-                        >
-                          <RiExternalLinkLine className='h-4 w-4' />
-                        </a>
+                      <div className='mb-3'>
+                        <h3 className='text-lg font-semibold text-text-strong-950'>
+                          {locale === 'id' && alpha.title_en
+                            ? alpha.title_en
+                            : alpha.title || 'Alpha Insight'}
+                        </h3>
+                        <p className='text-sm mt-1 text-text-sub-600'>
+                          {alpha.tokens?.name}
+                        </p>
                       </div>
 
                       <div
-                        className={`relative ${!isExpanded && shouldShowExpand ? 'max-h-52 overflow-hidden' : ''}`}
+                        className={`relative ${!isExpanded && shouldShowExpand ? 'max-h-32 overflow-hidden' : ''}`}
                       >
                         <p className='mb-4 leading-relaxed text-text-sub-600'>
-                          {description}
+                          {text}
                         </p>
-
-                        {update.image && (
-                          <div className='mb-4 overflow-hidden rounded-lg border border-stroke-soft-200'>
-                            <img
-                              src={update.image}
-                              alt='Update'
-                              className='h-auto w-full'
-                            />
-                          </div>
-                        )}
 
                         {!isExpanded && shouldShowExpand && (
                           <div className='pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-bg-white-0 to-transparent'></div>
@@ -256,7 +235,7 @@ export default function UpdatesPage() {
 
                       {shouldShowExpand && (
                         <button
-                          onClick={() => toggleExpanded(update.id.toString())}
+                          onClick={() => toggleExpanded(alpha.id.toString())}
                           className='text-sm mb-4 flex items-center gap-1 text-primary-base transition-colors hover:text-primary-darker'
                         >
                           {isExpanded ? (
@@ -275,8 +254,8 @@ export default function UpdatesPage() {
 
                       <div className='text-sm flex items-center gap-2 text-text-soft-400'>
                         <RiCalendarLine className='h-4 w-4' />
-                        <time dateTime={update.created_at}>
-                          {formatDate(update.date || update.created_at)}
+                        <time dateTime={alpha.created_at}>
+                          {formatDate(alpha.created_at)}
                         </time>
                       </div>
                     </div>

@@ -10,6 +10,7 @@ import {
   RiMenu3Fill,
   RiNewspaperLine,
   RiSearch2Line,
+  RiStarLine,
 } from '@remixicon/react';
 
 import { cn } from '@/utils/cn';
@@ -144,6 +145,25 @@ export default function MobileMenu() {
                           'transition-default absolute left-0 top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
                           {
                             'scale-0': pathname !== '/updates',
+                          },
+                        )}
+                      />
+                      <RiArrowRightSLine className='size-6 text-text-sub-600' />
+                    </Link>
+                    <Link
+                      href='/alpha'
+                      aria-current={pathname === '/alpha' ? 'page' : undefined}
+                      className={cn(
+                        'group relative flex w-full items-center gap-2.5 whitespace-nowrap px-5 text-text-sub-600',
+                      )}
+                    >
+                      <RiStarLine className='h-6 w-6 text-text-sub-600' />
+                      <div className='flex-1 text-label-md'>Alpha</div>
+                      <div
+                        className={cn(
+                          'transition-default absolute left-0 top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
+                          {
+                            'scale-0': pathname !== '/alpha',
                           },
                         )}
                       />

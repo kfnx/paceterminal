@@ -1,5 +1,6 @@
 import Header from '@/components/header';
 import HeaderMobile from '@/components/header-mobile';
+import { RightSideAd } from '@/components/right-side-ad';
 import Sidebar from '@/components/sidebar';
 
 export default function Layout({
@@ -13,7 +14,11 @@ export default function Layout({
       <HeaderMobile />
       <div className='mx-auto flex w-full flex-1 flex-col self-stretch'>
         <Header />
-        {children}
+        <div className='mx-auto flex w-full flex-1 flex-col self-stretch'></div>
+        <div className='flex'>
+          {children}
+          <RightSideAd />
+        </div>
       </div>
     </div>
   );
