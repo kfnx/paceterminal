@@ -202,11 +202,11 @@ function CuratedTokenList({ collapsed }: { collapsed: boolean }) {
               data-hide-collapsed
             >
               <div className='flex-1 text-label-sm'>{token.name}</div>
-              {isMember && (
+              {/* {isMember && (
                 <Badge.Root variant='filled' color={tierInfo.color}>
                   {tierInfo.label}
                 </Badge.Root>
-              )}
+              )} */}
               {selected && (
                 <RiArrowRightSLine className='size-5 text-text-sub-600' />
               )}

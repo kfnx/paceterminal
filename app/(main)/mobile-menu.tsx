@@ -212,14 +212,14 @@ export default function MobileMenu() {
                             <div className='flex-1 text-label-md'>
                               {token.name}
                             </div>
-                            {isMember && (
+                            {/* {isMember && (
                               <Badge.Root
                                 variant='filled'
                                 color={tierInfo.color}
                               >
                                 {tierInfo.label}
                               </Badge.Root>
-                            )}
+                            )} */}
                             <div
                               className={cn(
                                 'transition-default absolute left-0 top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',

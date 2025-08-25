@@ -200,13 +200,13 @@ export default function UpdatesPage() {
                           alt={update.tokens.name}
                           className='h-12 w-12 rounded-lg object-cover'
                         />
-                        {update.tokens.tier && (
+                        {/* {update.tokens.tier && (
                           <div
                             className={`text-xs absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border border-bg-white-0 font-bold shadow-regular-xs ${getTierColor(update.tokens.tier)}`}
                           >
                             {getTierLabel(update.tokens.tier)}
                           </div>
-                        )}
+                        )} */}
                       </div>
                     )}
 

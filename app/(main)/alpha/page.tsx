@@ -199,13 +199,13 @@ export default function AlphaPage() {
                           alt={alpha.tokens.name}
                           className='h-12 w-12 rounded-lg object-cover'
                         />
-                        {alpha.tokens.tier && (
+                        {/* {alpha.tokens.tier && (
                           <div
                             className={`text-xs absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border border-bg-white-0 font-bold shadow-regular-xs ${getTierColor(alpha.tokens.tier)}`}
                           >
                             {getTierLabel(alpha.tokens.tier)}
                           </div>
-                        )}
+                        )} */}
                       </div>
                     )}
 
