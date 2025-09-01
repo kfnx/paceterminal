@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   RiArrowRightSLine,
   RiCoinLine,
+  RiFireLine,
   RiMoneyDollarCircleLine,
   RiSkipLeftLine,
   RiSkipRightLine,
@@ -129,6 +130,11 @@ function MenuItems({ collapsed }: { collapsed: boolean }) {
       href: '/admin/ads',
       label: 'Manage Ads',
       icon: RiMoneyDollarCircleLine,
+    },
+    {
+      href: '/admin/burn-screener',
+      label: 'Burn Screener',
+      icon: RiFireLine,
     },
     {
       href: '/admin/members',
