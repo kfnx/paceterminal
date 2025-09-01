@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     // Invite the user using Supabase Auth
     const { data, error } = await supabase.auth.admin.inviteUserByEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/login`,
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/update-password`,
     });
 
     if (error) {

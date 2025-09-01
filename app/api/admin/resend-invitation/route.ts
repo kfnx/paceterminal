@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     // Note: Supabase doesn't have a dedicated resend method, so we use inviteUserByEmail
     // which will resend the invitation if the user already exists but hasn't confirmed
     const { data, error } = await supabase.auth.admin.inviteUserByEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/login`,
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/update-password`,
     });
 
     if (error) {
