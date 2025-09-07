@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
 import {
   RiArrowRightSLine,
+  RiBarChartLine,
   RiFireLine,
   RiNewspaperLine,
   RiSkipLeftLine,
@@ -237,6 +238,11 @@ function GeneralNavigation({ collapsed }: { collapsed: boolean }) {
       href: '/burn-screener',
       label: 'Burn Screener',
       icon: RiFireLine,
+    },
+    {
+      href: '/chart',
+      label: 'Chart',
+      icon: RiBarChartLine,
     },
   ];
 
