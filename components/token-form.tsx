@@ -66,9 +66,9 @@ const isValidSolanaAddress = (address: string): boolean => {
     if (!trimmedAddress) return false;
 
     new PublicKey(trimmedAddress);
-    return true
+    return true;
   } catch (e) {
-    console.error(e)
+    console.error(e);
     return false;
   }
 };
@@ -130,7 +130,7 @@ export function TokenForm({
       toast.error('Please enter a valid Solana token address');
       return false;
     }
-    return true
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
