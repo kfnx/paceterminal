@@ -93,7 +93,14 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "supabase"
+      "bigint-buffer",
+      "blake-hash",
+      "bufferutil",
+      "protobufjs",
+      "supabase",
+      "tiny-secp256k1",
+      "usb",
+      "utf-8-validate"
     ]
   }
 }
