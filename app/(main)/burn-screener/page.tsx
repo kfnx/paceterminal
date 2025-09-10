@@ -15,7 +15,6 @@ import {
 const data = [
   { name: 'DUPE', percentage: 21.32 },
   { name: 'FITCOIN', percentage: 7.62 },
-  { name: 'KLED', percentage: 7.0 },
   { name: 'CLUB', percentage: 6.01 },
   { name: 'PUMP', percentage: 5.76 },
   { name: 'VIVA', percentage: 5.0 },

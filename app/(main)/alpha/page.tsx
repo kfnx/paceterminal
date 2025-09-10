@@ -10,6 +10,7 @@ import {
 } from '@remixicon/react';
 
 import { Database } from '@/lib/database.types';
+import { Locale } from '@/lib/i18n';
 import { supabase } from '@/lib/supabase';
 
 type AlphaWithToken = Database['public']['Tables']['alpha']['Row'] & {
@@ -18,6 +19,44 @@ type AlphaWithToken = Database['public']['Tables']['alpha']['Row'] & {
     image: string | null;
     tier: number | null;
   } | null;
+};
+
+const formatDate = (dateString: string, locale: Locale) => {
+  return new Date(dateString).toLocaleDateString(locale, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+
+const getTierColor = (tier: number | null) => {
+  switch (tier) {
+    case 1:
+      return 'bg-yellow-500 text-yellow-950';
+    case 2:
+      return 'bg-green-500 text-green-950';
+    case 3:
+      return 'bg-blue-500 text-blue-950';
+    case 4:
+      return 'bg-text-sub-600 text-text-white-0';
+    default:
+      return 'bg-text-soft-400 text-text-white-0';
+  }
+};
+
+const getTierLabel = (tier: number | null) => {
+  switch (tier) {
+    case 1:
+      return 'S';
+    case 2:
+      return 'A';
+    case 3:
+      return 'B';
+    case 4:
+      return 'C';
+    default:
+      return '?';
+  }
 };
 
 export default function AlphaPage() {
@@ -70,44 +109,6 @@ export default function AlphaPage() {
 
     fetchAlphas();
   }, []);
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(locale, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
-  const getTierColor = (tier: number | null) => {
-    switch (tier) {
-      case 1:
-        return 'bg-yellow-500 text-yellow-950';
-      case 2:
-        return 'bg-green-500 text-green-950';
-      case 3:
-        return 'bg-blue-500 text-blue-950';
-      case 4:
-        return 'bg-text-sub-600 text-text-white-0';
-      default:
-        return 'bg-text-soft-400 text-text-white-0';
-    }
-  };
-
-  const getTierLabel = (tier: number | null) => {
-    switch (tier) {
-      case 1:
-        return 'S';
-      case 2:
-        return 'A';
-      case 3:
-        return 'B';
-      case 4:
-        return 'C';
-      default:
-        return '?';
-    }
-  };
 
   if (loading) {
     return (
@@ -179,9 +180,9 @@ export default function AlphaPage() {
             {alphas.map((alpha) => {
               const isExpanded = expandedArticles.has(alpha.id.toString());
               const text =
-                locale === 'id' && alpha.text_en
-                  ? alpha.text_en
-                  : alpha.text || '';
+                locale === 'id'
+                  ? alpha.text || ''
+                  : alpha.text_en || alpha.text || '';
 
               // Determine if content should be expandable based on text length
               const shouldShowExpand = text.length > 300;
@@ -212,9 +213,9 @@ export default function AlphaPage() {
                     <div className='min-w-0 flex-1'>
                       <div className='mb-3'>
                         <h3 className='text-lg font-semibold text-text-strong-950'>
-                          {locale === 'id' && alpha.title_en
-                            ? alpha.title_en
-                            : alpha.title || 'Alpha Insight'}
+                          {locale === 'id'
+                            ? alpha.title || 'Alpha Insight'
+                            : alpha.title_en || alpha.title || 'Alpha Insight'}
                         </h3>
                         <p className='text-sm mt-1 text-text-sub-600'>
                           {alpha.tokens?.name}
