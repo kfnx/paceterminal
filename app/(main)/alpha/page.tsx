@@ -256,7 +256,7 @@ export default function AlphaPage() {
                       <div className='text-sm flex items-center gap-2 text-text-soft-400'>
                         <RiCalendarLine className='h-4 w-4' />
                         <time dateTime={alpha.created_at}>
-                          {formatDate(alpha.created_at)}
+                          {formatDate(alpha.created_at, locale)}
                         </time>
                       </div>
                     </div>
