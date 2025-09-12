@@ -1,6 +1,7 @@
 'use-client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { useTranslation } from '@/contexts/translation-context';
 import { RiCloseLine } from '@remixicon/react';
 
@@ -98,13 +99,14 @@ export function LeftSideAd() {
           </button>
         )}
       </div>
-      <div className='flex min-h-[600px] w-full items-center justify-center space-y-2 bg-bg-weak-50 text-center'>
+      <Image src='/ads/social_radar.jpeg' alt='Ad' width={200} height={650} />
+      {/* <div className='flex min-h-[600px] w-full items-center justify-center space-y-2 bg-bg-weak-50 text-center'>
         <p>
           {t('adModal.spaceAvailable')} <br />
           {t('adModal.contactUsOnX')} <br />
           @paceterminal
         </p>
-      </div>
+      </div> */}
     </div>
   );
 }

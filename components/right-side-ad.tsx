@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { useTranslation } from '@/contexts/translation-context';
 import { RiCloseLine } from '@remixicon/react';
 
@@ -69,7 +70,7 @@ export function RightSideAd() {
 
   return (
     <div
-      className={`relative hidden h-[650px] w-[256px] min-w-[256px] transform cursor-pointer flex-col gap-2 transition-all duration-300 ease-in-out lg:flex p-4 pr-8 ${
+      className={`relative hidden h-[650px] w-[256px] min-w-[256px] transform cursor-pointer flex-col gap-2 p-4 pr-8 transition-all duration-300 ease-in-out lg:flex ${
         isVisible
           ? 'sticky top-0 z-50 translate-x-0 scale-100 opacity-100'
           : 'translate-x-4 scale-95 opacity-0'
@@ -100,13 +101,14 @@ export function RightSideAd() {
         )}
       </div>
       <div className='flex flex-wrap justify-center gap-4'>
-        <div className='flex min-h-[650px] w-full items-center justify-center space-y-2 bg-bg-weak-50 text-center'>
+        <Image src='/ads/promptbidder.jpeg' alt='Ad' width={200} height={650} />
+        {/* <div className='flex min-h-[650px] w-full items-center justify-center space-y-2 bg-bg-weak-50 text-center'>
           <p>
             {t('adModal.spaceAvailable')} <br />
             {t('adModal.contactUsOnX')} <br />
             @paceterminal
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
