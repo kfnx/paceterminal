@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useTranslation } from '@/contexts/translation-context';
 import { RiCloseLine } from '@remixicon/react';
 
+import { useAdByPosition } from '@/hooks/use-ads';
 import { useMemberStatus } from '@/hooks/use-member-status';
 
 const isMember = false; // pace request: show ads but keep content free
@@ -13,6 +14,7 @@ export function RightSideAd() {
   // const { isMember } = useMemberStatus();
 
   const { t } = useTranslation();
+  const rightAd = useAdByPosition('right');
   const [showAds, setShowAds] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [canClose, setCanClose] = useState(30000); // 30 seconds in milliseconds
@@ -26,10 +28,10 @@ export function RightSideAd() {
       return;
     }
 
-    // Initial load: add 3-second delay before checking member status
+    // Initial load: add 3-second delay before checking member status and ad availability
     if (isInitialLoad.current) {
       const timer = setTimeout(() => {
-        if (isMember) {
+        if (isMember || !rightAd?.image_url) {
           setShowAds(false);
           setIsVisible(false);
         } else {
@@ -43,7 +45,7 @@ export function RightSideAd() {
       // Cleanup the timer if component unmounts or isMember changes before delay
       return () => clearTimeout(timer);
     }
-  }, [isMember]);
+  }, [isMember, rightAd]);
 
   useEffect(() => {
     if (!showAds) return;
@@ -76,7 +78,9 @@ export function RightSideAd() {
           : 'translate-x-4 scale-95 opacity-0'
       }`}
       onClick={() => {
-        window?.open('https://x.com/PaceTerminal', '_blank');
+        if (rightAd?.target_url) {
+          window?.open(rightAd.target_url, '_blank');
+        }
       }}
     >
       <div className='z-10 flex items-center justify-between gap-2 rounded-md'>
@@ -101,7 +105,9 @@ export function RightSideAd() {
         )}
       </div>
       <div className='flex flex-wrap justify-center gap-4'>
-        <Image src='/ads/promptbidder.jpeg' alt='Ad' width={200} height={650} />
+        {rightAd?.image_url && (
+          <Image src={rightAd.image_url} alt='Ad' width={200} height={650} />
+        )}
         {/* <div className='flex min-h-[650px] w-full items-center justify-center space-y-2 bg-bg-weak-50 text-center'>
           <p>
             {t('adModal.spaceAvailable')} <br />

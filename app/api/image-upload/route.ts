@@ -204,6 +204,7 @@ export async function POST(request: NextRequest) {
       'flywheels',
       'technical-analysis',
       'general',
+      'ads',
     ];
     if (!validFolders.includes(folder)) {
       return NextResponse.json(

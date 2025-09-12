@@ -130,7 +130,7 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
           if (done) break;
 
           const chunk = decoder.decode(value, { stream: true });
-          
+
           // AI SDK streams plain text, not JSON
           accumulatedContent += chunk;
           setMessages((prev) => {
@@ -187,11 +187,11 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
     <div className={cn('fixed bottom-4 right-4 z-50', className)}>
       {/* Chat Window */}
       {isOpen && (
-        <div className='mb-4 flex h-[500px] w-[380px] flex-col overflow-hidden rounded-2xl border border-stroke-soft-200 bg-bg-white-0 shadow-2xl'>
+        <div className='shadow-2xl mb-4 flex h-[500px] w-[380px] flex-col overflow-hidden rounded-2xl border border-stroke-soft-200 bg-bg-white-0'>
           {/* Header */}
           <div className='flex items-center justify-between border-b border-stroke-soft-200 bg-bg-white-0 px-4 py-3'>
             <div className='flex items-center gap-2'>
-              <div className='relative flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500'>
+              <div className='from-amber-400 relative flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br to-orange-500'>
                 <Image
                   src='/images/semar.png'
                   alt='Semar AI'
@@ -304,13 +304,13 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
       {/* Toggle Button */}
       <div
         onClick={toggleChat}
-        className='group h-16 w-16 cursor-pointer rounded-full border border-stroke-soft-200 bg-bg-white-0 shadow-2xl transition-all duration-200 hover:scale-105 hover:bg-bg-weak-50'
+        className='shadow-2xl group h-16 w-16 cursor-pointer rounded-full border border-stroke-soft-200 bg-bg-white-0 transition-all duration-200 hover:scale-105 hover:bg-bg-weak-50'
       >
         <div className='flex h-full w-full items-center justify-center'>
           {isOpen ? (
             <RiCloseLine className='h-6 w-6 text-text-strong-950 transition-colors' />
           ) : (
-            <div className='relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 transition-all group-hover:scale-110 dark:from-amber-600 dark:to-orange-700'>
+            <div className='from-amber-400 dark:from-amber-600 relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br to-orange-500 transition-all group-hover:scale-110 dark:to-orange-700'>
               <Image
                 src='/images/semar.png'
                 alt='Semar AI'

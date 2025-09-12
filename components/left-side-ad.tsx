@@ -1,10 +1,11 @@
-'use-client';
+'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTranslation } from '@/contexts/translation-context';
 import { RiCloseLine } from '@remixicon/react';
 
+import { useAdByPosition } from '@/hooks/use-ads';
 import { useMemberStatus } from '@/hooks/use-member-status';
 
 const isMember = false; // pace request: show ads but keep content free
@@ -12,6 +13,7 @@ const isMember = false; // pace request: show ads but keep content free
 export function LeftSideAd() {
   // const { isMember } = useMemberStatus();
   const { t } = useTranslation();
+  const leftAd = useAdByPosition('left');
   const [showAds, setShowAds] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [canClose, setCanClose] = useState(10000); // 10 seconds in milliseconds
@@ -25,10 +27,10 @@ export function LeftSideAd() {
       return;
     }
 
-    // Initial load: add 3-second delay before checking member status
+    // Initial load: add 3-second delay before checking member status and ad availability
     if (isInitialLoad.current) {
       const timer = setTimeout(() => {
-        if (isMember) {
+        if (isMember || !leftAd?.image_url) {
           setShowAds(false);
           setIsVisible(false);
         } else {
@@ -42,7 +44,7 @@ export function LeftSideAd() {
       // Cleanup the timer if component unmounts or isMember changes before delay
       return () => clearTimeout(timer);
     }
-  }, [isMember]);
+  }, [isMember, leftAd]);
 
   useEffect(() => {
     if (!showAds) return;
@@ -75,7 +77,9 @@ export function LeftSideAd() {
           : '-translate-x-4 scale-95 opacity-0'
       }`}
       onClick={() => {
-        window?.open('https://x.com/PaceTerminal', '_blank');
+        if (leftAd?.target_url) {
+          window?.open(leftAd.target_url, '_blank');
+        }
       }}
     >
       <div className='z-10 flex items-center justify-between gap-2 rounded-md'>
@@ -99,7 +103,9 @@ export function LeftSideAd() {
           </button>
         )}
       </div>
-      <Image src='/ads/social_radar.jpeg' alt='Ad' width={200} height={650} />
+      {leftAd?.image_url && (
+        <Image src={leftAd.image_url} alt='Ad' width={200} height={650} />
+      )}
       {/* <div className='flex min-h-[600px] w-full items-center justify-center space-y-2 bg-bg-weak-50 text-center'>
         <p>
           {t('adModal.spaceAvailable')} <br />
