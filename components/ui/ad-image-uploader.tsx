@@ -11,6 +11,8 @@ import {
 import { toast } from 'sonner';
 
 import * as Button from '@/components/ui/button';
+import * as Input from '@/components/ui/input';
+import * as Label from '@/components/ui/label';
 
 interface AdImageUploaderProps {
   position: 'left' | 'right';
@@ -184,7 +186,7 @@ export function AdImageUploader({
 
       {/* Current/Uploaded Image Display */}
       {displayImage ? (
-        <div className='relative mx-auto h-[640px] w-[200px] overflow-hidden rounded-lg border border-stroke-soft-200'>
+        <div className='relative mx-auto h-[650px] w-[200px] overflow-hidden rounded-lg border border-stroke-soft-200'>
           <Image
             src={displayImage}
             alt={`${position} side ad`}
@@ -244,24 +246,21 @@ export function AdImageUploader({
 
       {/* Target URL Input */}
       <div className='space-y-2'>
-        <label
-          htmlFor={`target-url-${position}`}
-          className='text-sm block font-medium text-text-strong-950'
-        >
+        <Label.Root htmlFor={`target-url-${position}`} disabled={disabled}>
           Target URL
-        </label>
-        <input
-          id={`target-url-${position}`}
-          type='url'
-          value={currentTargetUrl || ''}
-          onChange={(e) => onTargetUrlChanged(e.target.value)}
-          placeholder='https://example.com'
-          disabled={disabled}
-          className='w-full rounded-md border border-stroke-soft-200 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-base disabled:cursor-not-allowed disabled:bg-bg-weak-50'
-        />
-        <p className='text-xs text-text-sub-600'>
-          URL to open when the ad is clicked
-        </p>
+        </Label.Root>
+        <Input.Root>
+          <Input.Wrapper>
+            <Input.Input
+              id={`target-url-${position}`}
+              type='url'
+              value={currentTargetUrl || ''}
+              onChange={(e) => onTargetUrlChanged(e.target.value)}
+              placeholder='https://example.com'
+              disabled={disabled}
+            />
+          </Input.Wrapper>
+        </Input.Root>
       </div>
 
       {/* Upload Success */}

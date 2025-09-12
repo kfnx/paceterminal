@@ -138,7 +138,7 @@ export default function ManageAdsPage() {
       {/* Ad Management Grid */}
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
         {/* Left Side Ad */}
-        <div className='rounded-lg border border-stroke-soft-200 bg-white p-6'>
+        <div className='rounded-lg border border-stroke-soft-200 p-6'>
           <AdImageUploader
             position='left'
             currentImageUrl={
@@ -162,7 +162,7 @@ export default function ManageAdsPage() {
         </div>
 
         {/* Right Side Ad */}
-        <div className='rounded-lg border border-stroke-soft-200 bg-white p-6'>
+        <div className='rounded-lg border border-stroke-soft-200 p-6'>
           <AdImageUploader
             position='right'
             currentImageUrl={
