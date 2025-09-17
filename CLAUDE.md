@@ -14,7 +14,7 @@ Pace Terminal is a cryptocurrency token research and analysis platform focused o
 - `pnpm build` - Build for production
 - `pnpm start` - Start production server
 - `pnpm lint` - Run ESLint
-- `pnpm format:write` - Format code with Prettier
+- `pnpm format` - Format code with Prettier
 
 ### Database
 - `pnpm db:gen:types` - Generate TypeScript types from Supabase schema
@@ -68,13 +68,21 @@ Pace Terminal is a cryptocurrency token research and analysis platform focused o
 
 ### Code Style (from .cursor/rules)
 - Use functional and declarative patterns, avoid classes
-- Prefer React Server Components over client components
+- Prefer React Server Components over client components when possible
 - Use descriptive variable names with auxiliary verbs (isLoading, hasError)
 - Implement proper error handling with early returns and guard clauses
 - Follow mobile-first responsive design principles
+- Use pnpm for package management
+- Use @remixicon/react for icons
+- Use @tanstack/react-query for data fetching
+- Use Zod for validation in API routes
+- Import components with namespace imports (e.g., `import * as Button from '@/components/ui/button'`)
 
 ### File Organization
 - `app/` - Next.js 14 app router structure
+  - `app/(main)/` - Public pages with navigation
+  - `app/admin/` - Admin-only pages with authentication middleware
+  - `app/api/` - API routes with proper authentication
 - `components/` - Reusable UI components with ui/ subfolder for primitives
 - `hooks/` - Custom React hooks for business logic
 - `lib/` - Utility functions, constants, and database types
@@ -94,6 +102,8 @@ The application uses Supabase with generated TypeScript types in `lib/database.t
 - `flywheels` - Business model visualization data
 - `members` - Subscription and access control
 - `users` - User accounts and profiles
+- `token_burned_chart` - Burn screener chart data with token names and percentages
+- `ads` - Advertisement management system
 
 ## Environment Variables
 
@@ -122,12 +132,19 @@ Required environment variables for development:
 
 ### Authentication Flow
 - Supabase Auth with modern @supabase/ssr patterns for secure server-side rendering
-- Client-side: `createBrowserClient()` for hooks and client components
-- Server-side: `createClient()` from `/lib/supabase-server.ts` for RSC and API routes
+- Client-side: `createBrowserClient()` from `@/lib/supabase` for hooks and client components
+- Server-side: `createClient()` from `@/lib/supabase-server` for RSC and API routes
 - Middleware handles automatic token refresh and route protection
-- Admin routes protected via server-side `getUser()` validation (more secure than `getSession()`)
+- Admin routes protected via server-side `getUser()` validation in layout (more secure than `getSession()`)
 - Service role key for admin operations (user management, invitations)
 - Wallet addresses used for membership verification alongside email auth
+
+### Admin Area Architecture
+- `/app/admin/layout.tsx` - Server-side authentication guard for all admin routes
+- Admin CRUD pages follow consistent patterns: data fetching, modal forms, table display
+- Use client components for forms and interactive UI, server components for data fetching
+- Toast notifications via Sonner for user feedback
+- Modal-based CRUD operations with proper validation and error handling
 
 ## Testing and Quality
 
@@ -135,3 +152,14 @@ Required environment variables for development:
 - Prettier with import sorting for consistent formatting
 - TypeScript strict mode for type safety
 - Error boundaries and proper error handling throughout application
+
+## Important Development Reminders
+
+- NEVER create files unless absolutely necessary for achieving your goal
+- ALWAYS prefer editing existing files over creating new ones
+- NEVER proactively create documentation files (*.md) or README files unless explicitly requested
+- When mixing server and client components, ensure proper separation:
+  - Server components: Data fetching, authentication, database operations
+  - Client components: Forms, interactive UI, hooks, context providers
+- Always use proper TypeScript types from `lib/database.types.ts` for database operations
+- Follow the established admin CRUD patterns when creating new admin functionality

@@ -353,6 +353,21 @@ export type Database = {
           },
         ]
       }
+      token_burned_chart: {
+        Row: {
+          name: string
+          percentage: number | null
+        }
+        Insert: {
+          name: string
+          percentage?: number | null
+        }
+        Update: {
+          name?: string
+          percentage?: number | null
+        }
+        Relationships: []
+      }
       tokens: {
         Row: {
           address: string

@@ -19,7 +19,6 @@ const fetchAds = async (): Promise<Ad[]> => {
   return data.ads;
 };
 
-
 const createOrUpdateAd = async (params: {
   position: string;
   image_url: string;
@@ -71,7 +70,6 @@ export function useAds() {
     refetch,
   };
 }
-
 
 export function useCreateOrUpdateAd() {
   const queryClient = useQueryClient();
