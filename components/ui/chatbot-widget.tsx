@@ -5,10 +5,12 @@ import Image from 'next/image';
 import {
   RiCloseLine,
   RiDeleteBin6Line,
-  RiFullscreenLine,
   RiFullscreenExitLine,
+  RiFullscreenLine,
   RiSendPlane2Line,
 } from '@remixicon/react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import { cn } from '@/utils/cn';
 import * as Button from '@/components/ui/button';
@@ -192,13 +194,20 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
   };
 
   return (
-    <div className={cn('fixed bottom-4 right-4 z-50 flex flex-col items-end', className)}>
+    <div
+      className={cn(
+        'fixed bottom-4 right-4 z-50 flex flex-col items-end',
+        className,
+      )}
+    >
       {/* Chat Window */}
       {isOpen && (
-        <div className={cn(
-          'shadow-2xl mb-4 flex flex-col overflow-hidden rounded-2xl border border-stroke-soft-200 bg-bg-white-0 duration-300 animate-in fade-in zoom-in-95 slide-in-from-bottom-4',
-          isMaximized ? 'fixed inset-4 h-auto w-auto' : 'h-[500px] w-[380px]'
-        )}>
+        <div
+          className={cn(
+            'shadow-2xl flex flex-col overflow-hidden border border-stroke-soft-200 bg-bg-white-0 duration-300 animate-in fade-in zoom-in-95 slide-in-from-bottom-4',
+            isMaximized ? 'fixed inset-0 h-auto w-auto' : 'mb-4 h-[500px] w-[380px] rounded-2xl',
+          )}
+        >
           {/* Header */}
           <div className='flex items-center justify-between border-b border-stroke-soft-200 bg-bg-white-0 px-4 py-3'>
             <div className='flex items-center gap-2'>
@@ -234,7 +243,9 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
                 className='text-text-sub-600 hover:bg-bg-weak-50 hover:text-text-strong-950'
                 title={isMaximized ? 'Exit fullscreen' : 'Maximize'}
               >
-                <Button.Icon as={isMaximized ? RiFullscreenExitLine : RiFullscreenLine} />
+                <Button.Icon
+                  as={isMaximized ? RiFullscreenExitLine : RiFullscreenLine}
+                />
               </Button.Root>
               <Button.Root
                 variant='neutral'
@@ -261,13 +272,49 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
                 >
                   <div
                     className={cn(
-                      'max-w-[280px] rounded-2xl px-3 py-2 text-paragraph-sm',
+                      'prose prose-sm max-w-none rounded-2xl px-3 py-2 text-paragraph-sm',
+                      isMaximized
+                        ? 'min-w-[280px] max-w-[50%]'
+                        : 'max-w-[280px]',
                       message.role === 'user'
-                        ? 'bg-primary-base text-static-white'
-                        : 'bg-bg-weak-50 text-text-strong-950',
+                        ? 'prose-invert prose-p:text-static-white prose-li:text-static-white prose-headings:text-static-white prose-strong:text-static-white prose-code:text-static-white bg-primary-base text-static-white'
+                        : 'prose-p:text-text-strong-950 prose-li:text-text-strong-950 prose-headings:text-text-strong-950 prose-strong:text-text-strong-950 prose-code:bg-bg-white-0 prose-code:text-text-strong-950 prose-code:px-1 prose-code:py-0.5 prose-code:rounded bg-bg-weak-50 text-text-strong-950',
                     )}
                   >
-                    {message.content}
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        p: ({ children }) => (
+                          <p className='mb-2 last:mb-0'>{children}</p>
+                        ),
+                        ul: ({ children }) => (
+                          <ul className='mb-2 ml-4 list-disc last:mb-0'>
+                            {children}
+                          </ul>
+                        ),
+                        ol: ({ children }) => (
+                          <ol className='mb-2 ml-4 list-decimal last:mb-0'>
+                            {children}
+                          </ol>
+                        ),
+                        li: ({ children }) => (
+                          <li className='mb-1'>{children}</li>
+                        ),
+                        code: ({ inline, children, ...props }: any) =>
+                          inline ? (
+                            <code {...props}>{children}</code>
+                          ) : (
+                            <code
+                              className='block whitespace-pre-wrap'
+                              {...props}
+                            >
+                              {children}
+                            </code>
+                          ),
+                      }}
+                    >
+                      {message.content}
+                    </ReactMarkdown>
                   </div>
                 </div>
               ))}

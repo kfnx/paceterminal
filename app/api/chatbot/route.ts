@@ -16,9 +16,7 @@ async function getRecentTokens() {
   try {
     const { data, error } = await supabase
       .from('tokens')
-      .select('name, address, tier, description, label')
-      .order('created_at', { ascending: false })
-      .limit(10);
+      .select('name, address, tier, description_en, label');
 
     if (error) throw error;
     return data;
