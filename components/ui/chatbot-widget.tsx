@@ -5,8 +5,8 @@ import Image from 'next/image';
 import {
   RiCloseLine,
   RiDeleteBin6Line,
-  RiMessage3Line,
-  RiRobot2Line,
+  RiFullscreenLine,
+  RiFullscreenExitLine,
   RiSendPlane2Line,
 } from '@remixicon/react';
 
@@ -26,6 +26,7 @@ type ChatbotWidgetProps = {
 
 export function ChatbotWidget({ className }: ChatbotWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -167,6 +168,13 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
+    if (!isOpen) {
+      setIsMaximized(false);
+    }
+  };
+
+  const toggleMaximize = () => {
+    setIsMaximized(!isMaximized);
   };
 
   const clearChatHistory = () => {
@@ -184,10 +192,13 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
   };
 
   return (
-    <div className={cn('fixed bottom-4 right-4 z-50', className)}>
+    <div className={cn('fixed bottom-4 right-4 z-50 flex flex-col items-end', className)}>
       {/* Chat Window */}
       {isOpen && (
-        <div className='shadow-2xl mb-4 flex h-[500px] w-[380px] flex-col overflow-hidden rounded-2xl border border-stroke-soft-200 bg-bg-white-0'>
+        <div className={cn(
+          'shadow-2xl mb-4 flex flex-col overflow-hidden rounded-2xl border border-stroke-soft-200 bg-bg-white-0 duration-300 animate-in fade-in zoom-in-95 slide-in-from-bottom-4',
+          isMaximized ? 'fixed inset-4 h-auto w-auto' : 'h-[500px] w-[380px]'
+        )}>
           {/* Header */}
           <div className='flex items-center justify-between border-b border-stroke-soft-200 bg-bg-white-0 px-4 py-3'>
             <div className='flex items-center gap-2'>
@@ -214,6 +225,16 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
                 title='Clear chat history'
               >
                 <Button.Icon as={RiDeleteBin6Line} />
+              </Button.Root>
+              <Button.Root
+                variant='neutral'
+                mode='ghost'
+                size='xxsmall'
+                onClick={toggleMaximize}
+                className='text-text-sub-600 hover:bg-bg-weak-50 hover:text-text-strong-950'
+                title={isMaximized ? 'Exit fullscreen' : 'Maximize'}
+              >
+                <Button.Icon as={isMaximized ? RiFullscreenExitLine : RiFullscreenLine} />
               </Button.Root>
               <Button.Root
                 variant='neutral'
@@ -304,7 +325,7 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
       {/* Toggle Button */}
       <div
         onClick={toggleChat}
-        className='shadow-2xl group h-16 w-16 cursor-pointer rounded-full border border-stroke-soft-200 bg-bg-white-0 transition-all duration-200 hover:scale-105 hover:bg-bg-weak-50'
+        className='shadow-2xl hover:scale-120 group h-16 w-16 cursor-pointer rounded-full border border-stroke-soft-200 bg-bg-white-0 transition-all duration-200 hover:bg-bg-weak-50'
       >
         <div className='flex h-full w-full items-center justify-center'>
           {isOpen ? (
