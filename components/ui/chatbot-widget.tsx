@@ -97,7 +97,7 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chatbot', {
+      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

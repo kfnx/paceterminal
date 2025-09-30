@@ -153,6 +153,56 @@ Required environment variables for development:
 - TypeScript strict mode for type safety
 - Error boundaries and proper error handling throughout application
 
+## Development Patterns & Best Practices
+
+### Component Patterns
+- **Compound Components**: Use composition patterns for complex UI (Button groups, Avatar groups)
+- **Polymorphic Components**: Components with flexible APIs and type safety
+- **Radix UI Integration**: Leverage primitive components for accessibility
+- **Tailwind Variants (tv)**: Type-safe variant system for consistent component APIs
+- **Server/Client Separation**: RSC for data fetching, client components for interactivity
+
+### Authentication & Authorization Patterns
+- **Dual Client Architecture**: `createBrowserClient()` for hooks/components, `createClient()` for RSC/API routes
+- **Middleware-based Protection**: Admin route protection via `getUser()` validation (more secure than `getSession()`)
+- **Service Role Operations**: Use service role key for admin operations (user management, invitations)
+- **Route Group Organization**: `(auth)/` for auth pages, `(main)/` for public pages with navigation
+
+### Database & API Patterns
+- **Generated Types**: Always use TypeScript types from `lib/database.types.ts`
+- **Zod Validation**: Runtime validation in API routes with consistent error handling
+- **TanStack Query**: 1-minute stale time for server state management
+- **Error Boundaries**: Comprehensive error handling throughout application
+
+### Solana Integration Patterns
+- **Custom Hook System**: Use `useWalletConnection`, `useSolanaTransaction` for consistency
+- **Network Detection**: Automatic mainnet/devnet handling with appropriate mint addresses
+- **Payment Verification**: On-chain transaction validation with membership integration
+- **Multi-wallet Support**: Phantom primary, @solana/wallet-adapter-* ecosystem
+
+### Design System Usage
+- **Semantic Typography**: Use `title-h1` through `paragraph-xs` classes
+- **HSL Color Tokens**: Theme-aware colors via CSS custom properties (`bg-white-0`, `text-strong-950`)
+- **Custom Shadows**: Predefined shadow system for buttons, tooltips, and overlays
+- **Mobile-first**: Responsive design with breakpoint management
+
+### File Naming & Organization
+- **Route Groups**: Use parentheses for logical grouping without affecting URL structure
+- **Namespace Imports**: `import * as Button from '@/components/ui/button'`
+- **Path Aliases**: `@/*` for project root, `~/*` for public assets
+- **Component Co-location**: Keep related components, hooks, and utilities together
+
+### Internationalization
+- **Dynamic Locale Detection**: URL-based language switching (`/id` for Indonesian)
+- **Server-side Translations**: Pre-rendered content for SEO optimization
+- **Translation Context**: Client-side loading with fallbacks
+
+### Development Workflow
+- **No Testing Framework**: Project currently lacks formal testing setup (opportunity for addition)
+- **Code Quality**: ESLint + Prettier with import sorting for consistency
+- **Standalone Build**: Optimized for containerized deployment
+- **SVGR Integration**: Custom SVG handling with TypeScript support
+
 ## Important Development Reminders
 
 - NEVER create files unless absolutely necessary for achieving your goal
