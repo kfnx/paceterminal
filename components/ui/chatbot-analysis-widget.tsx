@@ -23,6 +23,16 @@ type ChatMessage = {
   phase?: string;
   progress?: number;
   isStreaming?: boolean;
+  fullResult?: {
+    query: string;
+    phases: {
+      planning: string;
+      research: string[];
+      analysis: string;
+      validation: string;
+    };
+    status: string;
+  };
 };
 
 type ChatbotAnalysisWidgetProps = {
@@ -34,6 +44,9 @@ export function ChatbotAnalysisWidget({
 }: ChatbotAnalysisWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
+  const [selectedResult, setSelectedResult] = useState<
+    ChatMessage['fullResult'] | null
+  >(null);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -177,13 +190,17 @@ export function ChatbotAnalysisWidget({
               }
 
               if (data.state === 'SUCCESS') {
+                const resultData =
+                  typeof data.result === 'string' ? null : data.result;
+
                 lastMessage.content =
                   typeof data.result === 'string'
                     ? data.result
-                    : data.result?.analysis ||
+                    : data.result?.phases?.analysis ||
+                      data.result?.analysis ||
                       data.result?.content ||
-                      JSON.stringify(data.result) ||
                       'Analysis completed successfully!';
+                lastMessage.fullResult = resultData;
                 lastMessage.isStreaming = false;
                 lastMessage.phase = undefined;
                 lastMessage.progress = undefined;
@@ -424,6 +441,19 @@ export function ChatbotAnalysisWidget({
                         {message.content}
                       </ReactMarkdown>
                     </div>
+
+                    {/* View Full Analysis Button */}
+                    {message.fullResult && message.role === 'assistant' && (
+                      <Button.Root
+                        variant='primary'
+                        mode='stroke'
+                        size='xsmall'
+                        onClick={() => setSelectedResult(message.fullResult)}
+                        className='w-full'
+                      >
+                        View Full Analysis Report
+                      </Button.Root>
+                    )}
                   </div>
                 </div>
               ))}
@@ -499,6 +529,134 @@ export function ChatbotAnalysisWidget({
           )}
         </div>
       </div>
+
+      {/* Full Analysis Modal */}
+      {selectedResult && (
+        <div
+          className='fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm'
+          onClick={() => setSelectedResult(null)}
+        >
+          <div
+            className={cn(
+              'shadow-2xl relative m-4 flex h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-stroke-soft-200 bg-bg-white-0',
+            )}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className='flex items-center justify-between border-b border-stroke-soft-200 px-6 py-4'>
+              <div className='flex items-center gap-3'>
+                <div className='from-amber-400 relative flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br to-orange-500'>
+                  <Image
+                    src='/images/semar.png'
+                    alt='Semar AI'
+                    width={24}
+                    height={24}
+                    className='h-6 w-6 object-contain drop-shadow-sm'
+                  />
+                </div>
+                <h2 className='text-heading-sm font-semibold text-text-strong-950'>
+                  Full Analysis Report
+                </h2>
+              </div>
+              <Button.Root
+                variant='neutral'
+                mode='ghost'
+                size='small'
+                onClick={() => setSelectedResult(null)}
+                className='text-text-sub-600 hover:text-text-strong-950'
+              >
+                <Button.Icon as={RiCloseLine} />
+              </Button.Root>
+            </div>
+
+            {/* Modal Content */}
+            <div className='flex-1 overflow-y-auto px-6 py-4'>
+              <div className='prose prose-sm max-w-none'>
+                {/* Query */}
+                {selectedResult.query && (
+                  <div className='mb-6'>
+                    <h3 className='text-heading-xs font-semibold text-text-strong-950'>
+                      Query
+                    </h3>
+                    <p className='text-paragraph-sm text-text-sub-600'>
+                      {selectedResult.query}
+                    </p>
+                  </div>
+                )}
+
+                {/* Planning Phase */}
+                {selectedResult.phases?.planning && (
+                  <div className='mb-6'>
+                    <h3 className='text-heading-xs font-semibold text-text-strong-950'>
+                      Planning Phase
+                    </h3>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {selectedResult.phases.planning}
+                    </ReactMarkdown>
+                  </div>
+                )}
+
+                {/* Research Phase */}
+                {selectedResult.phases?.research &&
+                  selectedResult.phases.research.length > 0 && (
+                    <div className='mb-6'>
+                      <h3 className='text-heading-xs font-semibold text-text-strong-950'>
+                        Research Phase
+                      </h3>
+                      {selectedResult.phases.research.map((research, index) => (
+                        <div key={index} className='mb-4'>
+                          <h4 className='text-label-sm font-medium text-text-sub-600'>
+                            Research {index + 1}
+                          </h4>
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {research}
+                          </ReactMarkdown>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                {/* Analysis Phase */}
+                {selectedResult.phases?.analysis && (
+                  <div className='mb-6'>
+                    <h3 className='text-heading-xs font-semibold text-text-strong-950'>
+                      Analysis
+                    </h3>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {selectedResult.phases.analysis}
+                    </ReactMarkdown>
+                  </div>
+                )}
+
+                {/* Validation Phase */}
+                {selectedResult.phases?.validation && (
+                  <div className='mb-6'>
+                    <h3 className='text-heading-xs font-semibold text-text-strong-950'>
+                      Validation
+                    </h3>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {selectedResult.phases.validation}
+                    </ReactMarkdown>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className='border-t border-stroke-soft-200 px-6 py-4'>
+              <Button.Root
+                variant='neutral'
+                mode='filled'
+                size='small'
+                onClick={() => setSelectedResult(null)}
+                className='w-full'
+              >
+                Close
+              </Button.Root>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
