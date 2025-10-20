@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useTranslation } from '@/contexts/translation-context';
 import { RiArrowUpLine, RiArrowDownLine, RiLineChartLine } from '@remixicon/react';
 import { useAllTokens } from '@/hooks/use-all-tokens';
@@ -342,58 +343,77 @@ export default function MarketOverviewPage() {
                   </td>
                 </tr>
               ) : (
-                marketData.map((token, index) => (
-                  <tr
-                    key={token.address}
-                    className='border-b border-stroke-soft-200 transition-colors hover:bg-bg-weak-50'
-                  >
-                    <td className='text-sm px-6 py-4 text-text-sub-600'>
-                      {index + 1}
-                    </td>
-                    <td className='px-6 py-4'>
-                      <div className='flex items-center gap-3'>
-                        <Avatar.Root size='32' color='blue'>
-                          <Avatar.Image
-                            src={getTokenImageUrl(token.image)}
-                            alt={token.name}
-                          />
-                        </Avatar.Root>
-                        <div>
-                          <div className='font-medium text-text-strong-950'>
-                            {token.name}
+                marketData.map((token, index) => {
+                  const tokenPath = locale === 'id' ? `/id/solana/${token.address}` : `/solana/${token.address}`;
+                  return (
+                    <tr
+                      key={token.address}
+                      className='cursor-pointer border-b border-stroke-soft-200 transition-colors hover:bg-bg-weak-50'
+                    >
+                      <td className='text-sm px-6 py-4 text-text-sub-600'>
+                        <Link href={tokenPath} className='block'>
+                          {index + 1}
+                        </Link>
+                      </td>
+                      <td className='px-6 py-4'>
+                        <Link href={tokenPath} className='block'>
+                          <div className='flex items-center gap-3'>
+                            <Avatar.Root size='32' color='blue'>
+                              <Avatar.Image
+                                src={getTokenImageUrl(token.image)}
+                                alt={token.name}
+                              />
+                            </Avatar.Root>
+                            <div>
+                              <div className='font-medium text-text-strong-950'>
+                                {token.name}
+                              </div>
+                              <div className='text-sm text-text-sub-600'>
+                                {token.symbol}
+                              </div>
+                            </div>
                           </div>
-                          <div className='text-sm text-text-sub-600'>
-                            {token.symbol}
+                        </Link>
+                      </td>
+                      <td className='text-sm px-6 py-4 text-right text-text-strong-950'>
+                        <Link href={tokenPath} className='block'>
+                          {formatPrice(token.price)}
+                        </Link>
+                      </td>
+                      <td className='text-sm px-6 py-4 text-right'>
+                        <Link href={tokenPath} className='block'>
+                          {renderPriceChange(token.priceChange1h)}
+                        </Link>
+                      </td>
+                      <td className='text-sm px-6 py-4 text-right'>
+                        <Link href={tokenPath} className='block'>
+                          {renderPriceChange(token.priceChange24h)}
+                        </Link>
+                      </td>
+                      <td className='text-sm px-6 py-4 text-right text-text-strong-950'>
+                        <Link href={tokenPath} className='block'>
+                          {formatVolume(token.marketCap)}
+                        </Link>
+                      </td>
+                      <td className='text-sm px-6 py-4 text-right text-text-strong-950'>
+                        <Link href={tokenPath} className='block'>
+                          {formatVolume(token.volume24h)}
+                        </Link>
+                      </td>
+                      <td className='px-6 py-4 text-right'>
+                        <Link href={tokenPath} className='block'>
+                          <div className='flex justify-end'>
+                            <MiniPriceChart
+                              data={token.priceHistory}
+                              width={96}
+                              height={48}
+                            />
                           </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className='text-sm px-6 py-4 text-right text-text-strong-950'>
-                      {formatPrice(token.price)}
-                    </td>
-                    <td className='text-sm px-6 py-4 text-right'>
-                      {renderPriceChange(token.priceChange1h)}
-                    </td>
-                    <td className='text-sm px-6 py-4 text-right'>
-                      {renderPriceChange(token.priceChange24h)}
-                    </td>
-                    <td className='text-sm px-6 py-4 text-right text-text-strong-950'>
-                      {formatVolume(token.marketCap)}
-                    </td>
-                    <td className='text-sm px-6 py-4 text-right text-text-strong-950'>
-                      {formatVolume(token.volume24h)}
-                    </td>
-                    <td className='px-6 py-4 text-right'>
-                      <div className='flex justify-end'>
-                        <MiniPriceChart
-                          data={token.priceHistory}
-                          width={96}
-                          height={48}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
