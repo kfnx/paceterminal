@@ -6,6 +6,7 @@ import { useParams, usePathname } from 'next/navigation';
 import {
   RiArrowRightSLine,
   RiFireLine,
+  RiLineChartLine,
   RiNewspaperLine,
   RiSkipLeftLine,
   RiSkipRightLine,
@@ -223,6 +224,11 @@ function GeneralNavigation({ collapsed }: { collapsed: boolean }) {
   const pathname = usePathname();
 
   const navItems = [
+    {
+      href: '/market-overview',
+      label: 'Market Overview',
+      icon: RiLineChartLine,
+    },
     {
       href: '/updates',
       label: 'Updates',
