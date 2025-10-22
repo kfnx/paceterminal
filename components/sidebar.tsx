@@ -6,7 +6,6 @@ import { useParams, usePathname } from 'next/navigation';
 import {
   RiArrowRightSLine,
   RiFireLine,
-  RiLineChartLine,
   RiNewspaperLine,
   RiSkipLeftLine,
   RiSkipRightLine,
@@ -113,23 +112,21 @@ export function SidebarHeader({
         'flex-row justify-between': !collapsed,
       })}
     >
-      <div className='flex flex-col items-start'>
-        <Link href='/'>
-          <h1 className='text-2xl font-bold text-text-strong-950'>
-            {collapsed ? 'PACE' : 'PACETERMINAL'}
-          </h1>
-        </Link>
-        {!collapsed && (
-          <p className='text-paragraph-sm text-text-sub-600'>Hong Wilaheng</p>
-        )}
-      </div>
+      <Link href='/'>
+        <div className='flex flex-col'>
+          {collapsed ? <img src="/images/semar.png" width={24} height={24} alt="semar" /> : <h1 className='text-2xl font-bold text-text-strong-950'>PACETERMINAL</h1>}
+          {!collapsed && (
+            <p className='text-paragraph-sm text-text-sub-600'>Hong Wilaheng</p>
+          )}
+        </div>
+      </Link>
       <Button.Root className='mt-5'>
         <Button.Icon
           as={collapsed ? RiSkipRightLine : RiSkipLeftLine}
           onClick={() => setCollapsed((prev) => !prev)}
         />
       </Button.Root>
-    </div>
+    </div >
   );
 }
 
@@ -224,11 +221,6 @@ function GeneralNavigation({ collapsed }: { collapsed: boolean }) {
   const pathname = usePathname();
 
   const navItems = [
-    {
-      href: '/market-overview',
-      label: 'Market Overview',
-      icon: RiLineChartLine,
-    },
     {
       href: '/updates',
       label: 'Updates',
