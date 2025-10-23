@@ -529,6 +529,10 @@ const config = {
       none: defaultTheme.boxShadow.none,
     },
     extend: {
+      fontFamily: {
+        sans: ['var(--font-sans)', ...defaultTheme.fontFamily.sans],
+        display: ['var(--font-lora)', 'serif'],
+      },
       borderRadius: {
         ...borderRadii,
       },
