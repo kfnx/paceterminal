@@ -2,15 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from '@/contexts/translation-context';
-import {
-  RiArrowDownSLine,
-  RiArrowUpSLine,
-  RiCalendarLine,
-  RiExternalLinkLine,
-} from '@remixicon/react';
 
 import { Database } from '@/lib/database.types';
 import { supabase } from '@/lib/supabase';
+import useBreakpoint from '@/hooks/use-breakpoint';
+import { UpdateCard } from '@/components/updates/update-card';
 
 type UpdateWithToken = Database['public']['Tables']['updates']['Row'] & {
   tokens: {
@@ -21,23 +17,11 @@ type UpdateWithToken = Database['public']['Tables']['updates']['Row'] & {
 };
 
 export default function UpdatesPage() {
-  const { t, locale } = useTranslation();
+  const { lg } = useBreakpoint();
+  const { locale } = useTranslation();
   const [updates, setUpdates] = useState<UpdateWithToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expandedArticles, setExpandedArticles] = useState<Set<string>>(
-    new Set(),
-  );
-
-  const toggleExpanded = (updateId: string) => {
-    const newExpanded = new Set(expandedArticles);
-    if (newExpanded.has(updateId)) {
-      newExpanded.delete(updateId);
-    } else {
-      newExpanded.add(updateId);
-    }
-    setExpandedArticles(newExpanded);
-  };
 
   useEffect(() => {
     const fetchUpdates = async () => {
@@ -54,6 +38,7 @@ export default function UpdatesPage() {
             )
           `,
           )
+          .order('date', { ascending: false })
           .order('created_at', { ascending: false });
 
         if (error) {
@@ -71,67 +56,72 @@ export default function UpdatesPage() {
     fetchUpdates();
   }, []);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(locale, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
-  const getTierColor = (tier: number | null) => {
-    switch (tier) {
-      case 1:
-        return 'bg-yellow-500 text-yellow-950';
-      case 2:
-        return 'bg-green-500 text-green-950';
-      case 3:
-        return 'bg-blue-500 text-blue-950';
-      case 4:
-        return 'bg-text-sub-600 text-text-white-0';
-      default:
-        return 'bg-text-soft-400 text-text-white-0';
-    }
-  };
-
-  const getTierLabel = (tier: number | null) => {
-    switch (tier) {
-      case 1:
-        return 'S';
-      case 2:
-        return 'A';
-      case 3:
-        return 'B';
-      case 4:
-        return 'C';
-      default:
-        return '?';
-    }
-  };
+  // Get latest 7 updates for the featured section
+  const latestUpdates = updates.slice(0, 7);
+  const remainingUpdates = updates.slice(7);
 
   if (loading) {
     return (
-      <div className='flex-1 px-4 py-8'>
-        <div className='mx-auto max-w-6xl'>
+      <div className='flex-1 p-4'>
+        <div className='mx-auto w-full max-w-6xl'>
+          {/* Featured Updates Skeleton */}
           <div className='mb-8'>
-            <h1 className='text-3xl font-bold text-text-strong-950'>
-              {locale === 'id' ? 'Pembaruan Token' : 'Token Updates'}
-            </h1>
-            <p className='mt-2 text-text-sub-600'>
-              {locale === 'id'
-                ? 'Pembaruan terbaru dari semua token'
-                : 'Latest updates from all tokens'}
-            </p>
+            <div className='grid grid-cols-1 gap-4 lg:grid-cols-4'>
+              {/* Left column skeleton */}
+              <div className='hidden lg:order-1 lg:block lg:space-y-4'>
+                {[...Array(2)].map((_, i) => (
+                  <div
+                    key={i}
+                    className='animate-pulse rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4'
+                  >
+                    <div className='mb-3 h-10 w-10 rounded-full bg-bg-weak-50'></div>
+                    <div className='mb-2 h-4 w-3/4 rounded bg-bg-weak-50'></div>
+                    <div className='h-3 w-1/2 rounded bg-bg-weak-50'></div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Center large card skeleton */}
+              <div className='lg:order-2 lg:col-span-2'>
+                <div className='animate-pulse rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6'>
+                  <div className='mb-4 h-48 w-full rounded bg-bg-weak-50 lg:h-64'></div>
+                  <div className='mb-3 h-6 w-3/4 rounded bg-bg-weak-50'></div>
+                  <div className='mb-2 h-4 w-full rounded bg-bg-weak-50'></div>
+                  <div className='mb-4 h-4 w-5/6 rounded bg-bg-weak-50'></div>
+                  <div className='flex items-center gap-2'>
+                    <div className='h-6 w-6 rounded-full bg-bg-weak-50'></div>
+                    <div className='h-3 w-20 rounded bg-bg-weak-50'></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right column skeleton */}
+              <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:order-3 lg:grid-cols-1'>
+                {[...Array(4)].map((_, i) => (
+                  <div
+                    key={i}
+                    className='animate-pulse rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4'
+                  >
+                    <div className='mb-3 h-10 w-10 rounded-full bg-bg-weak-50'></div>
+                    <div className='mb-2 h-4 w-3/4 rounded bg-bg-weak-50'></div>
+                    <div className='h-3 w-1/2 rounded bg-bg-weak-50'></div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 lg:items-start'>
-            {[...Array(6)].map((_, i) => (
+
+          {/* Masonry grid skeleton */}
+          <div className='columns-1 gap-4 space-y-4 md:columns-2 lg:columns-4'>
+            {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className='animate-pulse rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+                className='animate-pulse break-inside-avoid rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4'
               >
-                <div className='mb-4 h-4 w-3/4 rounded bg-bg-weak-50'></div>
-                <div className='mb-2 h-3 w-1/2 rounded bg-bg-weak-50'></div>
-                <div className='h-3 w-full rounded bg-bg-weak-50'></div>
+                <div className='mb-3 h-10 w-10 rounded-full bg-bg-weak-50'></div>
+                <div className='mb-3 h-4 w-5/6 rounded bg-bg-weak-50'></div>
+                <div className='mb-2 h-3 w-full rounded bg-bg-weak-50'></div>
+                <div className='h-3 w-3/4 rounded bg-bg-weak-50'></div>
               </div>
             ))}
           </div>
@@ -143,7 +133,7 @@ export default function UpdatesPage() {
   if (error) {
     return (
       <div className='flex-1 px-4 py-8'>
-        <div className='mx-auto max-w-6xl'>
+        <div className='mx-auto max-w-7xl'>
           <div className='rounded-lg border border-error-base bg-red-alpha-10 p-6 text-center'>
             <p className='text-error-base'>{error}</p>
           </div>
@@ -154,18 +144,7 @@ export default function UpdatesPage() {
 
   return (
     <div className='flex-1 p-4'>
-      <div className='mx-auto max-w-6xl'>
-        <div className='mb-8'>
-          <h1 className='text-3xl font-bold text-text-strong-950'>
-            {locale === 'id' ? 'Pembaruan Token' : 'Token Updates'}
-          </h1>
-          <p className='mt-2 text-text-sub-600'>
-            {locale === 'id'
-              ? 'Pembaruan terbaru dari semua token'
-              : 'Latest updates from all tokens'}
-          </p>
-        </div>
-
+      <div className='mx-auto w-full max-w-6xl overflow-hidden'>
         {updates.length === 0 ? (
           <div className='rounded-lg border border-stroke-soft-200 bg-bg-weak-50 p-8 text-center'>
             <p className='text-text-sub-600'>
@@ -173,118 +152,117 @@ export default function UpdatesPage() {
             </p>
           </div>
         ) : (
-          <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 lg:items-start'>
-            {updates.map((update) => {
-              const isExpanded = expandedArticles.has(update.id.toString());
-              const description =
-                locale === 'id'
-                  ? update.description
-                  : update.description_en || update.description;
-
-              // Determine if content should be expandable based on description length + image presence
-              const shouldShowExpand =
-                (description.length > 200 && update.image) ||
-                (description.length > 400 && !update.image) ||
-                update.image; // Always expandable if has image
-
-              return (
-                <article
-                  key={update.id}
-                  className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
-                >
-                  <div className='flex items-start gap-4'>
-                    {update.tokens?.image && (
-                      <div className='relative h-12 w-12 flex-shrink-0'>
-                        <img
-                          src={update.tokens.image}
-                          alt={update.tokens.name}
-                          className='h-12 w-12 rounded-lg object-cover'
-                        />
-                        {/* {update.tokens.tier && (
-                          <div
-                            className={`text-xs absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border border-bg-white-0 font-bold shadow-regular-xs ${getTierColor(update.tokens.tier)}`}
-                          >
-                            {getTierLabel(update.tokens.tier)}
-                          </div>
-                        )} */}
-                      </div>
-                    )}
-
-                    <div className='min-w-0 flex-1'>
-                      <div className='mb-3 flex items-start justify-between'>
-                        <div>
-                          <h3 className='text-lg font-semibold text-text-strong-950'>
-                            {locale === 'id'
-                              ? update.title
-                              : update.title_en || update.title}
-                          </h3>
-                          <p className='text-sm mt-1 text-text-sub-600'>
-                            {update.tokens?.name}
-                          </p>
-                        </div>
-                        <a
-                          href={update.link}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='flex items-center gap-1 text-text-sub-600 transition-colors hover:text-primary-base'
-                        >
-                          <RiExternalLinkLine className='h-4 w-4' />
-                        </a>
-                      </div>
-
-                      <div
-                        className={`relative ${!isExpanded && shouldShowExpand ? 'max-h-52 overflow-hidden' : ''}`}
-                      >
-                        <p className='mb-4 leading-relaxed text-text-sub-600'>
-                          {description}
-                        </p>
-
-                        {update.image && (
-                          <div className='mb-4 overflow-hidden rounded-lg border border-stroke-soft-200'>
-                            <img
-                              src={update.image}
-                              alt='Update'
-                              className='h-auto w-full'
-                            />
-                          </div>
-                        )}
-
-                        {!isExpanded && shouldShowExpand && (
-                          <div className='pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-bg-white-0 to-transparent'></div>
-                        )}
-                      </div>
-
-                      {shouldShowExpand && (
-                        <button
-                          onClick={() => toggleExpanded(update.id.toString())}
-                          className='text-sm mb-4 flex items-center gap-1 text-primary-base transition-colors hover:text-primary-darker'
-                        >
-                          {isExpanded ? (
-                            <>
-                              <RiArrowUpSLine className='h-4 w-4' />
-                              {locale === 'id' ? 'Tutup' : 'Show less'}
-                            </>
-                          ) : (
-                            <>
-                              <RiArrowDownSLine className='h-4 w-4' />
-                              {locale === 'id' ? 'Selengkapnya' : 'Read more'}
-                            </>
-                          )}
-                        </button>
-                      )}
-
-                      <div className='text-sm flex items-center gap-2 text-text-soft-400'>
-                        <RiCalendarLine className='h-4 w-4' />
-                        <time dateTime={update.created_at}>
-                          {formatDate(update.date || update.created_at)}
-                        </time>
-                      </div>
-                    </div>
+          <>
+            {/* Latest Updates Section */}
+            {latestUpdates.length > 0 && (
+              <div className='mb-8'>
+                <div className='grid grid-cols-1 gap-4 lg:grid-cols-4'>
+                  {/* Center - Large featured card (first update) - Shows first on mobile */}
+                  <div className='lg:order-2 lg:col-span-2'>
+                    <UpdateCard
+                      update={latestUpdates[0]}
+                      variant='large'
+                      locale={locale}
+                    />
                   </div>
-                </article>
-              );
-            })}
-          </div>
+
+                  {/* Left column - 2nd and 3rd updates */}
+                  {lg ? (
+                    <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:order-1 lg:grid-cols-1'>
+                      {latestUpdates[1] && (
+                        <UpdateCard
+                          update={latestUpdates[1]}
+                          variant='medium'
+                          locale={locale}
+                        />
+                      )}
+                      {latestUpdates[2] && (
+                        <UpdateCard
+                          update={latestUpdates[2]}
+                          variant='medium'
+                          locale={locale}
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:order-1 lg:grid-cols-1'>
+                      {latestUpdates[1] && (
+                        <UpdateCard
+                          update={latestUpdates[1]}
+                          variant='small'
+                          locale={locale}
+                        />
+                      )}
+                      {latestUpdates[2] && (
+                        <UpdateCard
+                          update={latestUpdates[2]}
+                          variant='small'
+                          locale={locale}
+                        />
+                      )}
+                    </div>
+                  )}
+
+                  {/* Right column - 4th through 7th updates */}
+                  <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:order-3 lg:grid-cols-1'>
+                    {latestUpdates[3] && (
+                      <UpdateCard
+                        update={latestUpdates[3]}
+                        variant='small'
+                        locale={locale}
+                      />
+                    )}
+                    {latestUpdates[4] && (
+                      <UpdateCard
+                        update={latestUpdates[4]}
+                        variant='small'
+                        locale={locale}
+                      />
+                    )}
+                    {latestUpdates[5] && (
+                      <UpdateCard
+                        update={latestUpdates[5]}
+                        variant='small'
+                        locale={locale}
+                      />
+                    )}
+                    {latestUpdates[6] && (
+                      <UpdateCard
+                        update={latestUpdates[6]}
+                        variant='small'
+                        locale={locale}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* All Updates Masonry Grid */}
+            {remainingUpdates.length > 0 && (
+              <div className='columns-1 gap-4 space-y-4 md:columns-2 lg:columns-4'>
+                {remainingUpdates.map((update) => (
+                  <>
+                    {lg ? (
+                      <UpdateCard
+                        key={update.id}
+                        update={update}
+                        variant='masonry'
+                        locale={locale}
+                      />
+                    ) : (
+                      <UpdateCard
+                        key={update.id}
+                        update={update}
+                        variant='small'
+                        locale={locale}
+                      />
+                    )}
+                  </>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

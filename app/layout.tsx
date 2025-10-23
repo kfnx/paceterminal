@@ -3,7 +3,7 @@ import { cn } from '@/utils/cn';
 import './globals.css';
 
 import type { Metadata } from 'next';
-import { Inter as FontSans } from 'next/font/google';
+import { Inter as FontSans, Lora } from 'next/font/google';
 import { TranslationProvider } from '@/contexts/translation-context';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { ThemeProvider } from 'next-themes';
@@ -15,6 +15,12 @@ import { GoogleAnalyticsWrapper } from '@/components/google-analytics';
 import { PaymentModal } from '@/components/payment-modal';
 import { Providers } from '@/app/providers';
 import { WalletConnectionProviders } from '@/app/wallet-providers';
+
+const lora = Lora({
+  subsets: ['latin'],
+  variable: '--font-lora',
+  display: 'swap',
+});
 
 const fontInter = FontSans({
   subsets: ['latin'],
@@ -35,7 +41,7 @@ export default function RootLayout({
     <html
       lang='en'
       suppressHydrationWarning
-      className={cn(fontInter.className, 'antialiased')}
+      className={cn(fontInter.variable, lora.variable, 'antialiased')}
     >
       <body className='bg-bg-white-0'>
         <Providers>
