@@ -42,7 +42,7 @@ export function UpdateCard({ update, variant, locale }: UpdateCardProps) {
     if (!update.tokens) return null;
 
     return (
-      <div className='flex w-fit items-center gap-2 rounded bg-neutral-100 px-2 py-1 text-paragraph-xs font-medium text-text-strong-950'>
+      <div className='flex w-fit items-center gap-2 rounded bg-neutral-100 px-2 py-1 text-paragraph-xs font-medium text-text-strong-950  dark:text-primary-dark'>
         <Avatar.Root size='20'>
           <Avatar.Image
             src={getTokenImageUrl(update.tokens.image)}
