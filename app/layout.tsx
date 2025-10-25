@@ -43,7 +43,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(fontInter.variable, lora.variable, 'antialiased')}
     >
-      <body className='bg-bg-white-0'>
+      <body className='bg-bg-white-0 font-sans'>
         <Providers>
           <WalletConnectionProviders>
             <TranslationProvider>

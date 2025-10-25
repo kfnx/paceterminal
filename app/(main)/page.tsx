@@ -3,12 +3,19 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/contexts/translation-context';
-import { RiArrowUpLine, RiArrowDownLine, RiLineChartLine } from '@remixicon/react';
-import { useAllTokens } from '@/hooks/use-all-tokens';
+import { RiArrowDownLine, RiArrowUpLine } from '@remixicon/react';
+
 import { getTokenImageUrl } from '@/utils/image-url';
+import { useAllTokens } from '@/hooks/use-all-tokens';
 import * as Avatar from '@/components/ui/avatar';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { MiniPriceChart } from '@/components/mini-price-chart';
+import AltcoinSeasonWidget from '@/components/widgets/widget-altseason';
+import BitcoinDominance from '@/components/widgets/widget-bitcoin-dominance';
+import FearGreedIndex from '@/components/widgets/widget-fear-index';
+import Top3PriceWidget from '@/components/widgets/widget-top-3-price';
+import TotalMarketCapWidget from '@/components/widgets/widget-total-market-cap';
+import XPostWidget from '@/components/widgets/widget-x-post';
 
 interface DexScreenerPair {
   chainId: string;
@@ -69,6 +76,8 @@ export default function PageHome() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  console.log('DATA', marketData);
+
   useEffect(() => {
     const fetchMarketData = async () => {
       if (!tokens || tokens.length === 0) {
@@ -77,7 +86,6 @@ export default function PageHome() {
       }
 
       try {
-
         // DexScreener API has a limit of 30 addresses per request
         // We need to batch the requests
         const BATCH_SIZE = 30;
@@ -89,7 +97,7 @@ export default function PageHome() {
           const addresses = batch.map((token) => token.address).join(',');
 
           const response = await fetch(
-            `https://api.dexscreener.com/latest/dex/tokens/${addresses}`
+            `https://api.dexscreener.com/latest/dex/tokens/${addresses}`,
           );
 
           if (!response.ok) {
@@ -199,7 +207,8 @@ export default function PageHome() {
       // Create some variation in the price
       const randomFactor = 1 + (Math.random() - 0.5) * volatility * 2;
       const progress = i / (points - 1);
-      const interpolatedPrice = basePrice + (currentPrice - basePrice) * progress;
+      const interpolatedPrice =
+        basePrice + (currentPrice - basePrice) * progress;
       history.push(interpolatedPrice * randomFactor);
     }
 
@@ -213,8 +222,9 @@ export default function PageHome() {
     const isPositive = change >= 0;
     return (
       <div
-        className={`flex items-center gap-1 ${isPositive ? 'text-success-base' : 'text-error-base'
-          }`}
+        className={`flex items-center gap-1 ${
+          isPositive ? 'text-success-base' : 'text-error-base'
+        }`}
       >
         {isPositive ? (
           <RiArrowUpLine className='h-4 w-4' />
@@ -226,9 +236,11 @@ export default function PageHome() {
     );
   };
 
-  // Calculate total market cap and 24h volume
-  const totalMarketCap = marketData.reduce((sum, token) => sum + token.marketCap, 0);
-  const total24hVolume = marketData.reduce((sum, token) => sum + token.volume24h, 0);
+  // Calculate total 24h volume across curated tokens
+  const total24hVolume = marketData.reduce(
+    (sum, token) => sum + token.volume24h,
+    0,
+  );
 
   // Only show loading spinner on initial load
   if (tokensLoading || isInitialLoad) {
@@ -267,36 +279,24 @@ export default function PageHome() {
         </div>
 
         {/* Market Stats Widgets */}
-        <div className='mb-8 grid grid-cols-1 gap-4 md:grid-cols-3'>
-          <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
-            <div className='mb-2 flex items-center gap-2 text-text-sub-600'>
-              <RiLineChartLine className='h-5 w-5' />
-              <span className='text-sm'>
-                {locale === 'id' ? 'Total Token' : 'Total Tokens'}
-              </span>
-            </div>
-            <div className='text-2xl font-bold text-text-strong-950'>
-              {marketData.length}
-            </div>
-          </div>
+        <div className='mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+          {/* TOP 3 Price */}
+          <Top3PriceWidget />
 
-          <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
-            <div className='text-sm mb-2 text-text-sub-600'>
-              {locale === 'id' ? 'Total Kapitalisasi Pasar' : 'Total Market Cap'}
-            </div>
-            <div className='text-2xl font-bold text-text-strong-950'>
-              {formatVolume(totalMarketCap)}
-            </div>
-          </div>
+          {/* Total Market Cap */}
+          <TotalMarketCapWidget />
 
-          <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'>
-            <div className='text-sm mb-2 text-text-sub-600'>
-              {locale === 'id' ? 'Volume 24 Jam' : '24h Volume'}
-            </div>
-            <div className='text-2xl font-bold text-text-strong-950'>
-              {formatVolume(total24hVolume)}
-            </div>
-          </div>
+          {/* Fear and Greed Index */}
+          <FearGreedIndex />
+
+          {/* X Post */}
+          <XPostWidget tweetId='1975947991518474336' username='degenping' />
+
+          {/* Bitcoin Dominance */}
+          <BitcoinDominance />
+
+          {/* Altcoin Season */}
+          <AltcoinSeasonWidget />
         </div>
 
         {/* Token Table */}
@@ -344,7 +344,10 @@ export default function PageHome() {
                 </tr>
               ) : (
                 marketData.map((token, index) => {
-                  const tokenPath = locale === 'id' ? `/id/solana/${token.address}` : `/solana/${token.address}`;
+                  const tokenPath =
+                    locale === 'id'
+                      ? `/id/solana/${token.address}`
+                      : `/solana/${token.address}`;
                   return (
                     <tr
                       key={token.address}
