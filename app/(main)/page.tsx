@@ -262,7 +262,7 @@ export default function PageHome() {
   }
 
   return (
-    <div className='flex-1 p-3 sm:p-4'>
+    <div className='flex-1 p-3 sm:p-4 -mt-20'>
       <div className='mx-auto max-w-7xl'>
         {/* Header */}
         <div className='mb-4 sm:mb-8'>
