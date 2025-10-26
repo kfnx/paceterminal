@@ -12,7 +12,7 @@ export default function AltcoinSeasonWidget() {
   if (isLoading) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -20,10 +20,10 @@ export default function AltcoinSeasonWidget() {
         <div className='mb-3 flex items-center gap-2'>
           <RiLineChartLine className='text-lg text-text-sub-600' />
           <h3 className='text-title-h6 text-text-strong-950'>
-            Altcoin Season Index
+            Altseason Index
           </h3>
         </div>
-        <div className='h-24 animate-pulse rounded bg-gray-200' />
+        <div className='bg-gray-200 h-24 animate-pulse rounded' />
       </motion.div>
     );
   }
@@ -31,7 +31,7 @@ export default function AltcoinSeasonWidget() {
   if (error) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -39,7 +39,7 @@ export default function AltcoinSeasonWidget() {
         <div className='mb-3 flex items-center gap-2'>
           <RiLineChartLine className='text-lg text-text-sub-600' />
           <h3 className='text-title-h6 text-text-strong-950'>
-            Altcoin Season Index
+            Altseason Index
           </h3>
         </div>
         <div className='text-sm text-center text-error-base'>
@@ -78,7 +78,7 @@ export default function AltcoinSeasonWidget() {
 
   return (
     <motion.div
-      className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+      className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -86,9 +86,7 @@ export default function AltcoinSeasonWidget() {
       {/* Header */}
       <div className='mb-3 flex items-center gap-2'>
         <RiInformationLine className='text-lg text-text-sub-600' />
-        <h3 className='text-title-h6 text-text-strong-950'>
-          Altcoin Season Index
-        </h3>
+        <h3 className='text-title-h6 text-text-strong-950'>Altseason Index</h3>
       </div>
 
       {/* Value Section */}

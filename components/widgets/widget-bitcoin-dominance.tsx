@@ -14,7 +14,7 @@ export default function BitcoinDominance() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
       >
         <div className='mb-3 flex items-center gap-2'>
           <RiPieChart2Line className='text-lg text-text-sub-600' />
@@ -33,7 +33,7 @@ export default function BitcoinDominance() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
       >
         <div className='mb-3 flex items-center gap-2'>
           <RiPieChart2Line className='text-lg text-text-sub-600' />
@@ -41,7 +41,7 @@ export default function BitcoinDominance() {
             Bitcoin Dominance
           </h2>
         </div>
-        <div className='text-center text-sm text-error-base'>
+        <div className='text-sm text-center text-error-base'>
           Failed to load data
         </div>
       </motion.div>
@@ -85,7 +85,7 @@ export default function BitcoinDominance() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+      className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
     >
       {/* Header */}
       <div className='mb-3 flex items-center gap-2'>

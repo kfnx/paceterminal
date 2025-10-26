@@ -89,7 +89,7 @@ export default function Top3PriceWidget() {
   if (isLoading) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -120,7 +120,7 @@ export default function Top3PriceWidget() {
   if (error) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -148,7 +148,7 @@ export default function Top3PriceWidget() {
 
   return (
     <motion.div
-      className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+      className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}

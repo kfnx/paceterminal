@@ -1,5 +1,6 @@
 import Header from '@/components/header';
 import HeaderMobile from '@/components/header-mobile';
+import { PaceTokenBanner } from '@/components/pace-token-banner';
 import { RightSideAd } from '@/components/right-side-ad';
 import Sidebar from '@/components/sidebar';
 
@@ -13,6 +14,7 @@ export default function Layout({
       <Sidebar />
       <HeaderMobile />
       <div className='mx-auto flex w-full flex-1 flex-col self-stretch'>
+        <PaceTokenBanner />
         <Header />
         <div className='flex'>
           {children}

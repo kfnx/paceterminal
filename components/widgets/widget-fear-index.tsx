@@ -33,7 +33,7 @@ export default function FearGreedIndex() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
       >
         <div className='mb-6 flex'>
           <p className='paragraph-sm dark:text-gray-400 text-text-sub-600'>
@@ -51,7 +51,7 @@ export default function FearGreedIndex() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
       >
         <div className='mb-6 flex'>
           <p className='paragraph-sm dark:text-gray-400 text-text-sub-600'>
@@ -81,7 +81,7 @@ export default function FearGreedIndex() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
+      className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
     >
       <div className='mb-3 flex items-center gap-2'>
         <RiEmotionSadFill size={24} className='text-text-sub-600' />

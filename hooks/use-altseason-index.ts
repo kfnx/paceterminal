@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { AltseasonIndexResponse } from '@/app/api/coinmarketcap/altseason-index/route';
 
 /**
- * Hook to fetch the Altcoin Season Index.
+ * Hook to fetch the Altseason Index.
  * Compares top 100 coins' 90-day performance against Bitcoin.
  * Returns index from 1-100 where:
  * - 75-100: Altcoin Season (most coins outperforming BTC)
