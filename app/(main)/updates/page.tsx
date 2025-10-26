@@ -11,6 +11,7 @@ import { UpdateCard } from '@/components/updates/update-card';
 type UpdateWithToken = Database['public']['Tables']['updates']['Row'] & {
   tokens: {
     name: string;
+    address: string;
     image: string | null;
     tier: number | null;
   } | null;
@@ -34,7 +35,8 @@ export default function UpdatesPage() {
             tokens (
               name,
               image,
-              tier
+              tier,
+              address
             )
           `,
           )
@@ -159,11 +161,7 @@ export default function UpdatesPage() {
                 <div className='grid grid-cols-1 gap-4 lg:grid-cols-4'>
                   {/* Center - Large featured card (first update) - Shows first on mobile */}
                   <div className='lg:order-2 lg:col-span-2'>
-                    <UpdateCard
-                      update={latestUpdates[0]}
-                      variant='large'
-                      locale={locale}
-                    />
+                    <UpdateCard update={latestUpdates[0]} variant='large' />
                   </div>
 
                   {/* Left column - 2nd and 3rd updates */}
@@ -173,32 +171,22 @@ export default function UpdatesPage() {
                         <UpdateCard
                           update={latestUpdates[1]}
                           variant='medium'
-                          locale={locale}
                         />
                       )}
                       {latestUpdates[2] && (
                         <UpdateCard
                           update={latestUpdates[2]}
                           variant='medium'
-                          locale={locale}
                         />
                       )}
                     </div>
                   ) : (
                     <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:order-1 lg:grid-cols-1'>
                       {latestUpdates[1] && (
-                        <UpdateCard
-                          update={latestUpdates[1]}
-                          variant='small'
-                          locale={locale}
-                        />
+                        <UpdateCard update={latestUpdates[1]} variant='small' />
                       )}
                       {latestUpdates[2] && (
-                        <UpdateCard
-                          update={latestUpdates[2]}
-                          variant='small'
-                          locale={locale}
-                        />
+                        <UpdateCard update={latestUpdates[2]} variant='small' />
                       )}
                     </div>
                   )}
@@ -206,32 +194,16 @@ export default function UpdatesPage() {
                   {/* Right column - 4th through 7th updates */}
                   <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:order-3 lg:grid-cols-1'>
                     {latestUpdates[3] && (
-                      <UpdateCard
-                        update={latestUpdates[3]}
-                        variant='small'
-                        locale={locale}
-                      />
+                      <UpdateCard update={latestUpdates[3]} variant='small' />
                     )}
                     {latestUpdates[4] && (
-                      <UpdateCard
-                        update={latestUpdates[4]}
-                        variant='small'
-                        locale={locale}
-                      />
+                      <UpdateCard update={latestUpdates[4]} variant='small' />
                     )}
                     {latestUpdates[5] && (
-                      <UpdateCard
-                        update={latestUpdates[5]}
-                        variant='small'
-                        locale={locale}
-                      />
+                      <UpdateCard update={latestUpdates[5]} variant='small' />
                     )}
                     {latestUpdates[6] && (
-                      <UpdateCard
-                        update={latestUpdates[6]}
-                        variant='small'
-                        locale={locale}
-                      />
+                      <UpdateCard update={latestUpdates[6]} variant='small' />
                     )}
                   </div>
                 </div>
@@ -248,14 +220,12 @@ export default function UpdatesPage() {
                         key={update.id}
                         update={update}
                         variant='masonry'
-                        locale={locale}
                       />
                     ) : (
                       <UpdateCard
                         key={update.id}
                         update={update}
                         variant='small'
-                        locale={locale}
                       />
                     )}
                   </>

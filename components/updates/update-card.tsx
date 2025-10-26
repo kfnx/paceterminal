@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from '@/contexts/translation-context';
 import {
   RiArrowDownSLine,
   RiArrowUpSLine,
@@ -8,26 +9,26 @@ import {
 } from '@remixicon/react';
 
 import { Database } from '@/lib/database.types';
-import { getTokenImageUrl } from '@/utils/image-url';
 import useBreakpoint from '@/hooks/use-breakpoint';
-import * as Avatar from '@/components/ui/avatar';
+import { TokenTag } from '@/components/ui/token-tag';
 
 type UpdateWithToken = Database['public']['Tables']['updates']['Row'] & {
   tokens: {
     name: string;
     image: string | null;
     tier: number | null;
+    address: string;
   } | null;
 };
 
 interface UpdateCardProps {
   update: UpdateWithToken;
   variant: 'large' | 'medium' | 'small' | 'masonry';
-  locale: string;
 }
 
-export function UpdateCard({ update, variant, locale }: UpdateCardProps) {
+export function UpdateCard({ update, variant }: UpdateCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { locale } = useTranslation();
   const { sm, lg } = useBreakpoint();
 
   const formatShortDate = (dateString: string) => {
@@ -36,22 +37,6 @@ export function UpdateCard({ update, variant, locale }: UpdateCardProps) {
       day: 'numeric',
       year: 'numeric',
     });
-  };
-
-  const renderTokenName = () => {
-    if (!update.tokens) return null;
-
-    return (
-      <div className='flex w-fit items-center gap-2 rounded bg-neutral-100 px-2 py-1 text-paragraph-xs font-medium text-text-strong-950  dark:text-primary-dark'>
-        <Avatar.Root size='20'>
-          <Avatar.Image
-            src={getTokenImageUrl(update.tokens.image)}
-            alt={update.tokens.name}
-          />
-        </Avatar.Root>
-        {update.tokens.name}
-      </div>
-    );
   };
 
   const description =
@@ -96,7 +81,7 @@ export function UpdateCard({ update, variant, locale }: UpdateCardProps) {
               <time dateTime={update.created_at}>
                 {formatShortDate(update.date || update.created_at)}
               </time>
-              {renderTokenName()}
+              {update.tokens && <TokenTag token={update.tokens} />}
             </div>
 
             <a
@@ -147,7 +132,7 @@ export function UpdateCard({ update, variant, locale }: UpdateCardProps) {
               <time dateTime={update.created_at}>
                 {formatShortDate(update.date || update.created_at)}
               </time>
-              {renderTokenName()}
+              {update.tokens && <TokenTag token={update.tokens} />}
             </div>
 
             <a
@@ -202,7 +187,7 @@ export function UpdateCard({ update, variant, locale }: UpdateCardProps) {
                 {formatShortDate(update.date || update.created_at)}
               </time>
             </div>
-            {renderTokenName()}
+            {update.tokens && <TokenTag token={update.tokens} />}
           </div>
           {/* <div className='inline-flex items-center gap-1 text-paragraph-xs font-medium text-primary-base transition-colors hover:text-primary-darker'>
             {locale === 'id' ? 'Buka' : 'Read More'}
@@ -238,7 +223,7 @@ export function UpdateCard({ update, variant, locale }: UpdateCardProps) {
         <time dateTime={update.created_at}>
           {formatShortDate(update.date || update.created_at)}
         </time>
-        {renderTokenName()}
+        {update.tokens && <TokenTag token={update.tokens} />}
       </div>
 
       <div

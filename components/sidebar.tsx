@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
 import {
   RiArrowRightSLine,
+  RiDashboardLine,
   RiFireLine,
   RiNewspaperLine,
   RiSkipLeftLine,
@@ -114,7 +115,13 @@ export function SidebarHeader({
     >
       <Link href='/'>
         <div className='flex flex-col'>
-          {collapsed ? <img src="/images/semar.png" width={24} height={24} alt="semar" /> : <h1 className='text-2xl font-bold text-text-strong-950'>PACETERMINAL</h1>}
+          {collapsed ? (
+            <img src='/images/semar.png' width={24} height={24} alt='semar' />
+          ) : (
+            <h1 className='text-2xl font-bold text-text-strong-950'>
+              PACETERMINAL
+            </h1>
+          )}
           {!collapsed && (
             <p className='text-paragraph-sm text-text-sub-600'>Hong Wilaheng</p>
           )}
@@ -126,7 +133,7 @@ export function SidebarHeader({
           onClick={() => setCollapsed((prev) => !prev)}
         />
       </Button.Root>
-    </div >
+    </div>
   );
 }
 
@@ -221,6 +228,11 @@ function GeneralNavigation({ collapsed }: { collapsed: boolean }) {
   const pathname = usePathname();
 
   const navItems = [
+    {
+      href: '/',
+      label: 'Market Overview',
+      icon: RiDashboardLine,
+    },
     {
       href: '/updates',
       label: 'Updates',
