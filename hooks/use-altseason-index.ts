@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+
 import type { AltseasonIndexResponse } from '@/app/api/coinmarketcap/altseason-index/route';
 
 /**

@@ -3,6 +3,7 @@
 import { RiCoinFill, RiStockLine } from '@remixicon/react';
 import { motion } from 'framer-motion';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
+
 import { useTopCryptocurrencies } from '@/hooks/use-top-cryptocurrencies';
 
 interface CryptoItem {
@@ -99,14 +100,14 @@ export default function Top3PriceWidget() {
           {[1, 2, 3].map((i) => (
             <div key={i} className='flex items-center justify-between py-3'>
               <div className='flex items-center gap-3'>
-                <div className='h-8 w-8 animate-pulse rounded-full bg-gray-200' />
+                <div className='bg-gray-200 h-8 w-8 animate-pulse rounded-full' />
                 <div className='space-y-2'>
-                  <div className='h-4 w-20 animate-pulse rounded bg-gray-200' />
-                  <div className='h-4 w-24 animate-pulse rounded bg-gray-200' />
-                  <div className='h-3 w-16 animate-pulse rounded bg-gray-200' />
+                  <div className='bg-gray-200 h-4 w-20 animate-pulse rounded' />
+                  <div className='bg-gray-200 h-4 w-24 animate-pulse rounded' />
+                  <div className='bg-gray-200 h-3 w-16 animate-pulse rounded' />
                 </div>
               </div>
-              <div className='h-10 w-24 animate-pulse rounded bg-gray-200' />
+              <div className='bg-gray-200 h-10 w-24 animate-pulse rounded' />
             </div>
           ))}
         </div>
@@ -126,7 +127,7 @@ export default function Top3PriceWidget() {
           <RiStockLine className='text-lg text-text-sub-600' />
           <h3 className='text-title-h6 text-text-strong-950'>Top 3 Price</h3>
         </div>
-        <div className='py-6 text-center text-sm text-error-base'>
+        <div className='text-sm py-6 text-center text-error-base'>
           Failed to load data
         </div>
       </motion.div>

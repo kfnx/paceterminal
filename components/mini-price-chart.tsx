@@ -42,7 +42,9 @@ export function MiniPriceChart({
     return last >= first ? 'up' : 'down';
   }, [data]);
 
-  const strokeColor = color || (trend === 'up' ? '#16a34a' : trend === 'down' ? '#dc2626' : '#6b7280');
+  const strokeColor =
+    color ||
+    (trend === 'up' ? '#16a34a' : trend === 'down' ? '#dc2626' : '#6b7280');
 
   if (!pathData) {
     return (

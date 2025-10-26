@@ -84,7 +84,7 @@ export default function XPostWidget({
   if (error) {
     return (
       <div className={`rounded-lg bg-bg-white-0 p-6 ${className}`}>
-        <div className='text-center text-sm text-error-base'>
+        <div className='text-sm text-center text-error-base'>
           Failed to load tweet
         </div>
       </div>
@@ -95,7 +95,7 @@ export default function XPostWidget({
     <div className={className}>
       {isLoading && (
         <div className='flex h-48 items-center justify-center rounded-lg bg-bg-white-0'>
-          <div className='h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-500' />
+          <div className='border-gray-200 h-8 w-8 animate-spin rounded-full border-4 border-t-blue-500' />
         </div>
       )}
       <div

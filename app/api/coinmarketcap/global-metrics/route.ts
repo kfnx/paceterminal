@@ -68,12 +68,15 @@ export async function GET() {
     // Format response
     const formattedData: GlobalMetricsResponse = {
       totalMarketCap: quote.total_market_cap,
-      totalMarketCapChange24h: quote.total_market_cap_yesterday_percentage_change,
+      totalMarketCapChange24h:
+        quote.total_market_cap_yesterday_percentage_change,
       totalVolume24h: quote.total_volume_24h,
       btcDominance: btcDominance,
-      btcDominanceChange24h: data.data.btc_dominance_yesterday_percentage_change || 0,
+      btcDominanceChange24h:
+        data.data.btc_dominance_yesterday_percentage_change || 0,
       ethDominance: ethDominance,
-      ethDominanceChange24h: data.data.eth_dominance_yesterday_percentage_change || 0,
+      ethDominanceChange24h:
+        data.data.eth_dominance_yesterday_percentage_change || 0,
       activeCryptocurrencies: data.data.active_cryptocurrencies,
       totalExchanges: data.data.active_exchanges,
       lastUpdated: data.data.last_updated,

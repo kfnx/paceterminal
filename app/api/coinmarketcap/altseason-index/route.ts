@@ -174,7 +174,8 @@ export async function GET() {
     // Return with cache headers (24-hour cache)
     return NextResponse.json(formattedData, {
       headers: {
-        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=172800',
+        'Cache-Control':
+          'public, s-maxage=86400, stale-while-revalidate=172800',
       },
     });
   } catch (error) {
@@ -182,7 +183,8 @@ export async function GET() {
     return NextResponse.json(
       {
         error: 'Internal server error',
-        message: 'An unexpected error occurred while calculating Altseason Index',
+        message:
+          'An unexpected error occurred while calculating Altseason Index',
       },
       { status: 500 },
     );

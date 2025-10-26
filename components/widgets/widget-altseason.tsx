@@ -3,6 +3,7 @@
 import React from 'react';
 import { RiExchangeDollarFill, RiInformationLine } from '@remixicon/react';
 import { motion } from 'framer-motion';
+
 import { useAltseasonIndex } from '@/hooks/use-altseason-index';
 
 export default function AltcoinSeasonWidget() {
@@ -22,7 +23,7 @@ export default function AltcoinSeasonWidget() {
             Indeks Altcoin Season CMC
           </h3>
         </div>
-        <div className='h-24 animate-pulse rounded bg-gray-200' />
+        <div className='bg-gray-200 h-24 animate-pulse rounded' />
       </motion.div>
     );
   }
@@ -41,7 +42,7 @@ export default function AltcoinSeasonWidget() {
             Indeks Altcoin Season CMC
           </h3>
         </div>
-        <div className='text-center text-sm text-error-base'>
+        <div className='text-sm text-center text-error-base'>
           Failed to load data
         </div>
       </motion.div>
@@ -97,7 +98,9 @@ export default function AltcoinSeasonWidget() {
           <p className='ml-1 text-label-md text-text-sub-600'>/100</p>
         </div>
 
-        <div className={`rounded-full px-3 py-1 text-label-sm font-medium ${labelColor}`}>
+        <div
+          className={`rounded-full px-3 py-1 text-label-sm font-medium ${labelColor}`}
+        >
           {label}
         </div>
       </div>
@@ -111,7 +114,7 @@ export default function AltcoinSeasonWidget() {
       {/* Progress Bar */}
       <div className='relative h-2 rounded-full bg-gradient-to-r from-orange-500 via-orange-200 to-blue-500'>
         <motion.div
-          className='absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-[3px] border-white bg-text-strong-950 shadow-md'
+          className='shadow-md absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-[3px] border-white bg-text-strong-950'
           initial={{ left: '0%' }}
           animate={{ left: `${thumbPosition}%` }}
           transition={{ type: 'spring', stiffness: 150, damping: 20 }}

@@ -97,15 +97,18 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
     setIsLoading(true);
 
     try {
-      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + '/chat',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            messages: newMessages,
+          }),
         },
-        body: JSON.stringify({
-          messages: newMessages,
-        }),
-      });
+      );
 
       if (!response.ok) {
         throw new Error('Failed to get response');
@@ -205,7 +208,9 @@ export function ChatbotWidget({ className }: ChatbotWidgetProps) {
         <div
           className={cn(
             'shadow-2xl flex flex-col overflow-hidden border border-stroke-soft-200 bg-bg-white-0 duration-300 animate-in fade-in zoom-in-95 slide-in-from-bottom-4',
-            isMaximized ? 'fixed inset-0 h-auto w-auto' : 'mb-4 h-[500px] w-[380px] rounded-2xl',
+            isMaximized
+              ? 'fixed inset-0 h-auto w-auto'
+              : 'mb-4 h-[500px] w-[380px] rounded-2xl',
           )}
         >
           {/* Header */}

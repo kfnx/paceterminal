@@ -279,7 +279,7 @@ export default function PageHome() {
         </div>
 
         {/* Market Stats Widgets */}
-        <div className='mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+        <div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
           {/* TOP 3 Price */}
           <Top3PriceWidget />
 
@@ -304,28 +304,28 @@ export default function PageHome() {
           <table className='w-full'>
             <thead className='border-b border-stroke-soft-200 bg-bg-weak-50'>
               <tr>
-                <th className='text-sm px-6 py-4 text-left font-semibold text-text-sub-600'>
+                <th className='text-xs sm:text-sm px-3 py-3 text-left font-semibold text-text-sub-600 sm:px-6 sm:py-4'>
                   #
                 </th>
-                <th className='text-sm px-6 py-4 text-left font-semibold text-text-sub-600'>
+                <th className='text-xs sm:text-sm px-3 py-3 text-left font-semibold text-text-sub-600 sm:px-6 sm:py-4'>
                   {locale === 'id' ? 'Token' : 'Token'}
                 </th>
-                <th className='text-sm px-6 py-4 text-right font-semibold text-text-sub-600'>
+                <th className='text-xs sm:text-sm px-3 py-3 text-right font-semibold text-text-sub-600 sm:px-6 sm:py-4'>
                   {locale === 'id' ? 'Harga' : 'Price'}
                 </th>
-                <th className='text-sm px-6 py-4 text-right font-semibold text-text-sub-600'>
+                <th className='text-sm hidden px-6 py-4 text-right font-semibold text-text-sub-600 lg:table-cell'>
                   1h %
                 </th>
-                <th className='text-sm px-6 py-4 text-right font-semibold text-text-sub-600'>
+                <th className='text-xs sm:text-sm px-3 py-3 text-right font-semibold text-text-sub-600 sm:px-6 sm:py-4'>
                   24h %
                 </th>
-                <th className='text-sm px-6 py-4 text-right font-semibold text-text-sub-600'>
+                <th className='text-sm hidden px-6 py-4 text-right font-semibold text-text-sub-600 md:table-cell'>
                   {locale === 'id' ? 'Kapitalisasi Pasar' : 'Market Cap'}
                 </th>
-                <th className='text-sm px-6 py-4 text-right font-semibold text-text-sub-600'>
+                <th className='text-sm hidden px-6 py-4 text-right font-semibold text-text-sub-600 lg:table-cell'>
                   {locale === 'id' ? 'Volume (24j)' : 'Volume (24h)'}
                 </th>
-                <th className='text-sm px-6 py-4 text-right font-semibold text-text-sub-600'>
+                <th className='text-sm hidden px-6 py-4 text-right font-semibold text-text-sub-600 xl:table-cell'>
                   {locale === 'id' ? '7 Hari' : 'Last 7 Days'}
                 </th>
               </tr>
@@ -335,7 +335,7 @@ export default function PageHome() {
                 <tr>
                   <td
                     colSpan={8}
-                    className='px-6 py-12 text-center text-text-sub-600'
+                    className='text-xs sm:text-sm px-3 py-8 text-center text-text-sub-600 sm:px-6 sm:py-12'
                   >
                     {locale === 'id'
                       ? 'Tidak ada data pasar tersedia'
@@ -353,57 +353,57 @@ export default function PageHome() {
                       key={token.address}
                       className='cursor-pointer border-b border-stroke-soft-200 transition-colors hover:bg-bg-weak-50'
                     >
-                      <td className='text-sm px-6 py-4 text-text-sub-600'>
+                      <td className='text-xs sm:text-sm px-3 py-3 text-text-sub-600 sm:px-6 sm:py-4'>
                         <Link href={tokenPath} className='block'>
                           {index + 1}
                         </Link>
                       </td>
-                      <td className='px-6 py-4'>
+                      <td className='px-3 py-3 sm:px-6 sm:py-4'>
                         <Link href={tokenPath} className='block'>
-                          <div className='flex items-center gap-3'>
+                          <div className='flex items-center gap-2 sm:gap-3'>
                             <Avatar.Root size='32' color='blue'>
                               <Avatar.Image
                                 src={getTokenImageUrl(token.image)}
                                 alt={token.name}
                               />
                             </Avatar.Root>
-                            <div>
-                              <div className='font-medium text-text-strong-950'>
+                            <div className='min-w-0'>
+                              <div className='text-xs sm:text-sm truncate font-medium text-text-strong-950'>
                                 {token.name}
                               </div>
-                              <div className='text-sm text-text-sub-600'>
+                              <div className='text-xs truncate text-text-sub-600'>
                                 {token.symbol}
                               </div>
                             </div>
                           </div>
                         </Link>
                       </td>
-                      <td className='text-sm px-6 py-4 text-right text-text-strong-950'>
+                      <td className='text-xs sm:text-sm px-3 py-3 text-right text-text-strong-950 sm:px-6 sm:py-4'>
                         <Link href={tokenPath} className='block'>
                           {formatPrice(token.price)}
                         </Link>
                       </td>
-                      <td className='text-sm px-6 py-4 text-right'>
+                      <td className='text-sm hidden px-6 py-4 text-right lg:table-cell'>
                         <Link href={tokenPath} className='block'>
                           {renderPriceChange(token.priceChange1h)}
                         </Link>
                       </td>
-                      <td className='text-sm px-6 py-4 text-right'>
+                      <td className='text-xs sm:text-sm px-3 py-3 text-right sm:px-6 sm:py-4'>
                         <Link href={tokenPath} className='block'>
                           {renderPriceChange(token.priceChange24h)}
                         </Link>
                       </td>
-                      <td className='text-sm px-6 py-4 text-right text-text-strong-950'>
+                      <td className='text-sm hidden px-6 py-4 text-right text-text-strong-950 md:table-cell'>
                         <Link href={tokenPath} className='block'>
                           {formatVolume(token.marketCap)}
                         </Link>
                       </td>
-                      <td className='text-sm px-6 py-4 text-right text-text-strong-950'>
+                      <td className='text-sm hidden px-6 py-4 text-right text-text-strong-950 lg:table-cell'>
                         <Link href={tokenPath} className='block'>
                           {formatVolume(token.volume24h)}
                         </Link>
                       </td>
-                      <td className='px-6 py-4 text-right'>
+                      <td className='hidden px-6 py-4 text-right xl:table-cell'>
                         <Link href={tokenPath} className='block'>
                           <div className='flex justify-end'>
                             <MiniPriceChart

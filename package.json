@@ -11,7 +11,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --fix",
     "format": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "db:gen:types": "pnpx supabase gen types typescript --project-id 'jxocsttakwptbsnjjejg' --schema public > lib/database.types.ts"
   },

@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+
 import { useMarketGlobalMetrics } from '@/hooks/use-market-global-metrics';
 
 export default function BitcoinDominance() {
@@ -16,11 +17,11 @@ export default function BitcoinDominance() {
       >
         <div className='mb-3 flex items-center gap-1.5'>
           <i className='ri-pie-chart-2-line text-lg text-text-sub-600' />
-          <h2 className='font-semibold text-text-strong-950 dark:text-gray-100 text-sm'>
+          <h2 className='dark:text-gray-100 text-sm font-semibold text-text-strong-950'>
             Bitcoin Dominance
           </h2>
         </div>
-        <div className='h-32 animate-pulse rounded bg-gray-200' />
+        <div className='bg-gray-200 h-32 animate-pulse rounded' />
       </motion.div>
     );
   }
@@ -35,11 +36,11 @@ export default function BitcoinDominance() {
       >
         <div className='mb-3 flex items-center gap-1.5'>
           <i className='ri-pie-chart-2-line text-lg text-text-sub-600' />
-          <h2 className='font-semibold text-text-strong-950 dark:text-gray-100 text-sm'>
+          <h2 className='dark:text-gray-100 text-sm font-semibold text-text-strong-950'>
             Bitcoin Dominance
           </h2>
         </div>
-        <div className='text-center text-sm text-error-base'>
+        <div className='text-sm text-center text-error-base'>
           Failed to load data
         </div>
       </motion.div>
@@ -83,7 +84,7 @@ export default function BitcoinDominance() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className='flex flex-col rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4 dark:border-neutral-800 dark:bg-neutral-900'
+      className='flex flex-col rounded-xl border border-stroke-soft-200 bg-bg-weak-50 p-4'
     >
       {/* Header */}
       <div className='mb-3 flex items-center gap-1.5'>
