@@ -76,8 +76,6 @@ export default function PageHome() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('DATA', marketData);
-
   useEffect(() => {
     const fetchMarketData = async () => {
       if (!tokens || tokens.length === 0) {
@@ -289,14 +287,18 @@ export default function PageHome() {
           {/* Fear and Greed Index */}
           <FearGreedIndex />
 
-          {/* X Post */}
-          <XPostWidget tweetId='1975947991518474336' username='degenping' />
-
           {/* Bitcoin Dominance */}
           <BitcoinDominance />
 
           {/* Altcoin Season */}
           <AltcoinSeasonWidget />
+
+          {/* X Post */}
+          <XPostWidget
+            tweetId='1975947991518474336'
+            username='degenping'
+            className='-mt-2.5'
+          />
         </div>
 
         {/* Token Table */}

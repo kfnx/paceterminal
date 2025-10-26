@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useTheme } from 'next-themes';
 
 interface XPostWidgetProps {
   tweetId: string;
@@ -16,6 +17,7 @@ export default function XPostWidget({
   const embedRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     // Check if script already exists
@@ -28,9 +30,13 @@ export default function XPostWidget({
         // Clear previous content
         embedRef.current.innerHTML = '';
 
-        // Create the blockquote
+        // Create the blockquote with dark mode support
         const blockquote = document.createElement('blockquote');
         blockquote.className = 'twitter-tweet';
+        // Add data-theme attribute for dark mode
+        if (theme === 'dark') {
+          blockquote.setAttribute('data-theme', 'dark');
+        }
         const link = document.createElement('a');
         link.href = `https://twitter.com/${username}/status/${tweetId}`;
         blockquote.appendChild(link);
@@ -79,11 +85,13 @@ export default function XPostWidget({
         embedRef.current.innerHTML = '';
       }
     };
-  }, [tweetId, username]);
+  }, [tweetId, username, theme]);
 
   if (error) {
     return (
-      <div className={`rounded-lg bg-bg-white-0 p-6 ${className}`}>
+      <div
+        className={`rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs ${className}`}
+      >
         <div className='text-sm text-center text-error-base'>
           Failed to load tweet
         </div>
@@ -94,8 +102,8 @@ export default function XPostWidget({
   return (
     <div className={className}>
       {isLoading && (
-        <div className='flex h-48 items-center justify-center rounded-lg bg-bg-white-0'>
-          <div className='border-gray-200 h-8 w-8 animate-spin rounded-full border-4 border-t-blue-500' />
+        <div className='flex h-48 items-center justify-center rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-regular-xs'>
+          <div className='h-8 w-8 animate-spin rounded-full border-4 border-stroke-soft-200 border-t-primary-base' />
         </div>
       )}
       <div

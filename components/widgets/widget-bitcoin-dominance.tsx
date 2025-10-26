@@ -1,5 +1,6 @@
 'use client';
 
+import { RiPieChart2Line } from '@remixicon/react';
 import { motion } from 'framer-motion';
 
 import { useMarketGlobalMetrics } from '@/hooks/use-market-global-metrics';
@@ -12,12 +13,12 @@ export default function BitcoinDominance() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className='flex flex-col rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4 dark:border-neutral-800 dark:bg-neutral-900'
+        transition={{ duration: 0.4 }}
+        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
       >
-        <div className='mb-3 flex items-center gap-1.5'>
-          <i className='ri-pie-chart-2-line text-lg text-text-sub-600' />
-          <h2 className='dark:text-gray-100 text-sm font-semibold text-text-strong-950'>
+        <div className='mb-3 flex items-center gap-2'>
+          <RiPieChart2Line className='text-lg text-text-sub-600' />
+          <h2 className='text-title-h6 text-text-strong-950'>
             Bitcoin Dominance
           </h2>
         </div>
@@ -31,16 +32,16 @@ export default function BitcoinDominance() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className='flex flex-col rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4 dark:border-neutral-800 dark:bg-neutral-900'
+        transition={{ duration: 0.4 }}
+        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
       >
-        <div className='mb-3 flex items-center gap-1.5'>
-          <i className='ri-pie-chart-2-line text-lg text-text-sub-600' />
-          <h2 className='dark:text-gray-100 text-sm font-semibold text-text-strong-950'>
+        <div className='mb-3 flex items-center gap-2'>
+          <RiPieChart2Line className='text-lg text-text-sub-600' />
+          <h2 className='text-title-h6 text-text-strong-950'>
             Bitcoin Dominance
           </h2>
         </div>
-        <div className='text-sm text-center text-error-base'>
+        <div className='text-center text-sm text-error-base'>
           Failed to load data
         </div>
       </motion.div>
@@ -83,19 +84,16 @@ export default function BitcoinDominance() {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className='flex flex-col rounded-xl border border-stroke-soft-200 bg-bg-weak-50 p-4'
+      transition={{ duration: 0.4 }}
+      className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
     >
       {/* Header */}
-      <div className='mb-3 flex items-center gap-1.5'>
-        <i className='ri-pie-chart-2-line text-lg text-text-sub-600' />
-        <h2 className='text-sm dark:text-gray-100 font-semibold text-text-strong-950'>
+      <div className='mb-3 flex items-center gap-2'>
+        <RiPieChart2Line className='text-lg text-text-sub-600' />
+        <h2 className='text-title-h6 text-text-strong-950'>
           Bitcoin Dominance
         </h2>
       </div>
-
-      {/* Divider */}
-      <div className='mb-3 h-px w-full bg-stroke-soft-200 dark:bg-neutral-800' />
 
       {/* Data Grid */}
       <div className='mb-3 grid grid-cols-3 gap-3'>
@@ -158,22 +156,6 @@ export default function BitcoinDominance() {
           }}
         />
       </motion.div>
-
-      {/* Divider */}
-      <div className='mb-2 h-px w-full bg-stroke-soft-200 dark:bg-neutral-800' />
-
-      {/* Footer */}
-      <div className='flex items-center justify-between'>
-        <span className='dark:text-gray-500 text-[10px] text-text-sub-600'>
-          Data by CoinMarketCap
-        </span>
-        <button
-          className='dark:text-gray-400 flex h-5 w-5 items-center justify-center rounded-full bg-bg-weak-50 text-text-sub-600 transition-colors hover:bg-bg-soft-200 dark:bg-neutral-800'
-          aria-label='Info'
-        >
-          <i className='ri-information-line text-xs' />
-        </button>
-      </div>
     </motion.div>
   );
 }

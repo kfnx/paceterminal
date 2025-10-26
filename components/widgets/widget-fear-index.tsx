@@ -32,8 +32,8 @@ export default function FearGreedIndex() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className='flex flex-col rounded-2xl border-neutral-800 bg-bg-white-0 p-6 dark:bg-neutral-900'
+        transition={{ duration: 0.4 }}
+        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
       >
         <div className='mb-6 flex'>
           <p className='paragraph-sm dark:text-gray-400 text-text-sub-600'>
@@ -50,8 +50,8 @@ export default function FearGreedIndex() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className='flex flex-col rounded-2xl border-neutral-800 bg-bg-white-0 p-6 dark:bg-neutral-900'
+        transition={{ duration: 0.4 }}
+        className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
       >
         <div className='mb-6 flex'>
           <p className='paragraph-sm dark:text-gray-400 text-text-sub-600'>
@@ -80,13 +80,13 @@ export default function FearGreedIndex() {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className='flex flex-col rounded-2xl bg-bg-white-0 p-6 dark:border-neutral-800 dark:bg-neutral-900'
+      transition={{ duration: 0.4 }}
+      className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
     >
       <div className='mb-3 flex items-center gap-2'>
         <RiEmotionSadFill size={24} className='text-text-sub-600' />
         <h3 className='text-title-h6 text-text-strong-950'>
-          Multifactorial Sentiment Analysis
+          Fear and Greed Index
         </h3>
       </div>
 

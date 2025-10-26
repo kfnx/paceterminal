@@ -1,68 +1,70 @@
 'use client';
 
-import { RiCoinFill, RiStockLine } from '@remixicon/react';
+import { RiStockLine } from '@remixicon/react';
 import { motion } from 'framer-motion';
-import { Line, LineChart, ResponsiveContainer } from 'recharts';
 
 import { useTopCryptocurrencies } from '@/hooks/use-top-cryptocurrencies';
+import * as Avatar from '@/components/ui/avatar';
+import { MiniPriceChart } from '@/components/mini-price-chart';
 
 interface CryptoItem {
   name: string;
   symbol: string;
-  icon: JSX.Element;
+  logoUrl: string;
   price: string;
   change: string;
-  chart: number[];
+  priceHistory: number[];
 }
 
-// Icon mapping for different cryptocurrencies
-const getCryptoIcon = (symbol: string) => {
-  const iconMap: Record<string, JSX.Element> = {
-    BTC: <RiCoinFill className='text-2xl text-orange-500' />,
-    ETH: <RiCoinFill className='text-2xl text-neutral-700' />,
-    SOL: <RiStockLine className='text-2xl text-purple-600' />,
-    BNB: <RiCoinFill className='text-2xl text-yellow-500' />,
-    XRP: <RiCoinFill className='text-2xl text-blue-500' />,
+// Logo mapping for different cryptocurrencies (using CoinGecko image URLs)
+const getCryptoLogo = (symbol: string): string => {
+  const logoMap: Record<string, string> = {
+    BTC: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png',
+    ETH: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png',
+    SOL: 'https://assets.coingecko.com/coins/images/4128/small/solana.png',
+    BNB: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png',
+    XRP: 'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png',
   };
-  return iconMap[symbol] || <RiCoinFill className='text-2xl text-gray-500' />;
-};
-
-// Convert chart array into Recharts-friendly data
-const formatChartData = (data: number[]) =>
-  data.map((value, index) => ({ index, value }));
-
-const Sparkline = ({ data }: { data: number[] }) => {
   return (
-    <ResponsiveContainer width={90} height={40}>
-      <LineChart data={formatChartData(data)}>
-        <Line
-          type='monotone'
-          dataKey='value'
-          stroke='rgb(34 197 94)' // Tailwind green-500
-          strokeWidth={2}
-          dot={false}
-          isAnimationActive={true}
-        />
-      </LineChart>
-    </ResponsiveContainer>
+    logoMap[symbol] ||
+    'https://assets.coingecko.com/coins/images/1/small/bitcoin.png'
   );
 };
 
 export default function Top3PriceWidget() {
   const { data, isLoading, error } = useTopCryptocurrencies();
 
-  // Generate sparkline data from 24h change
-  const generateSparkline = (change24h: number): number[] => {
-    const points = 7;
-    const volatility = Math.abs(change24h) / 100;
+  // Generate realistic price history from 24h change
+  const generatePriceHistory = (
+    currentPrice: number,
+    change24h: number,
+  ): number[] => {
+    const points = 24; // 24 data points for hourly data
     const data: number[] = [];
+
+    // Calculate the starting price 24h ago
+    const startPrice = currentPrice / (1 + change24h / 100);
+
+    // Generate realistic price movements with volatility
+    const volatility = Math.abs(change24h) / 200; // Adjust volatility factor
 
     for (let i = 0; i < points; i++) {
       const progress = i / (points - 1);
-      const trend = 1 + (change24h / 100) * progress;
-      const randomVariation = (Math.random() - 0.5) * volatility * 0.5;
-      data.push(Math.max(0.8, Math.min(1.2, trend + randomVariation)));
+
+      // Linear interpolation from start to current price
+      const baseValue = startPrice + (currentPrice - startPrice) * progress;
+
+      // Add realistic random fluctuations
+      const fluctuation = (Math.random() - 0.5) * 2 * volatility * currentPrice;
+
+      // Add some smoothing by considering previous value
+      const smoothed = i > 0 ? data[i - 1] * 0.3 + baseValue * 0.7 : baseValue;
+
+      data.push(smoothed + fluctuation);
     }
+
+    // Ensure last value is close to current price
+    data[data.length - 1] = currentPrice;
 
     return data;
   };
@@ -87,7 +89,7 @@ export default function Top3PriceWidget() {
   if (isLoading) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-20 bg-bg-white-0 p-4 shadow-regular-sm'
+        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -118,7 +120,7 @@ export default function Top3PriceWidget() {
   if (error) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-20 bg-bg-white-0 p-4 shadow-regular-sm'
+        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -138,15 +140,15 @@ export default function Top3PriceWidget() {
     data?.cryptocurrencies.map((crypto) => ({
       name: crypto.name,
       symbol: crypto.symbol,
-      icon: getCryptoIcon(crypto.symbol),
+      logoUrl: getCryptoLogo(crypto.symbol),
       price: formatPrice(crypto.price),
       change: formatChange(crypto.priceChange24h),
-      chart: generateSparkline(crypto.priceChange24h),
+      priceHistory: generatePriceHistory(crypto.price, crypto.priceChange24h),
     })) || [];
 
   return (
     <motion.div
-      className='w-full max-w-md rounded-20 bg-bg-white-0 p-4 shadow-regular-sm'
+      className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -171,7 +173,9 @@ export default function Top3PriceWidget() {
             >
               {/* Left section */}
               <div className='flex items-center gap-3'>
-                {crypto.icon}
+                <Avatar.Root size='32' color='blue'>
+                  <Avatar.Image src={crypto.logoUrl} alt={crypto.name} />
+                </Avatar.Root>
                 <div>
                   <p className='text-label-md text-text-strong-950'>
                     {crypto.name}
@@ -189,8 +193,12 @@ export default function Top3PriceWidget() {
                 </div>
               </div>
 
-              {/* Sparkline */}
-              <Sparkline data={crypto.chart} />
+              {/* Price Chart */}
+              <MiniPriceChart
+                data={crypto.priceHistory}
+                width={80}
+                height={40}
+              />
             </motion.div>
           );
         })}

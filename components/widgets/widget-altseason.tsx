@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { RiExchangeDollarFill, RiInformationLine } from '@remixicon/react';
+import { RiInformationLine, RiLineChartLine } from '@remixicon/react';
 import { motion } from 'framer-motion';
 
 import { useAltseasonIndex } from '@/hooks/use-altseason-index';
@@ -12,18 +12,18 @@ export default function AltcoinSeasonWidget() {
   if (isLoading) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-20 bg-bg-white-0 p-4 shadow-regular-sm'
+        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
         <div className='mb-3 flex items-center gap-2'>
-          <RiExchangeDollarFill className='text-lg text-text-sub-600' />
+          <RiLineChartLine className='text-lg text-text-sub-600' />
           <h3 className='text-title-h6 text-text-strong-950'>
-            Indeks Altcoin Season CMC
+            Altcoin Season Index
           </h3>
         </div>
-        <div className='bg-gray-200 h-24 animate-pulse rounded' />
+        <div className='h-24 animate-pulse rounded bg-gray-200' />
       </motion.div>
     );
   }
@@ -31,15 +31,15 @@ export default function AltcoinSeasonWidget() {
   if (error) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-20 bg-bg-white-0 p-4 shadow-regular-sm'
+        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
         <div className='mb-3 flex items-center gap-2'>
-          <RiExchangeDollarFill className='text-lg text-text-sub-600' />
+          <RiLineChartLine className='text-lg text-text-sub-600' />
           <h3 className='text-title-h6 text-text-strong-950'>
-            Indeks Altcoin Season CMC
+            Altcoin Season Index
           </h3>
         </div>
         <div className='text-sm text-center text-error-base'>
@@ -78,16 +78,16 @@ export default function AltcoinSeasonWidget() {
 
   return (
     <motion.div
-      className='w-full max-w-md rounded-20 bg-bg-white-0 p-4 shadow-regular-sm'
+      className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs'
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
       {/* Header */}
       <div className='mb-3 flex items-center gap-2'>
-        <RiExchangeDollarFill className='text-lg text-text-sub-600' />
+        <RiInformationLine className='text-lg text-text-sub-600' />
         <h3 className='text-title-h6 text-text-strong-950'>
-          Indeks Altcoin Season CMC
+          Altcoin Season Index
         </h3>
       </div>
 
