@@ -12,6 +12,7 @@ import {
 } from 'recharts';
 
 import { useMarketGlobalMetrics } from '@/hooks/use-market-global-metrics';
+import * as Divider from '@/components/ui/divider';
 
 // Mock chart data - would need historical API endpoint for real data
 const generateMockChartData = (currentValue: number, change24h: number) => {
@@ -93,30 +94,33 @@ export default function TotalMarketCapWidget() {
 
   return (
     <motion.div
-      className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
+      className='w-full rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:p-6'
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
       {/* Header */}
-      <div className='mb-3 flex items-center gap-2'>
-        <RiBarChartBoxFill className='text-lg text-text-sub-600' />
-        <h3 className='text-title-h6 text-text-strong-950'>Total Market Cap</h3>
+      <div className='mb-2 flex items-center gap-2 sm:mb-3'>
+        <RiBarChartBoxFill className='text-base sm:text-lg text-text-sub-600' />
+        <h3 className='text-base font-semibold text-text-strong-950 sm:text-title-h6'>
+          Total Market Cap
+        </h3>
       </div>
 
+      {/* Divider */}
+      <Divider.Root variant='line-spacing' className='mb-2 sm:mb-3' />
+
       {/* Value */}
-      <div className='mb-2 flex items-baseline gap-2'>
-        <p className='text-3xl font-semibold text-text-strong-950'>
+      <div className='mb-2 flex flex-wrap items-baseline gap-2'>
+        <p className='text-xl sm:text-3xl font-semibold text-text-strong-950'>
           ${totalMarketCapInTrillions.toFixed(2)}{' '}
-          <span className='text-xl text-text-sub-700 font-medium'>
+          <span className='text-base text-text-sub-700 sm:text-xl font-medium'>
             Trillion
           </span>
         </p>
         <span
-          className={`rounded-full px-2 py-0.5 text-label-sm font-medium ${
-            isPositive
-              ? 'bg-green-100 text-green-600'
-              : 'bg-red-100 text-red-600'
+          className={`text-xs rounded-full bg-bg-weak-50 px-2 py-0.5 font-medium sm:text-label-sm ${
+            isPositive ? 'text-green-600' : 'text-red-600'
           }`}
         >
           {isPositive ? '+' : ''}

@@ -69,10 +69,9 @@ export function RightSideAd() {
   };
 
   if (!showAds) return null;
-
   return (
     <div
-      className={`relative hidden h-[650px] w-[256px] min-w-[256px] transform cursor-pointer flex-col gap-2 p-4 pr-8 transition-all duration-300 ease-in-out lg:flex ${
+      className={`relative hidden h-[650px] w-[256px] min-w-[256px] shrink-0 transform cursor-pointer flex-col gap-2 p-4 pr-8 transition-all duration-300 ease-in-out lg:flex ${
         isVisible
           ? 'sticky top-0 z-50 translate-x-0 scale-100 opacity-100'
           : 'translate-x-4 scale-95 opacity-0'

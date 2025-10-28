@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/contexts/translation-context';
 import { RiCloseLine } from '@remixicon/react';
+import { motion } from 'framer-motion';
 
 export function PaceTokenBanner() {
   const [isVisible, setIsVisible] = useState(true);
@@ -26,6 +27,9 @@ export function PaceTokenBanner() {
           'Bi-daily Private Interactive Live',
         ];
 
+  // Duplicate benefits for seamless loop
+  const duplicatedBenefits = [...benefits, ...benefits];
+
   return (
     <div className='relative w-full bg-primary-base'>
       <div className='mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8'>
@@ -40,16 +44,29 @@ export function PaceTokenBanner() {
             </span>
           </div>
 
-          {/* Benefits */}
-          <div className='sm:text-xs flex flex-wrap items-center gap-1.5 text-[11px] text-white/90 sm:gap-2'>
-            {benefits.map((benefit, index) => (
-              <div key={index} className='flex items-center gap-1.5'>
-                {index > 0 && (
-                  <span className='hidden text-white/50 sm:inline'>∙</span>
-                )}
-                <span className='whitespace-nowrap'>{benefit}</span>
-              </div>
-            ))}
+          {/* Benefits - Running Text with Framer Motion */}
+          <div className='relative w-full overflow-hidden sm:flex-1'>
+            <motion.div
+              className='sm:text-xs flex gap-6 whitespace-nowrap text-[11px] text-white/90'
+              animate={{
+                x: [0, -50 + '%'],
+              }}
+              transition={{
+                x: {
+                  repeat: Infinity,
+                  repeatType: 'loop',
+                  duration: 20,
+                  ease: 'linear',
+                },
+              }}
+            >
+              {duplicatedBenefits.map((benefit, index) => (
+                <div key={index} className='flex items-center gap-6'>
+                  {index > 0 && <span className='text-white/50'>∙</span>}
+                  <span>{benefit}</span>
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
 

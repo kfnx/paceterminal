@@ -28,7 +28,7 @@ export const NavigationTabWrapper = ({ className }: { className?: string }) => {
       >
         <div
           className={cn(
-            'mx-auto mt-2 max-w-5xl p-4 transition-all duration-300',
+            'mx-auto mt-8 max-w-5xl p-4 transition-all duration-300',
             isScrolled &&
               'bg-background/50 max-w-4xl rounded-2xl p-2 backdrop-blur-lg',
           )}

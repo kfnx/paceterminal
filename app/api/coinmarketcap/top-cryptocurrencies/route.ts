@@ -39,7 +39,7 @@ export async function GET() {
   try {
     // Fetch top 3 cryptocurrencies by market cap
     const response = await fetch(
-      `${CMC_BASE_URL}/cryptocurrency/listings/latest?limit=3&sort=market_cap&sort_dir=desc&convert=USD`,
+      `${CMC_BASE_URL}/cryptocurrency/listings/latest?limit=4&sort=market_cap&sort_dir=desc&convert=USD`,
       {
         headers: {
           'X-CMC_PRO_API_KEY': CMC_API_KEY,

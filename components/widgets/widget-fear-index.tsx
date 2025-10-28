@@ -3,6 +3,7 @@ import { RiEmotionSadFill } from '@remixicon/react';
 import { motion } from 'framer-motion';
 
 import { useFearGreedIndex } from '@/hooks/use-fear-greed-index';
+import * as Divider from '@/components/ui/divider';
 
 const GaugeComponent = dynamic(() => import('react-gauge-component'), {
   ssr: false,
@@ -81,14 +82,17 @@ export default function FearGreedIndex() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
+      className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:p-6'
     >
-      <div className='mb-3 flex items-center gap-2'>
-        <RiEmotionSadFill size={24} className='text-text-sub-600' />
-        <h3 className='text-title-h6 text-text-strong-950'>
+      <div className='mb-2 flex items-center gap-2 sm:mb-3'>
+        <RiEmotionSadFill size={20} className='text-text-sub-600 sm:size-6' />
+        <h3 className='text-base font-semibold text-text-strong-950 sm:text-title-h6'>
           Fear and Greed Index
         </h3>
       </div>
+
+      {/* Divider */}
+      <Divider.Root variant='line-spacing' className='mb-2 sm:mb-3' />
 
       {/* Gauge Section */}
       <motion.div
@@ -99,12 +103,12 @@ export default function FearGreedIndex() {
         className='flex flex-col'
       >
         {/* Now Label */}
-        <div className='relative mb-4 flex items-baseline gap-2'>
-          <span className='label-lg dark:text-gray-100 font-bold text-text-strong-950'>
+        <div className='relative mb-3 flex items-baseline gap-2 sm:mb-4'>
+          <span className='text-sm font-bold text-text-strong-950 dark:text-gray-100 sm:text-label-lg'>
             Now:
           </span>
           <span
-            className='label-lg font-bold'
+            className='text-sm font-bold sm:text-label-lg'
             style={{ color: sentimentColor }}
           >
             {sentiment}
@@ -176,10 +180,10 @@ export default function FearGreedIndex() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.2 }}
-            className='-mt-14 flex justify-center'
+            className='-mt-10 flex justify-center sm:-mt-14'
           >
             <div
-              className='text-xl shadow-md flex h-14 w-14 items-center justify-center rounded-full font-bold text-white'
+              className='shadow-md flex h-10 w-10 items-center justify-center rounded-full text-base font-bold text-white sm:h-14 sm:w-14 sm:text-xl'
               style={{ backgroundColor: sentimentColor }}
             >
               {score}
@@ -188,7 +192,7 @@ export default function FearGreedIndex() {
         </div>
         {/* Footer */}
         <div className='flex items-center justify-between'>
-          <span className='paragraph-xs dark:text-gray-500 text-text-sub-600'>
+          <span className='text-[10px] text-text-sub-600 dark:text-gray-500 sm:text-paragraph-xs'>
             Last updated: {lastUpdated}
           </span>
         </div>

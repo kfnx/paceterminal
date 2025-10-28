@@ -5,6 +5,7 @@ import { RiInformationLine, RiLineChartLine } from '@remixicon/react';
 import { motion } from 'framer-motion';
 
 import { useAltseasonIndex } from '@/hooks/use-altseason-index';
+import * as Divider from '@/components/ui/divider';
 
 export default function AltcoinSeasonWidget() {
   const { data: altseasonData, isLoading, error } = useAltseasonIndex();
@@ -78,41 +79,48 @@ export default function AltcoinSeasonWidget() {
 
   return (
     <motion.div
-      className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
+      className='w-full rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:p-6'
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
       {/* Header */}
-      <div className='mb-3 flex items-center gap-2'>
-        <RiInformationLine className='text-lg text-text-sub-600' />
-        <h3 className='text-title-h6 text-text-strong-950'>Altseason Index</h3>
+      <div className='mb-2 flex items-center gap-2 sm:mb-3'>
+        <RiInformationLine className='text-base text-text-sub-600 sm:text-lg' />
+        <h3 className='text-base font-semibold text-text-strong-950 sm:text-title-h6'>
+          Altseason Index
+        </h3>
       </div>
 
+      {/* Divider */}
+      <Divider.Root variant='line-spacing' className='mb-2 sm:mb-3' />
+
       {/* Value Section */}
-      <div className='mb-3 flex items-center justify-between'>
+      <div className='mb-2 flex flex-col gap-2 sm:mb-3 sm:flex-row sm:items-center sm:justify-between sm:gap-0'>
         <div className='flex items-baseline'>
-          <p className='text-4xl font-semibold text-text-strong-950'>{value}</p>
-          <p className='ml-1 text-label-md text-text-sub-600'>/100</p>
+          <p className='text-2xl font-semibold text-text-strong-950 sm:text-4xl'>
+            {value}
+          </p>
+          <p className='ml-1 text-sm text-text-sub-600 sm:text-label-md'>/100</p>
         </div>
 
         <div
-          className={`rounded-full px-3 py-1 text-label-sm font-medium ${labelColor}`}
+          className={`self-start rounded-full px-2 py-0.5 text-xs font-medium sm:px-3 sm:py-1 sm:text-label-sm ${labelColor}`}
         >
           {label}
         </div>
       </div>
 
       {/* Season Range */}
-      <div className='mb-1 flex justify-between text-paragraph-xs text-text-sub-600'>
+      <div className='mb-1 flex justify-between text-[10px] text-text-sub-600 sm:text-paragraph-xs'>
         <span>Bitcoin Season</span>
         <span>Altcoin Season</span>
       </div>
 
       {/* Progress Bar */}
-      <div className='relative h-2 rounded-full bg-gradient-to-r from-orange-500 via-orange-200 to-blue-500'>
+      <div className='relative h-1.5 rounded-full bg-gradient-to-r from-orange-500 via-orange-200 to-blue-500 sm:h-2'>
         <motion.div
-          className='shadow-md absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-[3px] border-white bg-text-strong-950'
+          className='shadow-md absolute top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border-2 border-white bg-text-strong-950 sm:h-4 sm:w-4 sm:border-[3px]'
           initial={{ left: '0%' }}
           animate={{ left: `${thumbPosition}%` }}
           transition={{ type: 'spring', stiffness: 150, damping: 20 }}
@@ -120,14 +128,14 @@ export default function AltcoinSeasonWidget() {
       </div>
 
       {/* Info Footer */}
-      <div className='mt-3 flex items-center justify-between border-t border-stroke-soft-200 pt-3'>
-        <div className='flex items-center gap-1 text-paragraph-xs text-text-sub-600'>
-          <RiInformationLine className='h-4 w-4' />
+      <div className='mt-2 flex flex-col gap-1 border-t border-stroke-soft-200 pt-2 sm:mt-3 sm:flex-row sm:items-center sm:justify-between sm:pt-3'>
+        <div className='flex items-center gap-1 text-[10px] text-text-sub-600 sm:text-paragraph-xs'>
+          <RiInformationLine className='h-3 w-3 sm:h-4 sm:w-4' />
           <span>
             {coinsOutperforming}/{coinsAnalyzed} coins outperforming BTC
           </span>
         </div>
-        <span className='text-paragraph-xs font-medium text-text-strong-950'>
+        <span className='text-[10px] font-medium text-text-strong-950 sm:text-paragraph-xs'>
           {percentageOutperforming.toFixed(1)}%
         </span>
       </div>

@@ -20,33 +20,37 @@ export default function XPostWidget({
   const { theme } = useTheme();
 
   useEffect(() => {
-    // Check if script already exists
+    const container = embedRef.current;
+
     const existingScript = document.querySelector(
       'script[src="https://platform.twitter.com/widgets.js"]',
     );
 
     const loadEmbed = () => {
-      if (window.twttr && embedRef.current) {
-        // Clear previous content
-        embedRef.current.innerHTML = '';
-
-        // Create the blockquote with dark mode support
+      if (window.twttr && container) {
+        container.innerHTML = '';
         const blockquote = document.createElement('blockquote');
         blockquote.className = 'twitter-tweet';
-        // Add data-theme attribute for dark mode
         if (theme === 'dark') {
           blockquote.setAttribute('data-theme', 'dark');
+        }
+        if (theme === 'light') {
+          blockquote.setAttribute('data-theme', 'light');
         }
         const link = document.createElement('a');
         link.href = `https://twitter.com/${username}/status/${tweetId}`;
         blockquote.appendChild(link);
-        embedRef.current.appendChild(blockquote);
+        container.appendChild(blockquote);
 
-        // Load the widget
         window.twttr.widgets
-          .load(embedRef.current)
+          .load(container)
           .then(() => {
             setIsLoading(false);
+            const iframe = container.querySelector('iframe');
+            if (iframe) {
+              iframe.style.borderRadius = '12px';
+              iframe.style.overflow = 'hidden';
+            }
           })
           .catch(() => {
             setError(true);
@@ -56,33 +60,24 @@ export default function XPostWidget({
     };
 
     if (existingScript) {
-      // Script already loaded
-      if (window.twttr) {
-        loadEmbed();
-      } else {
-        // Wait for script to load
-        existingScript.addEventListener('load', loadEmbed);
-      }
+      if (window.twttr) loadEmbed();
+      else existingScript.addEventListener('load', loadEmbed);
     } else {
-      // Load Twitter widgets script
       const script = document.createElement('script');
       script.src = 'https://platform.twitter.com/widgets.js';
       script.async = true;
       script.charset = 'utf-8';
-
       script.onload = loadEmbed;
       script.onerror = () => {
         setError(true);
         setIsLoading(false);
       };
-
       document.body.appendChild(script);
     }
 
-    // Cleanup function
     return () => {
-      if (embedRef.current) {
-        embedRef.current.innerHTML = '';
+      if (container) {
+        container.innerHTML = '';
       }
     };
   }, [tweetId, username, theme]);

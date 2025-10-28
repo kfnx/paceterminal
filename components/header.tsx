@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { useTranslation } from '@/contexts/translation-context';
 
 import { cnExt } from '@/utils/cn';
 import { HeaderTitle } from '@/components/header-title';
@@ -24,18 +25,21 @@ export default function Header({
   description?: string;
   contentClassName?: string;
 }) {
+  const { locale } = useTranslation();
   const pathname = usePathname();
-  const showTitle = ['/updates', '/alpha', '/burn-screener'].some((path) =>
-    pathname.startsWith(path),
-  );
+  const normalizedPath = pathname.replace(/^\/(id|en)(?=\/|$)/, '') || '/';
+  const tokenPage = ['/solana'].some((path) => normalizedPath.startsWith(path));
+
   const getHeaderSubtitle = () => {
-    switch (pathname) {
+    switch (normalizedPath) {
+      case '/':
+        return locale === 'id' ? 'Ikhtisar Pasar' : 'Market Overview';
       case '/updates':
-        return 'All Token Updates';
+        return locale === 'id' ? 'Semua Update Token' : 'All Token Updates';
       case '/alpha':
-        return 'All Alpha';
+        return locale === 'id' ? 'Insight Alpha' : 'Alpha Insights';
       case '/burn-screener':
-        return 'All Burn Screener';
+        return locale === 'id' ? 'Penjualan dan Pembelian' : 'Burn Screener';
       default:
         return '';
     }
@@ -44,16 +48,17 @@ export default function Header({
   return (
     <header
       className={cnExt(
-        'flex min-h-[88px] flex-col justify-between gap-4 bg-transparent px-4 py-5 md:flex-row md:items-center md:justify-between md:gap-3 lg:px-8',
+        'flex min-h-[88px] flex-col justify-center gap-4 bg-transparent px-4 py-5 md:flex-row md:items-center md:justify-between md:gap-3 lg:px-8',
         className,
       )}
       {...rest}
     >
       <HeaderTitle />
-      <NavigationTabWrapper className='hidden lg:flex' />
+      {tokenPage && <NavigationTabWrapper className='hidden lg:flex' />}
+      {/* <NavigationTabWrapper /> */}
 
-      {showTitle ? (
-        <div className='flex flex-col items-center'>
+      {!tokenPage ? (
+        <div className='flex flex-1 flex-col items-center justify-center text-center'>
           <h1 className='font-display text-title-h4 font-semibold leading-none text-text-strong-950'>
             <span className='font-extrabold'>Pace</span>
             <span className='font-medium'>Terminal</span>
