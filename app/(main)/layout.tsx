@@ -16,8 +16,8 @@ export default function Layout({
       <div className='mx-auto flex w-full flex-1 flex-col self-stretch'>
         <PaceTokenBanner />
         <Header />
-        <div className='flex'>
-          {children}
+        <div className='flex flex-1'>
+          <div className='min-w-0 flex-1'>{children}</div>
           <RightSideAd />
         </div>
       </div>

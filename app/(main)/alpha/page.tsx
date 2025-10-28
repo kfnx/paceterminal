@@ -156,7 +156,7 @@ export default function AlphaPage() {
   return (
     <div className='flex-1 p-4'>
       <div className='mx-auto max-w-6xl'>
-        <div className='mb-8'>
+        {/* <div className='mb-8'>
           <h1 className='text-3xl font-bold text-text-strong-950'>
             {locale === 'id' ? 'Alpha Insights' : 'Alpha Insights'}
           </h1>
@@ -165,7 +165,7 @@ export default function AlphaPage() {
               ? 'Wawasan alpha terbaru dari semua token'
               : 'Latest alpha insights from all tokens'}
           </p>
-        </div>
+        </div> */}
 
         {alphas.length === 0 ? (
           <div className='rounded-lg border border-stroke-soft-200 bg-bg-weak-50 p-8 text-center'>

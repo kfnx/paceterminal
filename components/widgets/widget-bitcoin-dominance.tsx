@@ -4,6 +4,7 @@ import { RiPieChart2Line } from '@remixicon/react';
 import { motion } from 'framer-motion';
 
 import { useMarketGlobalMetrics } from '@/hooks/use-market-global-metrics';
+import * as Divider from '@/components/ui/divider';
 
 export default function BitcoinDominance() {
   const { data: metrics, isLoading, error } = useMarketGlobalMetrics();
@@ -85,18 +86,21 @@ export default function BitcoinDominance() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
+      className='flex flex-col rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:p-6'
     >
       {/* Header */}
-      <div className='mb-3 flex items-center gap-2'>
-        <RiPieChart2Line className='text-lg text-text-sub-600' />
-        <h2 className='text-title-h6 text-text-strong-950'>
+      <div className='mb-2 flex items-center gap-2 sm:mb-3'>
+        <RiPieChart2Line className='text-base text-text-sub-600 sm:text-lg' />
+        <h2 className='text-base font-semibold text-text-strong-950 sm:text-title-h6'>
           Bitcoin Dominance
         </h2>
       </div>
 
+      {/* Divider */}
+      <Divider.Root variant='line-spacing' className='mb-2 sm:mb-3' />
+
       {/* Data Grid */}
-      <div className='mb-3 grid grid-cols-3 gap-3'>
+      <div className='mb-2 grid grid-cols-3 gap-2 sm:mb-3 sm:gap-3'>
         {Object.entries(data).map(([key, item], i) => (
           <motion.div
             key={key}
@@ -105,20 +109,20 @@ export default function BitcoinDominance() {
             transition={{ duration: 0.4, delay: 0.1 * (i + 1) }}
             className='flex flex-col'
           >
-            <div className='mb-1 flex items-center gap-1.5'>
+            <div className='mb-0.5 flex items-center gap-1 sm:mb-1 sm:gap-1.5'>
               <div
-                className='h-2 w-2 rounded-full'
+                className='h-1.5 w-1.5 rounded-full sm:h-2 sm:w-2'
                 style={{ backgroundColor: item.color }}
               />
-              <span className='text-xs dark:text-gray-400 capitalize text-text-sub-600'>
+              <span className='text-[10px] capitalize text-text-sub-600 dark:text-gray-400 sm:text-xs'>
                 {key}
               </span>
             </div>
-            <span className='text-base dark:text-gray-100 font-semibold text-text-strong-950'>
+            <span className='text-sm font-semibold text-text-strong-950 dark:text-gray-100 sm:text-base'>
               {item.percentage}%
             </span>
             <span
-              className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${getChangeColor(item.change)}`}
+              className={`mt-0.5 inline-block rounded-full px-1.5 py-0.5 text-[9px] font-medium sm:px-2 sm:text-[10px] ${getChangeColor(item.change)}`}
             >
               {formatChange(item.change)}
             </span>

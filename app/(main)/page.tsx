@@ -3,7 +3,13 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/contexts/translation-context';
-import { RiArrowDownLine, RiArrowUpLine } from '@remixicon/react';
+import {
+  RiArrowDownLine,
+  RiArrowDownSFill,
+  RiArrowUpLine,
+  RiArrowUpSFill,
+  RiExpandUpDownFill,
+} from '@remixicon/react';
 
 import { getTokenImageUrl } from '@/utils/image-url';
 import { useAllTokens } from '@/hooks/use-all-tokens';
@@ -75,6 +81,8 @@ export default function PageHome() {
   const [marketData, setMarketData] = useState<TokenMarketData[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sortColumn, setSortColumn] = useState<string>('marketCap');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   useEffect(() => {
     const fetchMarketData = async () => {
@@ -220,19 +228,84 @@ export default function PageHome() {
     const isPositive = change >= 0;
     return (
       <div
-        className={`flex items-center gap-1 ${
+        className={`flex items-center justify-center gap-0.5 sm:gap-1 ${
           isPositive ? 'text-success-base' : 'text-error-base'
         }`}
       >
         {isPositive ? (
-          <RiArrowUpLine className='h-4 w-4' />
+          <RiArrowUpLine className='h-3 w-3 sm:h-4 sm:w-4' />
         ) : (
-          <RiArrowDownLine className='h-4 w-4' />
+          <RiArrowDownLine className='h-3 w-3 sm:h-4 sm:w-4' />
         )}
         <span>{Math.abs(change).toFixed(2)}%</span>
       </div>
     );
   };
+
+  // Handle column sorting
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      // Toggle direction if clicking same column
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // New column - default to descending for numeric, ascending for text
+      setSortColumn(column);
+      setSortDirection(column === 'symbol' ? 'asc' : 'desc');
+    }
+  };
+
+  // Get sort icon based on column state
+  const getSortIcon = (column: string) => {
+    if (sortColumn !== column) {
+      return (
+        <RiExpandUpDownFill className='h-3 w-3 text-text-sub-600 sm:h-4 sm:w-4' />
+      );
+    }
+    return sortDirection === 'asc' ? (
+      <RiArrowUpSFill className='h-3 w-3 text-text-sub-600 sm:h-4 sm:w-4' />
+    ) : (
+      <RiArrowDownSFill className='h-3 w-3 text-text-sub-600 sm:h-4 sm:w-4' />
+    );
+  };
+
+  // Get sorted market data
+  const sortedMarketData = [...marketData].sort((a, b) => {
+    let aValue: number | string;
+    let bValue: number | string;
+
+    switch (sortColumn) {
+      case 'symbol':
+        aValue = a.symbol.toLowerCase();
+        bValue = b.symbol.toLowerCase();
+        break;
+      case 'price':
+        aValue = a.price;
+        bValue = b.price;
+        break;
+      case 'priceChange1h':
+        aValue = a.priceChange1h;
+        bValue = b.priceChange1h;
+        break;
+      case 'priceChange24h':
+        aValue = a.priceChange24h;
+        bValue = b.priceChange24h;
+        break;
+      case 'marketCap':
+        aValue = a.marketCap;
+        bValue = b.marketCap;
+        break;
+      case 'volume24h':
+        aValue = a.volume24h;
+        bValue = b.volume24h;
+        break;
+      default:
+        return 0;
+    }
+
+    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
 
   // Calculate total 24h volume across curated tokens
   const total24hVolume = marketData.reduce(
@@ -262,10 +335,10 @@ export default function PageHome() {
   }
 
   return (
-    <div className='flex-1 p-3 sm:p-4 -mt-20'>
+    <div className='flex-1 p-3 sm:p-4'>
       <div className='mx-auto max-w-7xl'>
         {/* Header */}
-        <div className='mb-4 sm:mb-8'>
+        {/* <div className='mb-4 sm:mb-8'>
           <h1 className='text-xl sm:text-3xl font-bold text-text-strong-950'>
             {locale === 'id' ? 'Ikhtisar Pasar' : 'Market Overview'}
           </h1>
@@ -274,7 +347,7 @@ export default function PageHome() {
               ? 'Data pasar real-time untuk semua token yang dikurasi'
               : 'Real-time market data for all curated tokens'}
           </p>
-        </div>
+        </div> */}
 
         {/* Market Stats Widgets */}
         <div className='mb-4 grid grid-cols-1 gap-3 sm:mb-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3'>
@@ -302,38 +375,72 @@ export default function PageHome() {
         </div>
 
         {/* Token Table */}
-        <div className='overflow-x-auto rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-regular-xs'>
+        <div className='w-full max-w-[calc(100vw-2rem)] overflow-x-scroll rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-regular-xs lg:max-w-full'>
           <table className='w-full'>
             <thead className='border-b border-stroke-soft-200 bg-bg-weak-50'>
               <tr>
-                <th className='text-sm px-2 py-2 text-center font-semibold text-text-sub-600 sm:px-4 sm:py-3'>
+                <th className='text-xs sm:text-sm px-1.5 py-2 text-center font-semibold text-text-sub-600 sm:px-4 sm:py-3'>
                   #
                 </th>
-                <th className='text-sm px-2 py-2 text-left font-semibold text-text-sub-600 sm:px-4 sm:py-3'>
-                  {locale === 'id' ? 'Token' : 'Token'}
+                <th
+                  className='text-xs sm:text-sm cursor-pointer px-1.5 py-2 text-left font-semibold text-text-sub-600 transition hover:bg-bg-soft-200 sm:px-4 sm:py-3'
+                  onClick={() => handleSort('symbol')}
+                >
+                  <div className='flex items-center gap-0.5 sm:gap-1'>
+                    {locale === 'id' ? 'Token' : 'Token'}
+                    {getSortIcon('symbol')}
+                  </div>
                 </th>
-                <th className='text-sm px-2 py-2 text-center font-semibold text-text-sub-600 sm:px-4 sm:py-3'>
-                  {locale === 'id' ? 'Harga' : 'Price'}
+                <th
+                  className='text-xs sm:text-sm cursor-pointer px-1.5 py-2 text-center font-semibold text-text-sub-600 transition hover:bg-bg-soft-200 sm:px-4 sm:py-3'
+                  onClick={() => handleSort('price')}
+                >
+                  <div className='flex items-center justify-center gap-0.5 sm:gap-1'>
+                    {locale === 'id' ? 'Harga' : 'Price'}
+                    {getSortIcon('price')}
+                  </div>
                 </th>
-                <th className='text-sm hidden px-6 py-4 text-center font-semibold text-text-sub-600 lg:table-cell'>
-                  1h %
+                <th
+                  className='text-xs sm:text-sm cursor-pointer px-1.5 py-2 text-center font-semibold text-text-sub-600 transition hover:bg-bg-soft-200 sm:px-4 sm:py-3'
+                  onClick={() => handleSort('priceChange1h')}
+                >
+                  <div className='flex items-center justify-center gap-0.5 sm:gap-1'>
+                    1h %{getSortIcon('priceChange1h')}
+                  </div>
                 </th>
-                <th className='text-sm px-2 py-2 text-center font-semibold text-text-sub-600 sm:px-4 sm:py-3'>
-                  24h %
+                <th
+                  className='text-xs sm:text-sm cursor-pointer px-1.5 py-2 text-center font-semibold text-text-sub-600 transition hover:bg-bg-soft-200 sm:px-4 sm:py-3'
+                  onClick={() => handleSort('priceChange24h')}
+                >
+                  <div className='flex items-center justify-center gap-0.5 sm:gap-1'>
+                    24h %{getSortIcon('priceChange24h')}
+                  </div>
                 </th>
-                <th className='text-sm hidden px-6 py-4 text-center font-semibold text-text-sub-600 md:table-cell'>
-                  {locale === 'id' ? 'Kapitalisasi Pasar' : 'Market Cap'}
+                <th
+                  className='text-xs sm:text-sm cursor-pointer px-1.5 py-2 text-center font-semibold text-text-sub-600 transition hover:bg-bg-soft-200 sm:px-4 sm:py-3'
+                  onClick={() => handleSort('marketCap')}
+                >
+                  <div className='flex items-center justify-center gap-0.5 sm:gap-1'>
+                    {locale === 'id' ? 'Kap. Pasar' : 'Mkt Cap'}
+                    {getSortIcon('marketCap')}
+                  </div>
                 </th>
-                <th className='text-sm hidden px-6 py-4 text-center font-semibold text-text-sub-600 lg:table-cell'>
-                  {locale === 'id' ? 'Volume (24j)' : 'Volume (24h)'}
+                <th
+                  className='text-xs sm:text-sm cursor-pointer px-1.5 py-2 text-center font-semibold text-text-sub-600 transition hover:bg-bg-soft-200 sm:px-4 sm:py-3'
+                  onClick={() => handleSort('volume24h')}
+                >
+                  <div className='flex items-center justify-center gap-0.5 sm:gap-1'>
+                    {locale === 'id' ? 'Volume' : 'Volume'}
+                    {getSortIcon('volume24h')}
+                  </div>
                 </th>
-                <th className='text-sm hidden px-6 py-4 text-center font-semibold text-text-sub-600 xl:table-cell'>
-                  {locale === 'id' ? '7 Hari' : 'Last 7 Days'}
+                <th className='text-xs sm:text-sm px-1.5 py-2 text-center font-semibold text-text-sub-600 sm:px-4 sm:py-3'>
+                  {locale === 'id' ? '7 Hari' : '7 Days'}
                 </th>
               </tr>
             </thead>
             <tbody>
-              {marketData.length === 0 ? (
+              {sortedMarketData.length === 0 ? (
                 <tr>
                   <td
                     colSpan={8}
@@ -345,7 +452,7 @@ export default function PageHome() {
                   </td>
                 </tr>
               ) : (
-                marketData.map((token, index) => {
+                sortedMarketData.map((token, index) => {
                   const tokenPath =
                     locale === 'id'
                       ? `/id/solana/${token.address}`
@@ -355,17 +462,17 @@ export default function PageHome() {
                       key={token.address}
                       className='cursor-pointer border-b border-stroke-soft-200 transition-colors hover:bg-bg-weak-50'
                     >
-                      <td className='text-sm px-2 py-2 text-center text-text-sub-600 sm:px-4 sm:py-3'>
+                      <td className='text-xs sm:text-sm px-1.5 py-2 text-center text-text-sub-600 sm:px-4 sm:py-3'>
                         <Link href={tokenPath} className='block'>
                           {index + 1}
                         </Link>
                       </td>
-                      <td className='px-2 py-2 sm:px-4 sm:py-3'>
+                      <td className='px-1.5 py-2 sm:px-4 sm:py-3'>
                         <Link href={tokenPath} className='block'>
-                          <div className='flex items-center gap-1.5 sm:gap-2'>
-                            <div className='h-6 w-6 flex-shrink-0 sm:h-8 sm:w-8'>
+                          <div className='flex items-center gap-1 sm:gap-2'>
+                            <div className='h-5 w-5 flex-shrink-0 sm:h-8 sm:w-8'>
                               <Avatar.Root
-                                size='24'
+                                size='20'
                                 color='blue'
                                 className='sm:!h-8 sm:!w-8'
                               >
@@ -376,45 +483,45 @@ export default function PageHome() {
                               </Avatar.Root>
                             </div>
                             <div className='min-w-0'>
-                              <div className='text-sm truncate font-medium text-text-strong-950'>
+                              <div className='text-xs sm:text-sm truncate font-medium text-text-strong-950'>
                                 {token.symbol}
                               </div>
                             </div>
                           </div>
                         </Link>
                       </td>
-                      <td className='text-sm px-2 py-2 text-center text-text-strong-950 sm:px-4 sm:py-3'>
+                      <td className='text-xs sm:text-sm px-1.5 py-2 text-center text-text-strong-950 sm:px-4 sm:py-3'>
                         <Link href={tokenPath} className='block'>
                           {formatPrice(token.price)}
                         </Link>
                       </td>
-                      <td className='text-sm hidden px-6 py-4 text-center lg:table-cell'>
+                      <td className='text-xs sm:text-sm px-1.5 py-2 text-center sm:px-4 sm:py-3'>
                         <Link href={tokenPath} className='block'>
                           {renderPriceChange(token.priceChange1h)}
                         </Link>
                       </td>
-                      <td className='text-sm px-2 py-2 text-center sm:px-4 sm:py-3'>
+                      <td className='text-xs sm:text-sm px-1.5 py-2 text-center sm:px-4 sm:py-3'>
                         <Link href={tokenPath} className='block'>
                           {renderPriceChange(token.priceChange24h)}
                         </Link>
                       </td>
-                      <td className='text-sm hidden px-6 py-4 text-center text-text-strong-950 md:table-cell'>
+                      <td className='text-xs sm:text-sm px-1.5 py-2 text-center text-text-strong-950 sm:px-4 sm:py-3'>
                         <Link href={tokenPath} className='block'>
                           {formatVolume(token.marketCap)}
                         </Link>
                       </td>
-                      <td className='text-sm hidden px-6 py-4 text-center text-text-strong-950 lg:table-cell'>
+                      <td className='text-xs sm:text-sm px-1.5 py-2 text-center text-text-strong-950 sm:px-4 sm:py-3'>
                         <Link href={tokenPath} className='block'>
                           {formatVolume(token.volume24h)}
                         </Link>
                       </td>
-                      <td className='hidden px-6 py-4 text-center xl:table-cell'>
+                      <td className='px-1.5 py-2 text-center sm:px-4 sm:py-3'>
                         <Link href={tokenPath} className='block'>
-                          <div className='flex justify-end'>
+                          <div className='flex justify-center'>
                             <MiniPriceChart
                               data={token.priceHistory}
-                              width={96}
-                              height={48}
+                              width={80}
+                              height={40}
                             />
                           </div>
                         </Link>

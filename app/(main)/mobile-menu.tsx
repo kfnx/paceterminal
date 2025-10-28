@@ -7,6 +7,8 @@ import * as DialogPrimitives from '@radix-ui/react-dialog';
 import {
   RiArrowRightSLine,
   RiCloseFill,
+  RiDashboardLine,
+  RiFireLine,
   RiMenu3Fill,
   RiNewspaperLine,
   RiSearch2Line,
@@ -130,6 +132,27 @@ export default function MobileMenu() {
                 >
                   <div className='flex flex-col gap-5'>
                     <Link
+                      href='/'
+                      aria-current={pathname === '/' ? 'page' : undefined}
+                      className={cn(
+                        'group relative flex w-full items-center gap-2.5 whitespace-nowrap px-5 text-text-sub-600',
+                      )}
+                    >
+                      <RiDashboardLine className='h-6 w-6 text-text-sub-600' />
+                      <div className='flex-1 text-label-md'>
+                        Market Overview
+                      </div>
+                      <div
+                        className={cn(
+                          'transition-default absolute left-0 top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
+                          {
+                            'scale-0': pathname !== '/',
+                          },
+                        )}
+                      />
+                      <RiArrowRightSLine className='size-6 text-text-sub-600' />
+                    </Link>
+                    <Link
                       href='/updates'
                       aria-current={
                         pathname === '/updates' ? 'page' : undefined
@@ -164,6 +187,27 @@ export default function MobileMenu() {
                           'transition-default absolute left-0 top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
                           {
                             'scale-0': pathname !== '/alpha',
+                          },
+                        )}
+                      />
+                      <RiArrowRightSLine className='size-6 text-text-sub-600' />
+                    </Link>
+                    <Link
+                      href='/burn-screener'
+                      aria-current={
+                        pathname === '/burn-screener' ? 'page' : undefined
+                      }
+                      className={cn(
+                        'group relative flex w-full items-center gap-2.5 whitespace-nowrap px-5 text-text-sub-600',
+                      )}
+                    >
+                      <RiFireLine className='h-6 w-6 text-text-sub-600' />
+                      <div className='flex-1 text-label-md'>Burn Screener</div>
+                      <div
+                        className={cn(
+                          'transition-default absolute left-0 top-1/2 h-5 w-1 origin-left -translate-y-1/2 rounded-r-full bg-primary-base',
+                          {
+                            'scale-0': pathname !== '/burn-screener',
                           },
                         )}
                       />

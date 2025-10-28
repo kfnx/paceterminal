@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 import { useTopCryptocurrencies } from '@/hooks/use-top-cryptocurrencies';
 import * as Avatar from '@/components/ui/avatar';
+import * as Divider from '@/components/ui/divider';
 import { MiniPriceChart } from '@/components/mini-price-chart';
 
 interface CryptoItem {
@@ -33,6 +34,8 @@ const getCryptoLogo = (symbol: string): string => {
 
 export default function Top3PriceWidget() {
   const { data, isLoading, error } = useTopCryptocurrencies();
+
+  console.log('data', data);
 
   // Generate realistic price history from 24h change
   const generatePriceHistory = (
@@ -137,27 +140,38 @@ export default function Top3PriceWidget() {
   }
 
   const cryptos: CryptoItem[] =
-    data?.cryptocurrencies.map((crypto) => ({
-      name: crypto.name,
-      symbol: crypto.symbol,
-      logoUrl: getCryptoLogo(crypto.symbol),
-      price: formatPrice(crypto.price),
-      change: formatChange(crypto.priceChange24h),
-      priceHistory: generatePriceHistory(crypto.price, crypto.priceChange24h),
-    })) || [];
+    data?.cryptocurrencies
+      .filter(
+        (crypto) =>
+          crypto.name !== 'Tether USDt' && crypto.symbol !== 'USDT',
+      )
+      .slice(0, 3)
+      .map((crypto) => ({
+        name: crypto.name,
+        symbol: crypto.symbol,
+        logoUrl: getCryptoLogo(crypto.symbol),
+        price: formatPrice(crypto.price),
+        change: formatChange(crypto.priceChange24h),
+        priceHistory: generatePriceHistory(crypto.price, crypto.priceChange24h),
+      })) || [];
 
   return (
     <motion.div
-      className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
+      className='w-full rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:p-6'
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
       {/* Header */}
-      <div className='mb-3 flex items-center gap-2'>
-        <RiStockLine className='text-lg text-text-sub-600' />
-        <h3 className='text-title-h6 text-text-strong-950'>Top 3 Price</h3>
+      <div className='mb-2 flex items-center gap-2 sm:mb-3'>
+        <RiStockLine className='text-base sm:text-lg text-text-sub-600' />
+        <h3 className='text-base font-semibold text-text-strong-950 sm:text-title-h6'>
+          Top 3 Price
+        </h3>
       </div>
+
+      {/* Divider */}
+      <Divider.Root variant='line-spacing' className='mb-2 sm:mb-3' />
 
       {/* Crypto list */}
       <div className='divide-y divide-stroke-soft-200'>
@@ -166,25 +180,25 @@ export default function Top3PriceWidget() {
           return (
             <motion.div
               key={crypto.name}
-              className='flex items-center justify-between py-3'
+              className='flex items-center justify-between py-2 sm:py-3'
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 * index }}
             >
               {/* Left section */}
-              <div className='flex items-center gap-3'>
-                <Avatar.Root size='32' color='blue'>
+              <div className='flex items-center gap-2 sm:gap-3'>
+                <Avatar.Root size='24' color='blue' className='sm:!h-8 sm:!w-8'>
                   <Avatar.Image src={crypto.logoUrl} alt={crypto.name} />
                 </Avatar.Root>
                 <div>
-                  <p className='text-label-md text-text-strong-950'>
+                  <p className='text-xs font-medium text-text-strong-950 sm:text-label-md'>
                     {crypto.name}
                   </p>
-                  <p className='text-paragraph-sm font-medium text-text-strong-950'>
+                  <p className='text-xs font-medium text-text-strong-950 sm:text-paragraph-sm'>
                     {crypto.price}
                   </p>
                   <p
-                    className={`text-paragraph-xs ${
+                    className={`text-[10px] sm:text-paragraph-xs ${
                       isPositive ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
@@ -194,11 +208,13 @@ export default function Top3PriceWidget() {
               </div>
 
               {/* Price Chart */}
-              <MiniPriceChart
-                data={crypto.priceHistory}
-                width={80}
-                height={40}
-              />
+              <div className='h-8 w-[60px] sm:h-10 sm:w-20'>
+                <MiniPriceChart
+                  data={crypto.priceHistory}
+                  width={60}
+                  height={32}
+                />
+              </div>
             </motion.div>
           );
         })}
