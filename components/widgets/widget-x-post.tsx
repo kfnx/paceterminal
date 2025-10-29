@@ -24,45 +24,47 @@ export default function XPostWidget({
   const { theme } = useTheme();
 
   useEffect(() => {
-    const container = embedRef.current;
-
+    // Check if script already exists
     const existingScript = document.querySelector(
       'script[src="https://platform.twitter.com/widgets.js"]',
     );
 
     const loadEmbed = () => {
-      if (window.twttr && container) {
-        container.innerHTML = '';
+      if (window.twttr && embedRef.current) {
+        // Clear previous content
+        embedRef.current.innerHTML = '';
+
+        // Create the blockquote with dark mode support
         const blockquote = document.createElement('blockquote');
         blockquote.className = 'twitter-tweet';
+        // Add data-theme attribute for dark mode
         if (theme === 'dark') {
           blockquote.setAttribute('data-theme', 'dark');
-        }
-        if (theme === 'light') {
-          blockquote.setAttribute('data-theme', 'light');
         }
         const link = document.createElement('a');
         link.href = `https://twitter.com/${username}/status/${tweetId}`;
         blockquote.appendChild(link);
-        container.appendChild(blockquote);
+        embedRef.current.appendChild(blockquote);
 
+        // Load the widget
         window.twttr.widgets
-          .load(container)
+          .load(embedRef.current)
           .then(() => {
             setIsLoading(false);
-            const iframe = container.querySelector('iframe');
-            if (iframe) {
-              iframe.style.borderRadius = '12px';
-              iframe.style.overflow = 'hidden';
-              // ✅ Make the tweet responsive
-              iframe.style.width = '100%'; // fill parent width
-              iframe.style.maxWidth = '550px'; // Twitter's default max width
-              iframe.style.minWidth = '320px'; // prevent too small on mobile
-
-              // ✅ Ensure it behaves well inside flex/grid
-              iframe.style.display = 'block';
-              iframe.style.margin = '0 auto';
-            }
+            // Wait for iframe to render completely
+            setTimeout(() => {
+              const iframe = embedRef.current?.querySelector('iframe');
+              if (iframe) {
+                iframe.style.borderRadius = '12px';
+                iframe.style.overflow = 'hidden';
+                iframe.style.border = '1px solid rgba(0, 0, 0, 0.1)'; // light border
+                // iframe.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.08)';
+                iframe.style.display = 'block';
+                iframe.style.margin = '0 auto';
+                iframe.style.width = '100%';
+                iframe.style.maxWidth = '550px';
+              }
+            }, 100); // Delay ensures iframe is ready
           })
           .catch(() => {
             setError(true);
@@ -72,28 +74,36 @@ export default function XPostWidget({
     };
 
     if (existingScript) {
-      if (window.twttr) loadEmbed();
-      else existingScript.addEventListener('load', loadEmbed);
+      // Script already loaded
+      if (window.twttr) {
+        loadEmbed();
+      } else {
+        // Wait for script to load
+        existingScript.addEventListener('load', loadEmbed);
+      }
     } else {
+      // Load Twitter widgets script
       const script = document.createElement('script');
       script.src = 'https://platform.twitter.com/widgets.js';
       script.async = true;
       script.charset = 'utf-8';
+
       script.onload = loadEmbed;
       script.onerror = () => {
         setError(true);
         setIsLoading(false);
       };
+
       document.body.appendChild(script);
     }
 
+    // Cleanup function
     return () => {
-      if (container) {
-        container.innerHTML = '';
+      if (embedRef.current) {
+        embedRef.current.innerHTML = '';
       }
     };
   }, [tweetId, username, theme]);
-
   if (error) {
     return (
       <motion.div
@@ -121,7 +131,7 @@ export default function XPostWidget({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={`flex flex-col items-center justify-center rounded border border-stroke-soft-200 bg-bg-white-0 px-2 py-3 shadow-regular-xs sm:px-2 sm:py-4 md:px-2 md:py-6 ${className}`}
+      className={`flex flex-col rounded border border-stroke-soft-200 bg-bg-white-0 px-2 py-3 shadow-regular-xs sm:px-2 sm:py-4 md:px-2 md:py-6 ${className}`}
     >
       {/* Header */}
       <div className='mb-2 flex items-center gap-2 self-start sm:mb-3'>
@@ -145,6 +155,7 @@ export default function XPostWidget({
         className={isLoading ? 'hidden' : ''}
         style={{
           minHeight: isLoading ? 0 : undefined,
+          // maxWidth: '550px',
           // width: 'fit-content',
         }}
       />
