@@ -35,8 +35,6 @@ const getCryptoLogo = (symbol: string): string => {
 export default function Top3PriceWidget() {
   const { data, isLoading, error } = useTopCryptocurrencies();
 
-  console.log('data', data);
-
   // Generate realistic price history from 24h change
   const generatePriceHistory = (
     currentPrice: number,
@@ -92,27 +90,32 @@ export default function Top3PriceWidget() {
   if (isLoading) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
+        className='w-full rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:p-6'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <div className='mb-3 flex items-center gap-2'>
-          <RiStockLine className='text-lg text-text-sub-600' />
-          <h3 className='text-title-h6 text-text-strong-950'>Top 3 Price</h3>
+        <div className='mb-2 flex items-center gap-2 sm:mb-3'>
+          <RiStockLine className='text-base sm:text-lg text-text-sub-600' />
+          <p className='text-paragraph-md font-semibold text-text-strong-950'>
+            Top 3 Price
+          </p>
         </div>
         <div className='divide-y divide-stroke-soft-200'>
           {[1, 2, 3].map((i) => (
-            <div key={i} className='flex items-center justify-between py-3'>
-              <div className='flex items-center gap-3'>
-                <div className='bg-gray-200 h-8 w-8 animate-pulse rounded-full' />
-                <div className='space-y-2'>
-                  <div className='bg-gray-200 h-4 w-20 animate-pulse rounded' />
-                  <div className='bg-gray-200 h-4 w-24 animate-pulse rounded' />
-                  <div className='bg-gray-200 h-3 w-16 animate-pulse rounded' />
+            <div
+              key={i}
+              className='flex items-center justify-between py-2 sm:py-3'
+            >
+              <div className='flex items-center gap-2 sm:gap-3'>
+                <div className='bg-gray-200 h-6 w-6 animate-pulse rounded-full sm:h-8 sm:w-8' />
+                <div className='space-y-1 sm:space-y-2'>
+                  <div className='bg-gray-200 h-3 w-16 animate-pulse rounded sm:h-4 sm:w-20' />
+                  <div className='bg-gray-200 h-3 w-20 animate-pulse rounded sm:h-4 sm:w-24' />
+                  <div className='bg-gray-200 h-2 w-12 animate-pulse rounded sm:h-3 sm:w-16' />
                 </div>
               </div>
-              <div className='bg-gray-200 h-10 w-24 animate-pulse rounded' />
+              <div className='bg-gray-200 h-8 w-16 animate-pulse rounded sm:h-10 sm:w-20' />
             </div>
           ))}
         </div>
@@ -123,16 +126,19 @@ export default function Top3PriceWidget() {
   if (error) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
+        className='w-full rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:p-6'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <div className='mb-3 flex items-center gap-2'>
-          <RiStockLine className='text-lg text-text-sub-600' />
-          <h3 className='text-title-h6 text-text-strong-950'>Top 3 Price</h3>
+        <div className='mb-2 flex items-center gap-2 sm:mb-3'>
+          <RiStockLine className='text-base sm:text-lg text-text-sub-600' />
+          <p className='text-paragraph-md font-semibold text-text-strong-950'>
+            Top 3 Price
+          </p>
         </div>
-        <div className='text-sm py-6 text-center text-error-base'>
+        <Divider.Root variant='line-spacing' className='mb-2 sm:mb-3' />
+        <div className='text-sm text-center text-error-base'>
           Failed to load data
         </div>
       </motion.div>
@@ -142,8 +148,7 @@ export default function Top3PriceWidget() {
   const cryptos: CryptoItem[] =
     data?.cryptocurrencies
       .filter(
-        (crypto) =>
-          crypto.name !== 'Tether USDt' && crypto.symbol !== 'USDT',
+        (crypto) => crypto.name !== 'Tether USDt' && crypto.symbol !== 'USDT',
       )
       .slice(0, 3)
       .map((crypto) => ({
@@ -165,13 +170,13 @@ export default function Top3PriceWidget() {
       {/* Header */}
       <div className='mb-2 flex items-center gap-2 sm:mb-3'>
         <RiStockLine className='text-base sm:text-lg text-text-sub-600' />
-        <h3 className='text-base font-semibold text-text-strong-950 sm:text-title-h6'>
+        <p className='text-paragraph-md font-semibold text-text-strong-950'>
           Top 3 Price
-        </h3>
+        </p>
       </div>
 
       {/* Divider */}
-      <Divider.Root variant='line-spacing' className='mb-2 sm:mb-3' />
+      <Divider.Root variant='line-spacing' className='' />
 
       {/* Crypto list */}
       <div className='divide-y divide-stroke-soft-200'>

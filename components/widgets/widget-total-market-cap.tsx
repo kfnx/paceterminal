@@ -36,28 +36,20 @@ export default function TotalMarketCapWidget() {
   if (isLoading) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
+        className='w-full rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:p-6'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <div className='mb-3 flex items-center gap-2'>
-          <RiBarChartBoxFill className='text-lg text-text-sub-600' />
-          <h3 className='text-title-h6 text-text-strong-950'>
+        <div className='mb-2 flex items-center gap-2 sm:mb-3'>
+          <RiBarChartBoxFill className='text-base sm:text-lg text-text-sub-600' />
+          <p className='text-paragraph-md font-semibold text-text-strong-950'>
             Total Market Cap
-          </h3>
+          </p>
         </div>
         <div className='space-y-4'>
           <div className='bg-gray-200 h-10 w-48 animate-pulse rounded' />
-          <div className='flex gap-1'>
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className='bg-gray-200 h-8 w-12 animate-pulse rounded'
-              />
-            ))}
-          </div>
-          <div className='bg-gray-200 h-40 w-full animate-pulse rounded' />
+          <div className='bg-gray-200 h-32 w-full animate-pulse rounded sm:h-40' />
         </div>
       </motion.div>
     );
@@ -66,18 +58,19 @@ export default function TotalMarketCapWidget() {
   if (error) {
     return (
       <motion.div
-        className='w-full max-w-md rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs sm:p-6'
+        className='w-full rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:p-6'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <div className='mb-3 flex items-center gap-2'>
-          <RiBarChartBoxFill className='text-lg text-text-sub-600' />
-          <h3 className='text-title-h6 text-text-strong-950'>
+        <div className='mb-2 flex items-center gap-2 sm:mb-3'>
+          <RiBarChartBoxFill className='text-base sm:text-lg text-text-sub-600' />
+          <p className='text-paragraph-md font-semibold text-text-strong-950'>
             Total Market Cap
-          </h3>
+          </p>
         </div>
-        <div className='text-sm py-6 text-center text-error-base'>
+        <Divider.Root variant='line-spacing' className='mb-2 sm:mb-3' />
+        <div className='text-sm text-center text-error-base'>
           Failed to load data
         </div>
       </motion.div>
@@ -102,34 +95,35 @@ export default function TotalMarketCapWidget() {
       {/* Header */}
       <div className='mb-2 flex items-center gap-2 sm:mb-3'>
         <RiBarChartBoxFill className='text-base sm:text-lg text-text-sub-600' />
-        <h3 className='text-base font-semibold text-text-strong-950 sm:text-title-h6'>
+        <p className='text-paragraph-md font-semibold text-text-strong-950'>
           Total Market Cap
-        </h3>
+        </p>
       </div>
 
       {/* Divider */}
       <Divider.Root variant='line-spacing' className='mb-2 sm:mb-3' />
 
-      {/* Value */}
-      <div className='mb-2 flex flex-wrap items-baseline gap-2'>
-        <p className='text-xl sm:text-3xl font-semibold text-text-strong-950'>
-          ${totalMarketCapInTrillions.toFixed(2)}{' '}
-          <span className='text-base text-text-sub-700 sm:text-xl font-medium'>
-            Trillion
+      <div className='flex h-4/5 flex-col justify-center'>
+        {/* Value */}
+        <div className='mb-2 flex flex-wrap items-baseline gap-2'>
+          <p className='text-xl sm:text-3xl font-semibold text-text-strong-950'>
+            ${totalMarketCapInTrillions.toFixed(2)}{' '}
+            <span className='text-base text-text-sub-700 sm:text-xl font-medium'>
+              Trillion
+            </span>
+          </p>
+          <span
+            className={`text-xs rounded-full bg-bg-weak-50 px-2 py-0.5 font-medium sm:text-label-sm ${
+              isPositive ? 'text-green-600' : 'text-red-600'
+            }`}
+          >
+            {isPositive ? '+' : ''}
+            {change24h.toFixed(2)}%
           </span>
-        </p>
-        <span
-          className={`text-xs rounded-full bg-bg-weak-50 px-2 py-0.5 font-medium sm:text-label-sm ${
-            isPositive ? 'text-green-600' : 'text-red-600'
-          }`}
-        >
-          {isPositive ? '+' : ''}
-          {change24h.toFixed(2)}%
-        </span>
-      </div>
+        </div>
 
-      {/* Range buttons */}
-      {/* <div className='mb-4 flex items-center gap-1'>
+        {/* Range buttons */}
+        {/* <div className='mb-4 flex items-center gap-1'>
         {['1D', '1W', '1M', '3M', '6M', '1Y'].map((range) => (
           <button
             key={range}
@@ -144,39 +138,40 @@ export default function TotalMarketCapWidget() {
         ))}
       </div> */}
 
-      {/* Chart */}
-      <div className='h-40 w-full'>
-        <ResponsiveContainer width='100%' height='100%'>
-          <LineChart data={chartData}>
-            <XAxis
-              dataKey='month'
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 12, fill: '#9CA3AF' }}
-            />
-            <YAxis hide />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: 'white',
-                border: '1px solid #E5E7EB',
-                borderRadius: '8px',
-                fontSize: '12px',
-              }}
-              formatter={(value: number) => [
-                `$${value.toFixed(2)}T`,
-                'Market Cap',
-              ]}
-            />
-            <Line
-              type='monotone'
-              dataKey='value'
-              stroke='#2563EB' // blue-600
-              strokeWidth={2}
-              dot={false}
-              isAnimationActive
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        {/* Chart */}
+        <div className='h-32 w-full sm:h-40'>
+          <ResponsiveContainer width='100%' height='100%'>
+            <LineChart data={chartData}>
+              <XAxis
+                dataKey='month'
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: '#9CA3AF' }}
+              />
+              <YAxis hide />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'white',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                }}
+                formatter={(value: number) => [
+                  `$${value.toFixed(2)}T`,
+                  'Market Cap',
+                ]}
+              />
+              <Line
+                type='monotone'
+                dataKey='value'
+                stroke='#2563EB' // blue-600
+                strokeWidth={2}
+                dot={false}
+                isAnimationActive
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </motion.div>
   );

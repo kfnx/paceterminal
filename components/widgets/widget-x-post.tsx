@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { RiTwitterXLine } from '@remixicon/react';
+import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
+
+import * as Divider from '@/components/ui/divider';
 
 interface XPostWidgetProps {
   tweetId: string;
@@ -50,6 +54,14 @@ export default function XPostWidget({
             if (iframe) {
               iframe.style.borderRadius = '12px';
               iframe.style.overflow = 'hidden';
+              // ✅ Make the tweet responsive
+              iframe.style.width = '100%'; // fill parent width
+              iframe.style.maxWidth = '550px'; // Twitter's default max width
+              iframe.style.minWidth = '320px'; // prevent too small on mobile
+
+              // ✅ Ensure it behaves well inside flex/grid
+              iframe.style.display = 'block';
+              iframe.style.margin = '0 auto';
             }
           })
           .catch(() => {
@@ -84,29 +96,59 @@ export default function XPostWidget({
 
   if (error) {
     return (
-      <div
-        className={`rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-6 shadow-regular-xs ${className}`}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className={`rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:p-6 ${className}`}
       >
+        <div className='mb-2 flex items-center gap-2 sm:mb-3'>
+          <RiTwitterXLine className='text-base sm:text-lg text-text-sub-600' />
+          <p className='text-paragraph-md font-semibold text-text-strong-950'>
+            X Post
+          </p>
+        </div>
+        <Divider.Root variant='line-spacing' className='mb-2 sm:mb-3' />
         <div className='text-sm text-center text-error-base'>
           Failed to load tweet
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className={className}>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className={`flex flex-col items-center justify-center rounded border border-stroke-soft-200 bg-bg-white-0 px-2 py-3 shadow-regular-xs sm:px-2 sm:py-4 md:px-2 md:py-6 ${className}`}
+    >
+      {/* Header */}
+      <div className='mb-2 flex items-center gap-2 self-start sm:mb-3'>
+        <RiTwitterXLine className='text-base sm:text-lg text-text-sub-600' />
+        <p className='text-paragraph-md font-semibold text-text-strong-950'>
+          X Post
+        </p>
+      </div>
+
+      {/* Divider */}
+      <Divider.Root variant='line-spacing' className='mb-2 sm:mb-3' />
+
+      {/* Content */}
       {isLoading && (
-        <div className='flex h-48 items-center justify-center rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-regular-xs'>
+        <div className='flex h-48 items-center justify-center'>
           <div className='h-8 w-8 animate-spin rounded-full border-4 border-stroke-soft-200 border-t-primary-base' />
         </div>
       )}
       <div
         ref={embedRef}
         className={isLoading ? 'hidden' : ''}
-        style={{ minHeight: isLoading ? 0 : undefined }}
+        style={{
+          minHeight: isLoading ? 0 : undefined,
+          // width: 'fit-content',
+        }}
       />
-    </div>
+    </motion.div>
   );
 }
 

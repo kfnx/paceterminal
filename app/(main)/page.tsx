@@ -350,7 +350,7 @@ export default function PageHome() {
         </div> */}
 
         {/* Market Stats Widgets */}
-        <div className='mb-4 grid grid-cols-1 gap-3 sm:mb-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3'>
+        <div className='mb-4 grid grid-cols-1 gap-3 sm:mb-8 sm:grid-cols-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-3'>
           {/* TOP 3 Price */}
           <Top3PriceWidget />
 
@@ -370,7 +370,7 @@ export default function PageHome() {
           <XPostWidget
             tweetId='1975947991518474336'
             username='degenping'
-            className='-mt-2.5'
+            className=''
           />
         </div>
 
