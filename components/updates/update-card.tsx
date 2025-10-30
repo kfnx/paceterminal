@@ -6,6 +6,7 @@ import {
   RiArrowDownSLine,
   RiArrowUpSLine,
   RiCalendarLine,
+  RiExternalLinkLine,
 } from '@remixicon/react';
 
 import { Database } from '@/lib/database.types';
@@ -224,6 +225,14 @@ export function UpdateCard({ update, variant }: UpdateCardProps) {
           {formatShortDate(update.date || update.created_at)}
         </time>
         {update.tokens && <TokenTag token={update.tokens} />}
+        <a
+          href={update.link}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='flex items-center gap-1 text-text-sub-600 transition-colors hover:text-primary-base'
+        >
+          <RiExternalLinkLine className='h-4 w-4' />
+        </a>
       </div>
 
       <div

@@ -367,11 +367,7 @@ export default function PageHome() {
           <AltcoinSeasonWidget />
 
           {/* X Post */}
-          <XPostWidget
-            tweetId='1975947991518474336'
-            username='degenping'
-            className=''
-          />
+          <XPostWidget tweetId='1975947991518474336' username='degenping' />
         </div>
 
         {/* Token Table */}

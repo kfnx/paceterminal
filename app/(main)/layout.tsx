@@ -1,5 +1,6 @@
 import Header from '@/components/header';
 import HeaderMobile from '@/components/header-mobile';
+import { MobileAd } from '@/components/mobile-ad';
 import { PaceTokenBanner } from '@/components/pace-token-banner';
 import { RightSideAd } from '@/components/right-side-ad';
 import Sidebar from '@/components/sidebar';
@@ -21,6 +22,7 @@ export default function Layout({
           <RightSideAd />
         </div>
       </div>
+      <MobileAd />
     </div>
   );
 }
