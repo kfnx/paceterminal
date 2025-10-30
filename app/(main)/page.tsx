@@ -13,6 +13,7 @@ import {
 
 import { getTokenImageUrl } from '@/utils/image-url';
 import { useAllTokens } from '@/hooks/use-all-tokens';
+import { useActiveXPost } from '@/hooks/use-x-posts';
 import * as Avatar from '@/components/ui/avatar';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { MiniPriceChart } from '@/components/mini-price-chart';
@@ -78,6 +79,7 @@ interface TokenMarketData {
 export default function PageHome() {
   const { locale } = useTranslation();
   const { data: tokens, isLoading: tokensLoading } = useAllTokens();
+  const { xPost: activeXPost } = useActiveXPost();
   const [marketData, setMarketData] = useState<TokenMarketData[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -367,7 +369,12 @@ export default function PageHome() {
           <AltcoinSeasonWidget />
 
           {/* X Post */}
-          <XPostWidget tweetId='1975947991518474336' username='degenping' />
+          {activeXPost && (
+            <XPostWidget
+              tweetId={activeXPost.tweet_id}
+              username={activeXPost.username}
+            />
+          )}
         </div>
 
         {/* Token Table */}

@@ -10,6 +10,7 @@ import {
   RiMoneyDollarCircleLine,
   RiSkipLeftLine,
   RiSkipRightLine,
+  RiToolsLine,
   RiUserLine,
   RiUserStarLine,
 } from '@remixicon/react';
@@ -145,6 +146,11 @@ function MenuItems({ collapsed }: { collapsed: boolean }) {
       href: '/admin/users',
       label: 'User Management',
       icon: RiUserLine,
+    },
+    {
+      href: '/admin/widgets',
+      label: 'Widget Management',
+      icon: RiToolsLine,
     },
   ];
 
