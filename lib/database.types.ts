@@ -490,6 +490,36 @@ export type Database = {
           },
         ]
       }
+      x_posts: {
+        Row: {
+          created_at: string
+          id: number
+          is_active: boolean
+          tweet_id: string
+          updated_at: string | null
+          url: string | null
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          tweet_id: string
+          updated_at?: string | null
+          url?: string | null
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          tweet_id?: string
+          updated_at?: string | null
+          url?: string | null
+          username?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
