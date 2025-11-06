@@ -14,6 +14,7 @@ import {
 import { getTokenImageUrl } from '@/utils/image-url';
 import { useAllTokens } from '@/hooks/use-all-tokens';
 import { useActiveXPost } from '@/hooks/use-x-posts';
+import { useXUser } from '@/hooks/use-x-user';
 import * as Avatar from '@/components/ui/avatar';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { MiniPriceChart } from '@/components/mini-price-chart';
@@ -79,12 +80,15 @@ interface TokenMarketData {
 export default function PageHome() {
   const { locale } = useTranslation();
   const { data: tokens, isLoading: tokensLoading } = useAllTokens();
-  const { xPost: activeXPost } = useActiveXPost();
+  // const { xPost: activeXPost } = useActiveXPost();
+  const { data: XUser } = useXUser('pacecrypto');
   const [marketData, setMarketData] = useState<TokenMarketData[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortColumn, setSortColumn] = useState<string>('marketCap');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
+  console.log('X', XUser);
 
   useEffect(() => {
     const fetchMarketData = async () => {
@@ -363,17 +367,23 @@ export default function PageHome() {
           <FearGreedIndex />
 
           {/* Bitcoin Dominance */}
-          <BitcoinDominance />
+          <div className='self-start'>
+            <BitcoinDominance />
+          </div>
 
           {/* Altcoin Season */}
-          <AltcoinSeasonWidget />
+          <div className='self-start'>
+            <AltcoinSeasonWidget />
+          </div>
 
           {/* X Post */}
-          {activeXPost && (
-            <XPostWidget
-              tweetId={activeXPost.tweet_id}
-              username={activeXPost.username}
-            />
+          {XUser?.pinned_tweet_id && XUser?.username && (
+            <div className='self-start'>
+              <XPostWidget
+                tweetId={XUser?.pinned_tweet_id}
+                username={XUser?.username}
+              />
+            </div>
           )}
         </div>
 

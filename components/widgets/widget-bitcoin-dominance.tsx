@@ -87,7 +87,7 @@ export default function BitcoinDominance() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className='w-full rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:p-6'
+      className='w-full rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-3 shadow-regular-xs sm:p-4 md:min-h-[350px] md:p-6'
     >
       {/* Header */}
       <div className='mb-2 flex items-center gap-2 sm:mb-3'>

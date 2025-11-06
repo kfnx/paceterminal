@@ -131,7 +131,7 @@ export default function XPostWidget({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={`flex flex-col rounded border border-stroke-soft-200 bg-bg-white-0 px-2 py-3 shadow-regular-xs sm:px-2 sm:py-4 md:px-2 md:py-6 ${className}`}
+      className={`flex min-h-[350px] flex-col rounded border border-stroke-soft-200 bg-bg-white-0 px-2 py-3 shadow-regular-xs sm:px-2 sm:py-4 md:px-2 md:py-6 ${className}`}
     >
       {/* Header */}
       <div className='mb-2 flex items-center gap-2 self-start sm:mb-3'>

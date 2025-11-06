@@ -147,11 +147,11 @@ function MenuItems({ collapsed }: { collapsed: boolean }) {
       label: 'User Management',
       icon: RiUserLine,
     },
-    {
-      href: '/admin/widgets',
-      label: 'Widget Management',
-      icon: RiToolsLine,
-    },
+    // {
+    //   href: '/admin/widgets',
+    //   label: 'Widget Management',
+    //   icon: RiToolsLine,
+    // },
   ];
 
   return (
