@@ -6,6 +6,7 @@ import { useTranslation } from '@/contexts/translation-context';
 import { RiCloseLine } from '@remixicon/react';
 
 import { useAdByPosition } from '@/hooks/use-ads';
+import { useAnalytics } from '@/hooks/use-analytics';
 import { useMemberStatus } from '@/hooks/use-member-status';
 
 const isMember = false; // pace request: show ads but keep content free
@@ -14,6 +15,7 @@ export function RightSideAd() {
   // const { isMember } = useMemberStatus();
 
   const { t } = useTranslation();
+  const { trackCustomEvent } = useAnalytics();
   const rightAd = useAdByPosition('right');
   const [showAds, setShowAds] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -76,8 +78,32 @@ export function RightSideAd() {
           ? 'sticky top-0 z-50 translate-x-0 scale-100 opacity-100'
           : 'translate-x-4 scale-95 opacity-0'
       }`}
-      onClick={() => {
+      onClick={async () => {
         if (rightAd?.target_url) {
+          // Track in database (reliable, ad-blocker resistant)
+          try {
+            await fetch('/api/ads/track-click', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                target_url: rightAd.target_url,
+                position: 'right',
+              }),
+            });
+          } catch (error) {
+            console.error('Error tracking ad click:', error);
+          }
+
+          // Track in Google Analytics (rich analytics)
+          trackCustomEvent('ad_click', {
+            ad_position: 'right',
+            ad_url: rightAd.target_url,
+            event_category: 'Advertising',
+            event_label: 'Right Sidebar Ad',
+          });
+
           window?.open(rightAd.target_url, '_blank');
         }
       }}

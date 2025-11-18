@@ -41,6 +41,33 @@ export type Database = {
         }
         Relationships: []
       }
+      ads_clicks: {
+        Row: {
+          click_count: number
+          created_at: string
+          id: number
+          position: string
+          target_url: string
+          updated_at: string | null
+        }
+        Insert: {
+          click_count?: number
+          created_at?: string
+          id?: number
+          position: string
+          target_url: string
+          updated_at?: string | null
+        }
+        Update: {
+          click_count?: number
+          created_at?: string
+          id?: number
+          position?: string
+          target_url?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       alpha: {
         Row: {
           address: string
