@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   RiArrowRightSLine,
+  RiBarChartBoxLine,
   RiCoinLine,
   RiFireLine,
   RiMoneyDollarCircleLine,
@@ -131,6 +132,11 @@ function MenuItems({ collapsed }: { collapsed: boolean }) {
       href: '/admin/ads',
       label: 'Manage Ads',
       icon: RiMoneyDollarCircleLine,
+    },
+    {
+      href: '/admin/ad-clicks',
+      label: 'Ad Click Analytics',
+      icon: RiBarChartBoxLine,
     },
     {
       href: '/admin/burn-screener',
