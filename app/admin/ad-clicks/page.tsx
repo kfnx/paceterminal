@@ -58,7 +58,7 @@ export default function AdClicksPage() {
             Track and analyze advertisement click performance
           </p>
         </div>
-        <Button.Root onClick={handleRefresh} variant='outlined'>
+        <Button.Root onClick={handleRefresh} variant='neutral'>
           <Button.Icon as={RiRefreshLine} />
           Refresh
         </Button.Root>
@@ -172,9 +172,10 @@ export default function AdClicksPage() {
                 {adsClicks.map((record) => {
                   const percentage =
                     stats.totalClicks > 0
-                      ? ((record.click_count / stats.totalClicks) * 100).toFixed(
-                          1,
-                        )
+                      ? (
+                          (record.click_count / stats.totalClicks) *
+                          100
+                        ).toFixed(1)
                       : '0';
 
                   return (
