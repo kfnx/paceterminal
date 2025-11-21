@@ -9,6 +9,7 @@ import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
 
+import { ChatbotAnalysisWidget } from '@/components/ui/chatbot-analysis-widget';
 import { ChatbotWidget } from '@/components/ui/chatbot-widget';
 import { AnalyticsPageTracker } from '@/components/analytics-page-tracker';
 import { GoogleAnalyticsWrapper } from '@/components/google-analytics';
@@ -61,6 +62,7 @@ export default function RootLayout({
                 </TooltipProvider>
                 <PaymentModal />
                 <ChatbotWidget />
+                <ChatbotAnalysisWidget />
                 <Toaster richColors closeButton position='top-center' />
               </ThemeProvider>
             </TranslationProvider>
